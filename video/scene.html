@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>三年 · 感谢老师</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400&family=Ma+Shan+Zheng&display=block" rel="stylesheet">
+<style>
+  :root{
+    --sky-1:#fff3e4; --sky-2:#fbd2a8; --sky-3:#e99a9e; --sky-4:#a06382; --sky-5:#5c3f5c;
+    --gold:#cf9a4c; --gold-light:#f1d9a6; --paper:#fbf4e6;
+    --ink:#5b4636; --ink-soft:#8a7461; --silhouette:#42324a;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ width:1920px; height:1080px; overflow:hidden; }
+  body{ position:relative; background:var(--sky-5); font-family:"Noto Serif SC",serif; color:var(--ink); }
+  .layer{ position:absolute; inset:0; }
+  *, *::before, *::after{ animation-fill-mode:both !important; animation-play-state:paused !important; }
+
+  /* ---------- background (slow push-in) ---------- */
+  .bg{ position:absolute; inset:-40px;
+    background:linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 32%,var(--sky-3) 62%,var(--sky-4) 84%,var(--sky-5) 100%);
+    animation:pushIn 44s linear; }
+  @keyframes pushIn{ from{ transform:scale(1); } to{ transform:scale(1.07) translateY(-10px); } }
+  .sunbeam{
+    position:absolute; left:-30%; top:-60%; width:160%; height:220%;
+    background:conic-gradient(from 200deg at 50% 30%,
+      rgba(255,244,214,0) 0deg, rgba(255,244,214,.55) 8deg, rgba(255,244,214,0) 22deg,
+      rgba(255,244,214,0) 40deg, rgba(255,244,214,.35) 50deg, rgba(255,244,214,0) 65deg,
+      rgba(255,244,214,0) 100deg, rgba(255,244,214,.4) 112deg, rgba(255,244,214,0) 130deg,
+      rgba(255,244,214,0) 360deg);
+    mix-blend-mode:soft-light; animation:beam 44s linear; }
+  @keyframes beam{ from{ transform:rotate(-8deg); } to{ transform:rotate(16deg); } }
+  .glow{ position:absolute; left:50%; top:-260px; width:1400px; height:900px; margin-left:-700px;
+    background:radial-gradient(ellipse at center,rgba(255,240,210,.65),rgba(255,240,210,0) 65%);
+    animation:breathe 6s ease-in-out infinite; }
+  @keyframes breathe{ 0%,100%{ opacity:.8; } 50%{ opacity:1; } }
+
+  .particle{ position:absolute; border-radius:50%;
+    background:radial-gradient(circle,#fff6df 0%,rgba(255,246,223,0) 70%);
+    animation-name:floatUp; animation-timing-function:linear; animation-iteration-count:infinite; }
+  @keyframes floatUp{
+    0%{ transform:translate(0,0); opacity:0; } 12%{ opacity:.9; } 85%{ opacity:.35; }
+    100%{ transform:translate(var(--drift),-1150px); opacity:0; } }
+
+  /* falling petals: outer falls, inner sways & spins */
+  .petal{ position:absolute; top:-60px; animation-name:fall; animation-timing-function:linear; animation-iteration-count:infinite; }
+  .petal i{ display:block; width:var(--s); height:calc(var(--s) * .62); border-radius:70% 0 70% 0;
+    background:var(--c); opacity:.85; box-shadow:0 2px 6px rgba(120,60,60,.12);
+    animation-name:sway; animation-timing-function:ease-in-out; animation-iteration-count:infinite; animation-direction:alternate; }
+  @keyframes fall{ from{ transform:translateY(0); } to{ transform:translateY(1220px); } }
+  @keyframes sway{ from{ transform:translateX(-50px) rotate(-40deg) rotateX(0); } to{ transform:translateX(60px) rotate(200deg) rotateX(70deg); } }
+
+  .campus{ position:absolute; left:0; right:0; bottom:0; height:250px;
+    animation:rise 2.6s cubic-bezier(.22,1,.36,1) .2s; }
+  .campus svg{ width:100%; height:100%; display:block; }
+  .campus path{ fill:var(--silhouette); opacity:.9; }
+  .campus .windows rect{ fill:#ffd99a; opacity:0; animation:winOn 1.2s ease 26s; }
+  @keyframes winOn{ from{ opacity:0; } to{ opacity:.75; } }
+  @keyframes rise{ from{ transform:translateY(100%); } to{ transform:none; } }
+
+  .plane{ position:absolute; width:54px; height:54px; opacity:0; }
+  .plane svg{ width:100%; height:100%; color:var(--paper); filter:drop-shadow(0 6px 8px rgba(0,0,0,.08)); }
+  .plane.p1{ left:-80px; top:300px; animation:fly1 9s cubic-bezier(.4,0,.6,1) 4.5s; }
+  .plane.p2{ left:-80px; top:180px; animation:fly2 10s cubic-bezier(.4,0,.6,1) 27s; }
+  @keyframes fly1{ 0%{ transform:translate(0,0) rotate(-10deg); opacity:0; } 8%{ opacity:.85; } 90%{ opacity:.6; }
+    50%{ transform:translate(1000px,-120px) rotate(6deg); } 100%{ transform:translate(2080px,-260px) rotate(-6deg); opacity:0; } }
+  @keyframes fly2{ 0%{ transform:translate(0,0) rotate(-6deg) scale(.8); opacity:0; } 8%{ opacity:.75; } 90%{ opacity:.5; }
+    50%{ transform:translate(1000px,120px) rotate(8deg) scale(.8); } 100%{ transform:translate(2080px,40px) rotate(-4deg) scale(.8); opacity:0; } }
+
+  .fade-in-all{ background:#fff3e4; animation:veilIn 1.6s ease-out; }
+  @keyframes veilIn{ from{ opacity:1; } to{ opacity:0; } }
+  .fade-out-all{ background:#fff6ea; animation:veilOut 1.8s ease-in 42.2s; }
+  @keyframes veilOut{ from{ opacity:0; } to{ opacity:1; } }
+
+  /* ---------- text: per-character entrance, container exit ---------- */
+  .center{ position:absolute; left:0; right:0; text-align:center; }
+  .show{ animation-name:exit; animation-timing-function:ease-in; }
+  @keyframes exit{ 0%,88%{ opacity:1; transform:none; filter:blur(0); } 100%{ opacity:0; transform:translateY(-14px); filter:blur(5px); } }
+  .ch{ display:inline-block; animation:charIn .9s cubic-bezier(.22,1,.36,1); }
+  @keyframes charIn{ from{ opacity:0; transform:translateY(.4em) scale(.9); filter:blur(8px); } to{ opacity:1; transform:none; filter:blur(0); } }
+
+  /* ---------- scene A ---------- */
+  .dates{ top:320px; font-family:"Noto Sans SC",sans-serif; font-weight:300; font-size:30px; letter-spacing:.6em; color:var(--ink-soft);
+    animation-duration:5.8s; animation-delay:1.2s; }
+  .big-three{ top:380px; font-weight:900; font-size:230px; line-height:1; letter-spacing:.18em;
+    text-shadow:0 10px 40px rgba(255,240,215,.8); animation-duration:5s; animation-delay:2s; }
+  .big-three .ch{ animation:charPop 1.3s cubic-bezier(.34,1.4,.64,1); }
+  @keyframes charPop{ from{ opacity:0; transform:translateY(-60px) scale(1.5); filter:blur(14px); } to{ opacity:1; transform:none; filter:blur(0); } }
+  .big-three .gold{ color:var(--gold); }
+  .halo{ position:absolute; left:50%; top:495px; width:720px; height:720px; margin:-360px 0 0 -360px; border-radius:50%;
+    background:radial-gradient(circle,rgba(255,236,196,.95) 0%,rgba(255,226,170,.35) 35%,rgba(255,226,170,0) 68%);
+    animation:halo 5s ease-out 2.4s; }
+  @keyframes halo{ 0%{ opacity:0; transform:scale(.3); } 25%{ opacity:1; } 88%{ opacity:.8; transform:scale(1.05); } 100%{ opacity:0; transform:scale(1.15); } }
+  .ring{ position:absolute; left:50%; top:495px; width:300px; height:300px; margin:-150px 0 0 -150px; border-radius:50%;
+    border:2px solid rgba(207,154,76,.7); animation:ring 2.2s ease-out; }
+  .ring.r1{ animation-delay:2.9s; } .ring.r2{ animation-delay:3.3s; }
+  @keyframes ring{ from{ opacity:.9; transform:scale(.6); } to{ opacity:0; transform:scale(3.2); } }
+  .sub-a{ top:670px; font-size:46px; letter-spacing:.3em; animation-duration:4s; animation-delay:3s; }
+
+  /* ---------- scene B ---------- */
+  .timeline{ position:absolute; left:360px; right:360px; top:740px; height:60px; animation:tlShow 19s ease 7.8s; }
+  @keyframes tlShow{ 0%{ opacity:0; transform:translateY(20px); } 5%{ opacity:1; transform:none; } 94%{ opacity:1; } 100%{ opacity:0; } }
+  .track{ position:absolute; left:0; right:0; top:29px; height:2px; background:rgba(91,70,54,.18); }
+  .track-fill{ position:absolute; left:0; top:29px; height:3px; width:100%;
+    background:linear-gradient(90deg,var(--gold-light),var(--gold)); transform-origin:left;
+    animation:fill 16s cubic-bezier(.5,0,.5,1) 8.6s; }
+  @keyframes fill{ 0%,6%{ transform:scaleX(0); } 37%,40%{ transform:scaleX(.5); } 73%,100%{ transform:scaleX(1); } }
+  .rider{ position:absolute; top:-6px; left:0; width:40px; height:40px; margin-left:-20px;
+    animation:ride 16s cubic-bezier(.5,0,.5,1) 8.6s; }
+  .rider svg{ width:100%; height:100%; color:#fffaf0; filter:drop-shadow(0 3px 5px rgba(120,70,40,.25)); }
+  @keyframes ride{ 0%,6%{ left:0; opacity:0; } 8%{ opacity:1; } 37%,40%{ left:50%; } 73%{ left:100%; opacity:1; } 80%,100%{ left:100%; opacity:0; } }
+  .node{ position:absolute; top:0; width:60px; height:60px; margin-left:-30px; }
+  .node .dot{ position:absolute; left:50%; top:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%;
+    background:var(--sky-1); border:2px solid rgba(207,154,76,.6);
+    animation-name:dotOn; animation-duration:.9s; animation-timing-function:cubic-bezier(.34,1.56,.64,1); }
+  @keyframes dotOn{ from{ background:var(--sky-1); transform:scale(1); box-shadow:none; }
+    to{ background:var(--gold); transform:scale(1.4); box-shadow:0 0 0 10px rgba(207,154,76,.18), 0 0 30px rgba(255,220,160,.9); } }
+  .node .pulse{ position:absolute; left:50%; top:50%; width:18px; height:18px; margin:-9px 0 0 -9px; border-radius:50%;
+    border:2px solid var(--gold); animation:pulse 1.6s ease-out; }
+  @keyframes pulse{ from{ opacity:1; transform:scale(1); } to{ opacity:0; transform:scale(6); } }
+  .node .label{ position:absolute; top:70px; left:50%; width:240px; margin-left:-120px; text-align:center;
+    font-family:"Noto Sans SC",sans-serif; font-size:26px; letter-spacing:.2em; color:var(--ink-soft); }
+  .n1{ left:0; } .n2{ left:50%; } .n3{ left:100%; }
+  .n1 .dot,.n1 .pulse{ animation-delay:8.6s; } .n2 .dot,.n2 .pulse{ animation-delay:14.6s; } .n3 .dot,.n3 .pulse{ animation-delay:20.6s; }
+
+  .chapter{ top:150px; animation-duration:5.6s; }
+  .icon{ display:block; width:120px; height:92px; margin:0 auto 22px; }
+  .icon path, .icon line, .icon circle{ fill:none; stroke:var(--gold); stroke-width:3; stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:1; stroke-dashoffset:1; animation:draw 1.8s ease-in-out; }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+  .c1 .icon *{ animation-delay:8.6s; } .c2 .icon *{ animation-delay:14.6s; } .c3 .icon *{ animation-delay:20.6s; }
+  .chapter .ch-title{ font-size:34px; letter-spacing:.4em; color:var(--gold); font-weight:600; margin-bottom:34px; }
+  .chapter .ch-title em{ font-style:normal; font-family:"Ma Shan Zheng",cursive; font-size:46px; letter-spacing:.2em; margin-left:.6em; color:var(--ink); }
+  .chapter p{ font-size:46px; line-height:1.9; letter-spacing:.08em; }
+  .c1{ animation-delay:8.5s; } .c2{ animation-delay:14.5s; } .c3{ animation-delay:20.5s; }
+
+  /* ---------- scene C ---------- */
+  .days{ top:290px; font-size:40px; letter-spacing:.4em; color:var(--ink-soft); animation-duration:8.5s; animation-delay:27.2s; }
+  .days b{ display:inline-block; min-width:3.2em; color:var(--gold); font-weight:700; font-size:78px; letter-spacing:.06em; vertical-align:-.12em;
+    font-variant-numeric:tabular-nums; }
+  .thanks-1{ top:430px; font-size:100px; font-weight:700; letter-spacing:.2em; animation-duration:6.5s; animation-delay:29.2s; }
+  .thanks-2{ top:600px; font-size:52px; letter-spacing:.14em; animation-duration:5.4s; animation-delay:30.3s; }
+  .underline{ position:absolute; left:50%; top:572px; width:560px; height:3px; margin-left:-280px;
+    background:linear-gradient(90deg,rgba(207,154,76,0),var(--gold),rgba(207,154,76,0)); transform-origin:center;
+    animation:line 6.2s ease 29.8s; }
+  @keyframes line{ 0%{ transform:scaleX(0); opacity:1; } 18%{ transform:scaleX(1); } 88%{ opacity:1; transform:scaleX(1); } 100%{ opacity:0; transform:scaleX(1); } }
+
+  /* ---------- scene D ---------- */
+  .rays{ position:absolute; left:50%; top:470px; width:2400px; height:2400px; margin:-1200px 0 0 -1200px;
+    background:repeating-conic-gradient(from 0deg,rgba(255,238,200,.28) 0deg 5deg,rgba(255,238,200,0) 5deg 15deg);
+    -webkit-mask-image:radial-gradient(circle,#000 0%,rgba(0,0,0,.6) 25%,transparent 55%);
+    mask-image:radial-gradient(circle,#000 0%,rgba(0,0,0,.6) 25%,transparent 55%);
+    animation:rays 7s ease-out 37s; }
+  @keyframes rays{ from{ opacity:0; transform:rotate(0) scale(.6); } 30%{ opacity:1; } to{ opacity:1; transform:rotate(24deg) scale(1); } }
+  .cap{ position:absolute; bottom:-160px; width:130px; height:130px;
+    animation-name:toss; animation-duration:3.6s; animation-timing-function:cubic-bezier(.25,.6,.45,1); }
+  .cap svg{ width:100%; height:100%; }
+  @keyframes toss{ 0%{ transform:translate(0,0) rotate(0); opacity:0; } 8%{ opacity:1; }
+    100%{ transform:translate(var(--dx),-1450px) rotate(var(--r)); opacity:1; } }
+  .confetti{ position:absolute; top:var(--y0); left:var(--x0); width:var(--w); height:calc(var(--w) * .45); background:var(--c); border-radius:2px;
+    animation-name:burst; animation-duration:var(--d); animation-timing-function:cubic-bezier(.15,.7,.4,1); }
+  @keyframes burst{
+    0%{ transform:translate(0,0) rotate(0); opacity:0; }
+    6%{ opacity:1; }
+    35%{ transform:translate(calc(var(--vx) * .7),var(--vy)) rotate(calc(var(--r) * .4)); }
+    100%{ transform:translate(var(--vx),calc(var(--vy) + 900px)) rotate(var(--r)); opacity:.9; } }
+  #fx{ z-index:1; }
+  .final-1,.final-2,.final-3{ z-index:2; }
+  .final-1{ top:360px; font-size:132px; font-weight:900; letter-spacing:.16em; text-shadow:0 10px 40px rgba(255,240,215,.9); }
+  .final-2{ top:565px; font-family:"Ma Shan Zheng",cursive; font-size:62px; letter-spacing:.14em; color:var(--gold); }
+  .final-3{ top:665px; font-family:"Noto Sans SC",sans-serif; font-weight:300; font-size:26px; letter-spacing:.6em; color:var(--ink-soft); }
+</style>
+</head>
+<body>
+  <div class="bg"><div class="glow"></div><div class="sunbeam"></div></div>
+  <div class="layer" id="particles"></div>
+  <div class="layer" id="petals"></div>
+
+  <div class="plane p1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 12l19-9-6 9 6 9-19-9zm2.6.4l10.9 4.3-3.8-4.3 3.8-4.3-10.9 4.3z" opacity=".9"/><path d="M2 12l19-9-9 9z" opacity=".55"/></svg></div>
+  <div class="plane p2"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 12l19-9-6 9 6 9-19-9zm2.6.4l10.9 4.3-3.8-4.3 3.8-4.3-10.9 4.3z" opacity=".9"/><path d="M2 12l19-9-9 9z" opacity=".55"/></svg></div>
+
+  <!-- A -->
+  <div class="halo"></div><div class="ring r1"></div><div class="ring r2"></div>
+  <div class="center dates show split" data-start="1.2" data-step=".07">2024　—　2026</div>
+  <div class="center big-three show split" data-start="2.1" data-step=".38">三<span class="gold">年</span></div>
+  <div class="center sub-a show split" data-start="3.2" data-step=".09">谢谢您，一路相伴</div>
+
+  <!-- B -->
+  <div class="center chapter show c1">
+    <svg class="icon" viewBox="0 0 120 92"><path pathLength="1" d="M60 26 Q38 14 14 22 L14 78 Q38 70 60 82 Z"/><path pathLength="1" d="M60 26 Q82 14 106 22 L106 78 Q82 70 60 82"/><path pathLength="1" d="M26 36 Q38 32 50 38 M26 50 Q38 46 50 52 M70 38 Q82 32 94 36 M70 52 Q82 46 94 50"/></svg>
+    <div class="ch-title split" data-start="8.8" data-step=".08">第一年<em>初遇</em></div>
+    <p class="split" data-start="9.3" data-step=".035">那年九月，我们带着陌生走进教室，<br>是您的第一次点名，让我们在这里有了名字。</p>
+  </div>
+  <div class="center chapter show c2">
+    <svg class="icon" viewBox="0 0 120 92"><path pathLength="1" d="M34 84 L86 84 M60 84 L60 60 L44 36"/><path pathLength="1" d="M30 30 L52 12 L68 32 L46 48 Z"/><path pathLength="1" d="M62 44 L74 58 M52 52 L58 70 M70 34 L88 40"/><circle pathLength="1" cx="44" cy="36" r="4"/></svg>
+    <div class="ch-title split" data-start="14.8" data-step=".08">第二年<em>成长</em></div>
+    <p class="split" data-start="15.3" data-step=".035">黑板上的板书擦了又写，办公室的灯总亮到很晚。<br>我们迷茫时，您说：别急，慢慢来。</p>
+  </div>
+  <div class="center chapter show c3">
+    <svg class="icon" viewBox="0 0 120 92"><path pathLength="1" d="M20 46 L104 14 L80 78 L62 56 Z M104 14 L62 56 L60 72 L70 62"/><path pathLength="1" d="M8 80 Q22 66 36 74 Q46 80 52 70"/></svg>
+    <div class="ch-title split" data-start="20.8" data-step=".08">第三年<em>启程</em></div>
+    <p class="split" data-start="21.3" data-step=".035">最后一年，您陪我们走过每一张试卷，<br>也教会我们，在难走的路上继续向前。</p>
+  </div>
+  <div class="timeline">
+    <div class="track"></div><div class="track-fill"></div>
+    <div class="node n1"><div class="pulse"></div><div class="dot"></div><div class="label">2024</div></div>
+    <div class="node n2"><div class="pulse"></div><div class="dot"></div><div class="label">2025</div></div>
+    <div class="node n3"><div class="pulse"></div><div class="dot"></div><div class="label">2026</div></div>
+    <div class="rider"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 12l19-9-6 9 6 9-19-9z"/></svg></div>
+  </div>
+
+  <!-- C -->
+  <div class="center days show split" data-start="27.4" data-step=".09">三年，<b id="count" class="nosplit">0</b>个日子</div>
+  <div class="center thanks-1 show split" data-start="29.3" data-step=".14">谢谢您，老师</div>
+  <div class="underline"></div>
+  <div class="center thanks-2 show split" data-start="30.5" data-step=".06">把最好的年华，留给了我们的成长</div>
+
+  <!-- D -->
+  <div class="rays"></div>
+  <div class="layer" id="fx"></div>
+  <div class="center final-1 split" data-start="37.4" data-step=".16">老师，您辛苦了</div>
+  <div class="center final-2 split" data-start="39" data-step=".1">—— 您永远的学生们</div>
+  <div class="center final-3 split" data-start="39.9" data-step=".05">2026 届 · 毕业留念</div>
+
+  <div class="campus">
+    <svg viewBox="0 0 1200 220" preserveAspectRatio="none">
+      <path d="M0,220 L0,150 L40,150 L40,120 L70,120 L70,150 L120,150 L120,90 L150,90 L150,70 L170,70 L170,50 L190,70 L190,90 L220,90 L220,150 L280,150 L280,110 L300,110 L300,80 L330,60 L360,80 L360,110 L380,110 L380,150 L430,150 L430,130 L460,130 L460,150 L520,150 L520,100 L560,100 L560,40 L580,20 L600,40 L600,100 L640,100 L640,150 L700,150 L700,120 L730,120 L730,150 L790,150 L790,95 L820,95 L820,70 L840,50 L860,70 L860,95 L900,95 L900,150 L960,150 L960,130 L990,130 L990,150 L1050,150 L1050,110 L1090,110 L1090,150 L1150,150 L1150,170 L1200,170 L1200,220 Z"/>
+      <g class="windows">
+        <rect x="130" y="100" width="8" height="10"/><rect x="195" y="105" width="8" height="10"/><rect x="310" y="92" width="8" height="10"/>
+        <rect x="340" y="92" width="8" height="10"/><rect x="573" y="60" width="10" height="12"/><rect x="535" y="115" width="8" height="10"/>
+        <rect x="615" y="115" width="8" height="10"/><rect x="800" y="108" width="8" height="10"/><rect x="870" y="108" width="8" height="10"/>
+        <rect x="1060" y="122" width="8" height="10"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="layer fade-in-all"></div>
+  <div class="layer fade-out-all"></div>
+
+<script>
+  var seed = 7;
+  function rnd(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+
+  // per-character entrance
+  function split(el, start, step){
+    var i = 0;
+    (function walk(node){
+      Array.prototype.slice.call(node.childNodes).forEach(function(n){
+        if (n.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          Array.prototype.forEach.call(n.textContent, function(c){
+            if (c.trim() === '') { frag.appendChild(document.createTextNode(c)); return; }
+            var s = document.createElement('span');
+            s.className = 'ch'; s.textContent = c;
+            s.style.animationDelay = (start + i++ * step).toFixed(3) + 's';
+            frag.appendChild(s);
+          });
+          n.parentNode.replaceChild(frag, n);
+        } else if (n.nodeType === 1 && n.tagName !== 'BR' && !n.classList.contains('nosplit')) {
+          walk(n);
+        } else if (n.nodeType === 1 && n.classList.contains('nosplit')) {
+          n.classList.add('ch'); n.style.animationDelay = (start + i++ * step).toFixed(3) + 's';
+        }
+      });
+    })(el);
+  }
+  document.querySelectorAll('.split').forEach(function(el){
+    split(el, parseFloat(el.dataset.start), parseFloat(el.dataset.step));
+  });
+
+  var field = document.getElementById('particles');
+  for (var i = 0; i < 34; i++) {
+    var p = document.createElement('span');
+    p.className = 'particle';
+    var size = 4 + rnd() * 8, dur = 12 + rnd() * 14;
+    p.style.cssText = 'left:' + (rnd() * 100) + '%;bottom:-20px;width:' + size + 'px;height:' + size + 'px;' +
+      '--drift:' + (rnd() * 120 - 60) + 'px;animation-duration:' + dur + 's;animation-delay:' + (-rnd() * dur) + 's;';
+    field.appendChild(p);
+  }
+
+  var petalColors = ['#f7cfc8', '#f3dcae', '#fff0de', '#eeb6b0'];
+  var petals = document.getElementById('petals');
+  for (var k = 0; k < 24; k++) {
+    var o = document.createElement('div');
+    o.className = 'petal';
+    var fd = 11 + rnd() * 9, sd = 2.4 + rnd() * 2.2;
+    o.style.cssText = 'left:' + (rnd() * 100) + '%;animation-duration:' + fd + 's;animation-delay:' + (-rnd() * fd) + 's;';
+    var inner = document.createElement('i');
+    inner.style.cssText = '--s:' + (14 + rnd() * 14) + 'px;--c:' + petalColors[k % 4] + ';animation-duration:' + sd + 's;animation-delay:' + (-rnd() * sd) + 's;';
+    o.appendChild(inner);
+    petals.appendChild(o);
+  }
+
+  var fx = document.getElementById('fx');
+  var capSvg = '<svg viewBox="0 0 64 64"><path d="M32 10 2 24l30 14 30-14z" fill="#42324a"/>' +
+    '<path d="M14 30v12c0 5 8 9 18 9s18-4 18-9V30l-18 8z" fill="#5a4462"/>' +
+    '<path d="M58 26v16" stroke="#cf9a4c" stroke-width="2.5"/><circle cx="58" cy="44" r="3.5" fill="#cf9a4c"/></svg>';
+  [[380,-200,36.0],[640,-80,36.25],[880,40,36.1],[1060,-40,36.4],[1300,120,36.15],[1540,220,36.35],[520,-140,36.55],[1420,160,36.6],[760,-60,36.7],[1180,90,36.8]]
+    .forEach(function(c, idx){
+      var el = document.createElement('div');
+      el.className = 'cap'; el.innerHTML = capSvg;
+      el.style.cssText = 'left:' + c[0] + 'px;--dx:' + c[1] + 'px;--r:' + ((idx % 2 ? 1 : -1) * (220 + idx * 40)) + 'deg;animation-delay:' + c[2] + 's;' +
+        (idx > 5 ? 'width:96px;height:96px;' : '');
+      fx.appendChild(el);
+    });
+  var confColors = ['#cf9a4c', '#f1d9a6', '#fff4e0', '#e9a0a0', '#f5c46b'];
+  for (var q = 0; q < 70; q++) {
+    var side = q % 2 ? 1 : -1;
+    var c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.cssText = '--x0:' + (side > 0 ? 1920 - 40 : 40) + 'px;--y0:900px;--w:' + (10 + rnd() * 10) + 'px;' +
+      '--c:' + confColors[q % 5] + ';--vx:' + (-side * (200 + rnd() * 900)) + 'px;--vy:' + (-(500 + rnd() * 450)) + 'px;' +
+      '--r:' + (rnd() * 1440 - 720) + 'deg;--d:' + (4 + rnd() * 2.5) + 's;animation-delay:' + (37.2 + rnd() * .5) + 's;';
+    fx.appendChild(c);
+  }
+
+  var countEl = document.getElementById('count');
+  window.DURATION = 44;
+  window.seek = function(t){
+    document.getAnimations().forEach(function(a){ a.currentTime = t * 1000; });
+    var k = Math.max(0, Math.min(1, (t - 27.9) / 2.2));
+    countEl.textContent = Math.round(1095 * (1 - Math.pow(1 - k, 3)));
+  };
+  window.ready = (async function(){
+    var all = document.body.innerText + '0123456789';
+    await Promise.all([
+      document.fonts.load('900 100px "Noto Serif SC"', all),
+      document.fonts.load('700 100px "Noto Serif SC"', all),
+      document.fonts.load('600 100px "Noto Serif SC"', all),
+      document.fonts.load('400 100px "Noto Serif SC"', all),
+      document.fonts.load('300 30px "Noto Sans SC"', all),
+      document.fonts.load('60px "Ma Shan Zheng"', all)
+    ]);
+    await document.fonts.ready;
+    return true;
+  })();
+</script>
+</body>
+</html>
