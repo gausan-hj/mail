@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>致最敬爱的老师 · 毕业感谢信</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+Tamil:wght@400;600;700&family=Noto+Sans+Tamil:wght@300;400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-1:#fff3e4;
+    --sky-2:#fbd2a8;
+    --sky-3:#e99a9e;
+    --sky-4:#a06382;
+    --sky-5:#5c3f5c;
+    --gold:#cf9a4c;
+    --gold-light:#f1d9a6;
+    --paper:#fbf4e6;
+    --paper-deep:#f2e6cd;
+    --ink:#5b4636;
+    --ink-soft:#8a7461;
+    --silhouette:#42324a;
+    --shadow:rgba(74,42,58,.28);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    min-height:100svh;
+    overflow-x:hidden;
+    font-family:"Noto Sans SC","Noto Sans Tamil","PingFang SC",sans-serif;
+    background:linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 32%,var(--sky-3) 62%,var(--sky-4) 84%,var(--sky-5) 100%);
+    color:var(--ink);
+    position:relative;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- Ambient light sweep ---------- */
+  .sunbeam{
+    position:fixed;
+    inset:-20% -20% auto -20%;
+    height:140%;
+    background:conic-gradient(from 200deg at 50% 0%,
+      rgba(255,244,214,0) 0deg,
+      rgba(255,244,214,.55) 8deg,
+      rgba(255,244,214,0) 22deg,
+      rgba(255,244,214,0) 40deg,
+      rgba(255,244,214,.35) 50deg,
+      rgba(255,244,214,0) 65deg,
+      rgba(255,244,214,0) 100deg,
+      rgba(255,244,214,.4) 112deg,
+      rgba(255,244,214,0) 130deg,
+      rgba(255,244,214,0) 360deg);
+    mix-blend-mode:soft-light;
+    animation:rotateBeam 60s linear infinite;
+    pointer-events:none;
+    z-index:1;
+  }
+  @keyframes rotateBeam{ to{ transform:rotate(360deg); } }
+
+  /* ---------- Floating light particles ---------- */
+  .particles{
+    position:fixed; inset:0; overflow:hidden; z-index:2; pointer-events:none;
+  }
+  .particle{
+    position:absolute;
+    bottom:-5%;
+    width:6px;height:6px;
+    border-radius:50%;
+    background:radial-gradient(circle,#fff6df 0%,rgba(255,246,223,0) 70%);
+    opacity:.8;
+    animation:floatUp linear infinite;
+  }
+  @keyframes floatUp{
+    0%{ transform:translate(0,0) scale(1); opacity:0; }
+    10%{ opacity:.85; }
+    50%{ transform:translate(var(--drift,20px),-55vh) scale(1.1); }
+    90%{ opacity:.4; }
+    100%{ transform:translate(calc(var(--drift,20px) * 2),-110vh) scale(.6); opacity:0; }
+  }
+
+  /* ---------- Campus silhouette ---------- */
+  .campus{
+    position:fixed; left:0; right:0; bottom:0; width:100%;
+    height:min(28vh,220px);
+    z-index:3; pointer-events:none;
+  }
+  .campus svg{ width:100%; height:100%; display:block; }
+  .campus path{ fill:var(--silhouette); opacity:.85; }
+
+  /* ---------- Paper airplanes ---------- */
+  .plane{
+    position:fixed; top:-40px; z-index:4; pointer-events:none;
+    opacity:.75; filter:drop-shadow(0 4px 6px rgba(0,0,0,.08));
+    animation:planeFly linear infinite;
+  }
+  .plane svg{ width:34px; height:34px; display:block; }
+  .plane.p1{ left:8%;  top:12%; animation-duration:22s; animation-delay:1s; }
+  .plane.p2{ left:70%; top:60%; animation-duration:28s; animation-delay:6s; transform:scale(.8) rotate(20deg); }
+  .plane.p3{ left:-10%; top:35%; animation-duration:26s; animation-delay:12s; transform:scale(.65); }
+  @keyframes planeFly{
+    0%{ transform:translate(0,0) rotate(-8deg); opacity:0; }
+    8%{ opacity:.75; }
+    50%{ transform:translate(48vw,-6vh) rotate(4deg); }
+    92%{ opacity:.55; }
+    100%{ transform:translate(112vw,-14vh) rotate(-4deg); opacity:0; }
+  }
+
+  /* ---------- Drifting graduation caps ---------- */
+  .cap-drift{
+    position:fixed; z-index:4; pointer-events:none; opacity:.5;
+    animation:capFloat ease-in-out infinite;
+  }
+  .cap-drift svg{ width:26px; height:26px; }
+  .cap-drift.c1{ left:18%; top:70%; animation-duration:9s; }
+  .cap-drift.c2{ left:82%; top:22%; animation-duration:11s; animation-delay:2s; }
+  @keyframes capFloat{
+    0%,100%{ transform:translateY(0) rotate(-6deg); }
+    50%{ transform:translateY(-22px) rotate(6deg); }
+  }
+
+  /* ---------- Music toggle ---------- */
+  .music-toggle{
+    position:fixed; right:max(18px,env(safe-area-inset-right));
+    bottom:max(18px,env(safe-area-inset-bottom));
+    z-index:20;
+    width:48px; height:48px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.55);
+    background:rgba(255,255,255,.35);
+    backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    box-shadow:0 4px 14px rgba(90,55,45,.18);
+    transition:transform .25s ease, background .25s ease;
+  }
+  .music-toggle:hover{ transform:scale(1.08); }
+  .music-toggle:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  .music-toggle svg{ width:20px; height:20px; color:var(--ink); }
+  .music-toggle .bar{ transform-origin:bottom; transition:transform .3s ease; }
+  .music-toggle.playing .bar1{ animation:eq 1s ease-in-out infinite; }
+  .music-toggle.playing .bar2{ animation:eq 1s ease-in-out infinite .2s; }
+  .music-toggle.playing .bar3{ animation:eq 1s ease-in-out infinite .4s; }
+  @keyframes eq{ 0%,100%{ transform:scaleY(.4); } 50%{ transform:scaleY(1); } }
+
+  /* ---------- Stage ---------- */
+  .stage{
+    position:relative; z-index:10;
+    min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:8vh 5vw;
+  }
+
+  .headline{
+    text-align:center;
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-weight:500;
+    letter-spacing:.06em;
+    color:var(--ink);
+    opacity:.85;
+    font-size:clamp(15px,2.4vw,19px);
+    margin:0 0 clamp(24px,5vh,48px);
+    transition:opacity .6s ease;
+  }
+  .stage.is-opening .headline,
+  .stage.is-closing .headline{ opacity:0; height:0; margin:0; }
+
+  /* ---------- Envelope ---------- */
+  .envelope-wrap{
+    position:relative;
+    width:clamp(230px,62vw,360px);
+    aspect-ratio:3/2;
+    perspective:1400px;
+    transform:translateY(-160vh);
+    animation:dropIn 1.4s cubic-bezier(.22,1.4,.36,1) forwards;
+    animation-delay:.3s;
+  }
+  @keyframes dropIn{
+    0%{ transform:translateY(-160vh) rotate(-4deg); }
+    62%{ transform:translateY(6%) rotate(1.5deg); }
+    78%{ transform:translateY(-2.5%) rotate(-.8deg); }
+    90%{ transform:translateY(1%) rotate(.4deg); }
+    100%{ transform:translateY(0) rotate(0deg); }
+  }
+
+  .envelope-wrap.is-flying-out{
+    animation:flyOut 1.2s cubic-bezier(.55,-.15,.75,.25) forwards;
+  }
+  @keyframes flyOut{
+    0%{ transform:translate(0,0) rotate(0) scale(1); opacity:1; }
+    18%{ transform:translate(3vw,-3vh) rotate(4deg) scale(1.03); opacity:1; }
+    85%{ opacity:1; }
+    100%{ transform:translate(-85vw,85vh) rotate(-32deg) scale(.6); opacity:0; }
+  }
+
+  .envelope-wrap.is-flying-in{
+    animation:flyIn 1.6s cubic-bezier(.22,1,.36,1) forwards;
+  }
+  @keyframes flyIn{
+    0%{ transform:translate(85vw,-85vh) rotate(24deg) scale(.7); opacity:0; }
+    12%{ opacity:1; }
+    62%{ transform:translate(-2%,4%) rotate(-2deg) scale(1.01); }
+    78%{ transform:translate(1%,-2%) rotate(.8deg) scale(1); }
+    90%{ transform:translate(-.4%,.8%) rotate(-.3deg); }
+    100%{ transform:translate(0,0) rotate(0) scale(1); opacity:1; }
+  }
+
+  .envelope{
+    position:absolute; inset:0;
+    filter:drop-shadow(0 18px 30px var(--shadow));
+    transition:filter .6s ease;
+  }
+  .stage.is-opening .envelope,
+  .stage.is-open .envelope{ filter:drop-shadow(0 6px 14px var(--shadow)); }
+
+  .pocket{
+    position:absolute; inset:0;
+    background:linear-gradient(160deg,#e9d09a 0%,#cfa663 100%);
+    border-radius:6px;
+    box-shadow:inset 0 12px 24px rgba(90,55,20,.32), inset 0 0 0 1px rgba(207,154,76,.35);
+    z-index:1;
+  }
+
+  /* front lower panel: hides the letter while it is still "inside" the envelope */
+  .pocket-front{
+    position:absolute; left:0; right:0; bottom:0; top:52%;
+    background:linear-gradient(180deg,var(--paper) 0%,var(--paper-deep) 100%);
+    border-radius:0 0 6px 6px;
+    box-shadow:inset 0 0 0 1px rgba(207,154,76,.35), 0 -1px 4px rgba(90,60,40,.1);
+    z-index:3;
+    overflow:hidden;
+  }
+  .pocket-front::before, .pocket-front::after{
+    content:""; position:absolute; top:0; width:52%; height:100%;
+    background:linear-gradient(135deg,rgba(255,255,255,.55),rgba(255,255,255,0) 65%);
+    opacity:.55;
+  }
+  .pocket-front::before{ left:0; clip-path:polygon(0 0,100% 0,0 100%); }
+  .pocket-front::after{ right:0; clip-path:polygon(100% 0,100% 100%,0 0); transform:scaleX(-1); }
+
+  .flap{
+    position:absolute; top:0; left:0; right:0;
+    height:62%;
+    clip-path:polygon(0 0,100% 0,50% 100%);
+    background:linear-gradient(160deg,var(--gold-light) 0%,var(--paper) 55%,var(--paper-deep) 100%);
+    transform-origin:50% 0%;
+    transform-style:preserve-3d;
+    transition:transform 1s cubic-bezier(.6,.05,.2,1), z-index 0s .35s;
+    z-index:4;
+    box-shadow:inset 0 -6px 10px -6px rgba(90,60,40,.25);
+  }
+  .stage.is-opening .flap,
+  .stage.is-open .flap{
+    transform:rotateX(-172deg);
+    z-index:0;
+  }
+
+  .seal{
+    position:absolute; left:50%; top:34%;
+    width:52px; height:52px; margin:-26px 0 0 -26px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#e8bd6c,var(--gold) 60%,#a97a2f 100%);
+    box-shadow:0 3px 8px rgba(90,55,20,.4), inset 0 -2px 4px rgba(0,0,0,.2);
+    display:flex; align-items:center; justify-content:center;
+    z-index:5;
+    transition:transform .5s ease, opacity .5s ease;
+  }
+  .seal svg{ width:26px; height:26px; color:#fff8ea; opacity:.95; }
+  .stage.is-opening .seal,
+  .stage.is-open .seal{
+    transform:scale(.4) rotate(35deg);
+    opacity:0;
+  }
+
+  /* ---------- Letter ----------
+     The slot is a clipping window whose bottom edge sits on the pocket's
+     opening line, so the letter is only visible once it has been pulled
+     above that line — like drawing a real letter out of an envelope. */
+  .letter-slot{
+    position:absolute; left:0; right:0; bottom:48%;
+    height:300vh;
+    overflow:hidden;
+    z-index:2;
+    pointer-events:none;
+  }
+  .letter{
+    position:absolute; left:8%; bottom:0;
+    width:84%;
+    aspect-ratio:1.6;
+    background:
+      repeating-linear-gradient(180deg,transparent 0,transparent 34px,rgba(207,154,76,.12) 35px),
+      linear-gradient(170deg,#fffaf0,var(--paper) 70%);
+    border-radius:3px;
+    box-shadow:0 10px 24px -10px rgba(74,42,58,.35), 0 1px 4px rgba(74,42,58,.12);
+    overflow:hidden;
+    transform:translateY(102%);
+    transition:transform 1.4s cubic-bezier(.45,.05,.3,1);
+  }
+  /* crease of the folded letter */
+  .letter::after{
+    content:""; position:absolute; left:0; right:0; top:50%; height:10px; margin-top:-5px;
+    background:linear-gradient(180deg,rgba(150,110,70,0),rgba(150,110,70,.14) 50%,rgba(255,255,255,.6) 55%,rgba(150,110,70,0));
+    transition:opacity .6s ease;
+    pointer-events:none;
+  }
+  .stage.is-rising .letter{ transform:translateY(-78%); }
+
+  .letter.is-floating{
+    position:fixed; bottom:auto;
+    aspect-ratio:auto;
+    transform:none;
+    z-index:15;
+    box-shadow:0 26px 54px -14px rgba(74,42,58,.4), 0 2px 8px rgba(74,42,58,.15);
+    transition:left 1s cubic-bezier(.22,1,.36,1), top 1s cubic-bezier(.22,1,.36,1),
+               width 1s cubic-bezier(.22,1,.36,1), height 1s cubic-bezier(.22,1,.36,1),
+               box-shadow 1s ease;
+  }
+  .letter.is-unfolding::after{ opacity:0; }
+  .letter.is-revealed{ overflow-x:hidden; overflow-y:auto; }
+
+  .letter-inner{
+    width:var(--final-w,340px);
+    padding:clamp(22px,5vw,40px) clamp(20px,5vw,36px) clamp(26px,5vw,40px);
+  }
+
+  /* While folded / rising, the sheet is narrow — centre the text on its own
+     width instead of on the wider reading width used once it floats. */
+  .letter:not(.is-floating) .letter-inner{ width:100%; }
+
+  /* Malay, English and Tamil run longer than the Chinese original: tighter
+     leading and a slightly smaller size so the whole letter still fits on one
+     screen. Tamil keeps a little more leading for its ascenders/descenders. */
+  html[lang="ms"] .letter-body p,
+  html[lang="en"] .letter-body p{ font-size:clamp(12.8px,2.4vw,14.8px); line-height:1.72; }
+  html[lang="ta"] .letter-body p{ font-size:clamp(12.5px,2.3vw,14.5px); line-height:1.9; }
+  html[lang="ta"] .letter-title{ font-size:clamp(18px,3.4vw,23px); }
+  html[lang="ms"] .letter-sign,
+  html[lang="en"] .letter-sign,
+  html[lang="ta"] .letter-sign{ font-size:clamp(16px,3vw,20px); }
+
+  .letter-title{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-weight:700;
+    font-size:clamp(20px,4vw,26px);
+    text-align:center;
+    color:var(--ink);
+    letter-spacing:.04em;
+    margin:0 0 clamp(16px,3vh,24px);
+    opacity:0;
+    transform:translateY(6px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+  .letter-title::before,.letter-title::after{
+    content:"";
+    display:block;
+    width:28px; height:1px;
+    background:var(--gold);
+    margin:10px auto;
+    opacity:.7;
+  }
+
+  .letter-body p{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-weight:400;
+    font-size:clamp(13.5px,2.6vw,15.5px);
+    line-height:2;
+    color:var(--ink);
+    margin:0 0 1.1em;
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+
+  .letter-sign{
+    font-family:"Ma Shan Zheng","Noto Serif Tamil",cursive;
+    font-size:clamp(18px,3.4vw,22px);
+    color:var(--gold);
+    text-align:right;
+    margin-top:1.4em;
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+
+  .letter.is-revealed .letter-title{ transition-delay:.1s; opacity:1; transform:none; }
+  .letter.is-revealed .letter-body p:nth-of-type(1){ transition-delay:.5s; opacity:1; transform:none; }
+  .letter.is-revealed .letter-body p:nth-of-type(2){ transition-delay:.8s; opacity:1; transform:none; }
+  .letter.is-revealed .letter-body p:nth-of-type(3){ transition-delay:1.1s; opacity:1; transform:none; }
+  .letter.is-revealed .letter-body p:nth-of-type(4){ transition-delay:1.4s; opacity:1; transform:none; }
+  .letter.is-revealed .letter-sign{ transition-delay:1.7s; opacity:1; transform:none; }
+
+  /* ---------- CTA ---------- */
+  .cta{
+    margin-top:clamp(28px,7vh,52px);
+    background:none; border:none; cursor:pointer;
+    font-family:"Ma Shan Zheng","Noto Serif SC","Noto Serif Tamil",cursive;
+    font-size:clamp(17px,2.8vw,21px);
+    color:var(--ink);
+    letter-spacing:.08em;
+    padding:10px 22px;
+    position:relative;
+    animation:breathe 2.6s ease-in-out infinite;
+    transition:opacity .5s ease, transform .5s ease;
+    opacity:1;
+    animation-delay:1.9s;
+  }
+  .cta::after{
+    content:"";
+    position:absolute; left:50%; bottom:2px; width:0%; height:1px;
+    background:var(--gold);
+    transform:translateX(-50%);
+    transition:width .4s ease;
+  }
+  .cta:hover::after{ width:70%; }
+  .cta:focus-visible{ outline:2px solid var(--gold); outline-offset:4px; border-radius:4px; }
+  @keyframes breathe{
+    0%,100%{ opacity:.65; transform:scale(1); }
+    50%{ opacity:1; transform:scale(1.045); }
+  }
+  .stage.is-opening .cta,
+  .stage.is-closing .cta,
+  .stage.is-away .cta{
+    opacity:0; transform:scale(.9);
+    pointer-events:none;
+    animation:none;
+  }
+
+  /* ---------- Close ---------- */
+  .close-btn{
+    position:fixed; left:50%; top:0;
+    transform:translate(-50%,6px);
+    z-index:16;
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:13px; letter-spacing:.12em;
+    color:var(--ink-soft);
+    background:rgba(255,250,240,.88);
+    border:1px solid rgba(207,154,76,.45);
+    border-radius:999px;
+    padding:6px 16px;
+    backdrop-filter:blur(6px);
+    cursor:pointer;
+    opacity:0; pointer-events:none;
+    transition:opacity .5s ease, transform .5s ease, color .25s ease, border-color .25s ease;
+  }
+  .close-btn.is-visible{ opacity:1; pointer-events:auto; transform:translate(-50%,0); }
+  .close-btn:hover{ color:var(--ink); border-color:var(--gold); }
+  .close-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+
+  .letter.is-hiding-text .letter-title,
+  .letter.is-hiding-text .letter-body p,
+  .letter.is-hiding-text .letter-sign{ transition-duration:.45s; }
+
+  /* ---------- Language switcher ---------- */
+  .lang-switch{
+    position:fixed;
+    left:max(14px,env(safe-area-inset-left));
+    top:max(14px,env(safe-area-inset-top));
+    z-index:30;
+    display:flex; align-items:center; gap:4px;
+    padding:4px;
+    background:rgba(255,250,240,.72);
+    border:1px solid rgba(207,154,76,.42);
+    border-radius:999px;
+    backdrop-filter:blur(8px);
+    box-shadow:0 4px 14px rgba(90,55,45,.12);
+  }
+  .lang-btn{
+    border:none; background:none; cursor:pointer;
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:12.5px; line-height:1; letter-spacing:.03em;
+    color:var(--ink-soft);
+    padding:7px 12px; border-radius:999px;
+    transition:background .25s ease, color .25s ease, box-shadow .25s ease;
+  }
+  .lang-btn:hover{ color:var(--ink); background:rgba(207,154,76,.16); }
+  .lang-btn.is-active{
+    color:#fff8ea; font-weight:500;
+    background:linear-gradient(160deg,var(--gold-light),var(--gold));
+    box-shadow:0 2px 6px rgba(90,55,20,.28);
+  }
+  .lang-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  /* ---------- Reduced motion ---------- */
+  @media (prefers-reduced-motion:reduce){
+    .sunbeam,.particle,.plane,.cap-drift,.cta{ animation:none !important; }
+    .envelope-wrap{ animation:none !important; transform:none !important; }
+    .flap,.letter,.seal,.letter-title,.letter-body p,.letter-sign{ transition-duration:.3s !important; }
+  }
+
+  @media (max-width:480px){
+    .music-toggle{ width:42px; height:42px; }
+    .lang-switch{ gap:3px; padding:3px; }
+    .lang-btn{ font-size:11.5px; padding:6px 8px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="lang-switch" role="group" aria-label="语言 / Bahasa / Language / மொழி">
+    <button class="lang-btn is-active" type="button" data-lang="zh" aria-pressed="true" title="中文">中文</button>
+    <button class="lang-btn" type="button" data-lang="ms" aria-pressed="false" title="Bahasa Melayu">Melayu</button>
+    <button class="lang-btn" type="button" data-lang="en" aria-pressed="false" title="English">English</button>
+    <button class="lang-btn" type="button" data-lang="ta" aria-pressed="false" title="தமிழ்">தமிழ்</button>
+  </div>
+
+  <div class="sunbeam" aria-hidden="true"></div>
+  <div class="particles" id="particles" aria-hidden="true"></div>
+
+  <div class="campus" aria-hidden="true">
+    <svg viewBox="0 0 1200 220" preserveAspectRatio="none">
+      <path d="M0,220 L0,150 L40,150 L40,120 L70,120 L70,150 L120,150 L120,90 L150,90 L150,70 L170,70 L170,50 L190,70 L190,90 L220,90 L220,150 L280,150 L280,110 L300,110 L300,80 L330,60 L360,80 L360,110 L380,110 L380,150 L430,150 L430,130 L460,130 L460,150 L520,150 L520,100 L560,100 L560,40 L580,20 L600,40 L600,100 L640,100 L640,150 L700,150 L700,120 L730,120 L730,150 L790,150 L790,95 L820,95 L820,70 L840,50 L860,70 L860,95 L900,95 L900,150 L960,150 L960,130 L990,130 L990,150 L1050,150 L1050,110 L1090,110 L1090,150 L1150,150 L1150,170 L1200,170 L1200,220 Z"/>
+    </svg>
+  </div>
+
+  <div class="plane p1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--paper)"><path d="M2 12l19-9-6 9 6 9-19-9zm2.6.4l10.9 4.3-3.8-4.3 3.8-4.3-10.9 4.3z" opacity=".9"/><path d="M2 12l19-9-9 9z" opacity=".55"/></svg></div>
+  <div class="plane p2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--paper)"><path d="M2 12l19-9-6 9 6 9-19-9zm2.6.4l10.9 4.3-3.8-4.3 3.8-4.3-10.9 4.3z" opacity=".9"/><path d="M2 12l19-9-9 9z" opacity=".55"/></svg></div>
+  <div class="plane p3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--paper)"><path d="M2 12l19-9-6 9 6 9-19-9zm2.6.4l10.9 4.3-3.8-4.3 3.8-4.3-10.9 4.3z" opacity=".9"/><path d="M2 12l19-9-9 9z" opacity=".55"/></svg></div>
+
+  <div class="cap-drift c1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="var(--silhouette)" stroke-width="1.4"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/><path d="M22 8v6"/></svg></div>
+  <div class="cap-drift c2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="var(--silhouette)" stroke-width="1.4"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/><path d="M22 8v6"/></svg></div>
+
+  <button class="music-toggle" id="musicToggle" aria-label="播放背景音乐" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" id="musicIcon">
+      <path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="7" cy="18" r="2.3" fill="currentColor"/>
+      <circle cx="17" cy="16" r="2.3" fill="currentColor"/>
+    </svg>
+  </button>
+  <audio id="bgm" loop preload="none">
+    <!-- 请在此处替换为你自己的背景音乐文件路径，例如： <source src="music.mp3" type="audio/mpeg"> -->
+  </audio>
+
+  <main class="stage" id="stage">
+    <p class="headline" data-i18n="headline">献给陪伴我们走过三年青春的人</p>
+
+    <div class="envelope-wrap">
+      <div class="envelope">
+        <div class="pocket"></div>
+        <div class="letter-slot">
+          <div class="letter" id="letter">
+            <div class="letter-inner" id="letterInner">
+              <h1 class="letter-title" data-i18n="letterTitle">致最敬爱的老师</h1>
+              <div class="letter-body">
+                <p data-i18n="p1">亲爱的老师：</p>
+                <p data-i18n="p2">还记得刚入学时，是您站在讲台前，用耐心和温柔，为我们照亮了一条条未知的路。那些写满板书的黑板、办公室里彻夜未熄的灯，还有您在我们迷茫时说的那句"别急，慢慢来"，都成了我们心底最柔软的记忆。</p>
+                <p data-i18n="p3">如今我们即将奔赴远方，行囊里装着您教会我们的知识，更装着您给予我们的勇气与善良。毕业不是告别，而是带着您的期许，继续向前。</p>
+                <p data-i18n="p4">谢谢您，老师。谢谢您把最好的年华，都留给了我们的成长。</p>
+              </div>
+              <p class="letter-sign" data-i18n="sign">—— 您永远的学生们</p>
+            </div>
+          </div>
+        </div>
+        <div class="pocket-front"></div>
+        <div class="flap">
+          <div class="seal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 3 3 7.5l9 4.5 9-4.5L12 3z"/>
+              <path d="M7 9.8V15c0 1.4 2.2 2.6 5 2.6s5-1.2 5-2.6V9.8"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="cta" id="openBtn" type="button" data-i18n="cta">点击开启老师的感谢信</button>
+  </main>
+
+  <button class="close-btn" id="closeBtn" type="button" data-i18n="close">关闭该信封</button>
+
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  var btn = document.getElementById('openBtn');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var letter = document.getElementById('letter');
+  var inner = document.getElementById('letterInner');
+  var slot = document.querySelector('.letter-slot');
+  var envWrap = document.querySelector('.envelope-wrap');
+  var closeBtn = document.getElementById('closeBtn');
+  var opened = false;
+  var closing = false;
+  function wait(ms){ return reduced ? Math.min(ms, 60) : ms; }
+
+  function finalRect(){
+    var vw = window.innerWidth, vh = window.innerHeight;
+    // Latin / Tamil translations are longer than the Chinese original, so they
+    // get a wider sheet and a taller ceiling; Chinese keeps the original sizes.
+    var wide = currentLang !== 'zh';
+    var w = Math.min(wide ? 470 : 380, Math.round(vw * 0.88));
+    inner.style.setProperty('--final-w', w + 'px');
+    var h = Math.min(inner.scrollHeight, Math.round(vh * (wide ? 0.88 : 0.82)));
+    return { left:(vw - w) / 2, top:(vh - h) / 2, width:w, height:h };
+  }
+
+  function place(r){
+    letter.style.left = r.left + 'px';
+    letter.style.top = r.top + 'px';
+    letter.style.width = r.width + 'px';
+    letter.style.height = r.height + 'px';
+  }
+
+  function placeClose(r){
+    closeBtn.style.top = Math.min(r.top + r.height + 14, window.innerHeight - 48) + 'px';
+  }
+
+  // Where the folded letter sits when it has just been pulled out of the
+  // slot (mirrors .letter + .is-rising geometry).
+  function pulledOutRect(){
+    var s = slot.getBoundingClientRect();
+    var w = s.width * 0.84;
+    var h = w / 1.6;
+    return { left:s.left + s.width * 0.08, top:s.bottom - h - h * 0.78, width:w, height:h };
+  }
+
+  // Once fully out of the envelope, lift the letter into a fixed layer
+  // at its current on-screen rect, then unfold it to reading size.
+  function liftAndUnfold(){
+    var r = letter.getBoundingClientRect();
+    letter.style.transition = 'none';
+    document.body.appendChild(letter);
+    letter.classList.add('is-floating');
+    place(r);
+    letter.getBoundingClientRect();
+    letter.style.transition = '';
+    letter.classList.add('is-unfolding');
+    var target = finalRect();
+    place(target);
+    placeClose(target);
+    window.setTimeout(function(){ letter.classList.add('is-revealed'); }, wait(900));
+    window.setTimeout(function(){ closeBtn.classList.add('is-visible'); }, wait(3200));
+  }
+
+  btn.addEventListener('click', function(){
+    if(opened) return;
+    opened = true;
+    stage.classList.add('is-opening');
+    window.setTimeout(function(){ stage.classList.add('is-rising'); }, wait(550));
+    window.setTimeout(liftAndUnfold, wait(2000));
+  });
+
+  // Reverse of opening: text out -> fold back -> slide into pocket -> flap closes.
+  closeBtn.addEventListener('click', function(){
+    if(closing || !letter.classList.contains('is-floating')) return;
+    closing = true;
+    closeBtn.classList.remove('is-visible');
+    letter.classList.add('is-hiding-text');
+    letter.classList.remove('is-revealed');
+    letter.scrollTop = 0;
+
+    window.setTimeout(function(){
+      letter.classList.remove('is-unfolding');
+      place(pulledOutRect());
+    }, wait(500));
+
+    window.setTimeout(function(){
+      letter.style.transition = 'none';
+      letter.classList.remove('is-floating', 'is-hiding-text');
+      letter.removeAttribute('style');
+      letter.style.transition = 'none';
+      slot.appendChild(letter);
+      letter.getBoundingClientRect();
+      letter.style.transition = '';
+      stage.classList.remove('is-rising');
+    }, wait(1550));
+
+    window.setTimeout(function(){
+      stage.classList.add('is-closing');
+      stage.classList.remove('is-opening');
+    }, wait(3000));
+
+    // Sealed again: fly away to the bottom-left, then return from the top-right 5s later.
+    window.setTimeout(function(){
+      envWrap.classList.remove('is-flying-in');
+      envWrap.classList.add('is-flying-out');
+    }, wait(4100));
+
+    window.setTimeout(function(){
+      // Envelope is off-screen now, so restoring the headline's height can't cause a visible jump.
+      stage.classList.add('is-away');
+      stage.classList.remove('is-closing');
+    }, wait(5300));
+
+    window.setTimeout(function(){
+      envWrap.classList.remove('is-flying-out');
+      envWrap.classList.add('is-flying-in');
+    }, wait(5300 + 5000));
+
+    window.setTimeout(function(){
+      stage.classList.remove('is-away');
+      closing = false;
+      opened = false;
+      btn.focus({ preventScroll:true });
+    }, wait(5300 + 5000 + 1500));
+  });
+
+  window.addEventListener('resize', function(){
+    if(closing || !letter.classList.contains('is-floating')) return;
+    var target = finalRect();
+    letter.style.transition = 'none';
+    place(target);
+    placeClose(target);
+    letter.getBoundingClientRect();
+    letter.style.transition = '';
+  });
+
+  // Floating particles
+  var field = document.getElementById('particles');
+  var count = window.innerWidth < 600 ? 10 : 18;
+  if(!reduced){
+    for(var i=0;i<count;i++){
+      var p = document.createElement('span');
+      p.className = 'particle';
+      var left = Math.random()*100;
+      var size = 3 + Math.random()*5;
+      var duration = 10 + Math.random()*14;
+      var delay = Math.random()*-duration;
+      var drift = (Math.random()*60-30) + 'px';
+      p.style.left = left + '%';
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.setProperty('--drift', drift);
+      p.style.animationDuration = duration + 's';
+      p.style.animationDelay = delay + 's';
+      field.appendChild(p);
+    }
+  }
+
+  // Background music toggle
+  var musicBtn = document.getElementById('musicToggle');
+  var bgm = document.getElementById('bgm');
+  var playing = false;
+
+  function hasMusic(){ return !!(bgm.querySelector('source') || bgm.currentSrc); }
+
+  musicBtn.addEventListener('click', function(){
+    var dict = I18N[currentLang];
+    if(!hasMusic()){
+      musicBtn.setAttribute('aria-label', dict.musicNone);
+      musicBtn.setAttribute('title', dict.musicNone);
+      return;
+    }
+    if(playing){
+      bgm.pause();
+      playing = false;
+    } else {
+      bgm.play().catch(function(){});
+      playing = true;
+    }
+    musicBtn.classList.toggle('playing', playing);
+    musicBtn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    musicBtn.setAttribute('aria-label', playing ? dict.musicPause : dict.musicPlay);
+    musicBtn.setAttribute('title', playing ? dict.musicPause : dict.musicPlay);
+  });
+
+  /* ---------- Language switching: 中文 / Bahasa Melayu / English / தமிழ் ----------
+     Every translatable node carries data-i18n="<key>"; applyLang() swaps the text,
+     the <html lang> attribute, the page title and the music button's labels, then
+     re-fits the letter if it happens to be open (translations have different lengths). */
+  var I18N = {
+    zh: {
+      lang:'zh-CN',
+      title:'致最敬爱的老师 · 毕业感谢信',
+      headline:'献给陪伴我们走过三年青春的人',
+      letterTitle:'致最敬爱的老师',
+      p1:'亲爱的老师：',
+      p2:'还记得刚入学时，是您站在讲台前，用耐心和温柔，为我们照亮了一条条未知的路。那些写满板书的黑板、办公室里彻夜未熄的灯，还有您在我们迷茫时说的那句"别急，慢慢来"，都成了我们心底最柔软的记忆。',
+      p3:'如今我们即将奔赴远方，行囊里装着您教会我们的知识，更装着您给予我们的勇气与善良。毕业不是告别，而是带着您的期许，继续向前。',
+      p4:'谢谢您，老师。谢谢您把最好的年华，都留给了我们的成长。',
+      sign:'—— 您永远的学生们',
+      cta:'点击开启老师的感谢信',
+      close:'关闭该信封',
+      musicPlay:'播放背景音乐', musicPause:'暂停背景音乐', musicNone:'未配置背景音乐'
+    },
+    ms: {
+      lang:'ms',
+      title:'Untuk Guru Tercinta · Surat Penghargaan Graduasi',
+      headline:'Untuk insan yang menemani tiga tahun zaman muda kami',
+      letterTitle:'Untuk Guru Tercinta',
+      p1:'Guru yang kami sayangi,',
+      p2:'Masih kami ingat hari-hari pertama kami melangkah ke sekolah — cikgu berdiri di depan kelas, dengan sabar dan lembut, menerangi satu demi satu jalan yang belum kami kenal. Papan hitam yang penuh tulisan, lampu bilik guru yang tidak pernah padam, dan kata-kata cikgu ketika kami hilang arah — “Jangan risau, perlahan-lahan” — semuanya menjadi kenangan paling lembut di hati kami.',
+      p3:'Kini kami akan berangkat ke tempat yang jauh. Dalam beg kami tersimpan ilmu yang cikgu ajarkan, dan lebih daripada itu, keberanian serta kebaikan yang cikgu berikan. Graduasi bukan perpisahan, tetapi meneruskan perjalanan sambil membawa harapan cikgu.',
+      p4:'Terima kasih, cikgu. Terima kasih kerana memberikan tahun-tahun terbaik cikgu untuk kami membesar.',
+      sign:'—— Pelajar cikgu, selamanya',
+      cta:'Buka surat penghargaan untuk cikgu',
+      close:'Tutup sampul surat ini',
+      musicPlay:'Mainkan muzik latar', musicPause:'Hentikan muzik latar', musicNone:'Muzik latar belum disediakan'
+    },
+    en: {
+      lang:'en',
+      title:'To Our Dearest Teacher · A Graduation Thank-You Letter',
+      headline:'For the one who walked with us through three years of our youth',
+      letterTitle:'To Our Dearest Teacher',
+      p1:'Dear Teacher,',
+      p2:'We still remember our first days at school — you stood at the front of the classroom and, with patience and gentleness, lit up one unknown path after another for us. The blackboard covered in chalk, the office light that never went out at night, and the words you said whenever we lost our way — “Don’t rush, take it slowly” — all became the softest memories in our hearts.',
+      p3:'Now we are about to set off for distant places. In our bags we carry the knowledge you taught us, and more than that, the courage and kindness you gave us. Graduation is not a farewell — it is walking on, carrying your hopes with us.',
+      p4:'Thank you, Teacher. Thank you for giving the best years of your life to our growing up.',
+      sign:'—— Your students, always',
+      cta:'Open our teacher’s thank-you letter',
+      close:'Close the envelope',
+      musicPlay:'Play background music', musicPause:'Pause background music', musicNone:'No background music configured'
+    },
+    ta: {
+      lang:'ta',
+      title:'அன்புக்குரிய ஆசிரியருக்கு · பட்டமளிப்பு நன்றிக் கடிதம்',
+      headline:'எங்கள் இளமையின் மூன்று ஆண்டுகளை எங்களுடன் கடந்தவருக்கு',
+      letterTitle:'அன்புக்குரிய ஆசிரியருக்கு',
+      p1:'அன்புள்ள ஆசிரியரே,',
+      p2:'பள்ளியில் முதல் நாள், வகுப்பறை முன் நின்று, பொறுமையுடனும் அன்புடனும் எங்களுக்குத் தெரியாத பாதைகளை ஒளிரச் செய்தீர்கள். எழுத்து நிறைந்த கரும்பலகை, இரவெல்லாம் அணையாத அலுவலக விளக்கு, நாங்கள் திகைத்தபோது நீங்கள் சொன்ன “அவசரப்படாதீர்கள், மெதுவாக” — இவை எங்கள் இதயத்தின் மென்மையான நினைவுகள்.',
+      p3:'இப்போது நாங்கள் தொலைதூரம் நோக்கிப் புறப்படுகிறோம். எங்கள் பயணப்பையில் நீங்கள் தந்த அறிவும், அதைவிட உங்கள் துணிவும் நல்ல மனமும் நிறைந்துள்ளன. பட்டமளிப்பு பிரிவல்ல — உங்கள் எதிர்பார்ப்புடன் தொடர்ந்து முன்னேறுவதே.',
+      p4:'நன்றி, ஆசிரியரே. எங்கள் வளர்ச்சிக்காக உங்கள் சிறந்த காலத்தை அளித்ததற்கு நன்றி.',
+      sign:'—— என்றும் உங்கள் மாணவர்கள்',
+      cta:'ஆசிரியருக்கான நன்றிக் கடிதத்தைத் திறக்க',
+      close:'இந்த உறையை மூடு',
+      musicPlay:'பின்னணி இசையை இயக்கு', musicPause:'பின்னணி இசையை நிறுத்து', musicNone:'பின்னணி இசை அமைக்கப்படவில்லை'
+    }
+  };
+
+  var currentLang = 'zh';
+  var langBtns = Array.prototype.slice.call(document.querySelectorAll('.lang-btn'));
+
+  function applyLang(code){
+    var key = I18N[code] ? code : 'zh';
+    var dict = I18N[key];
+    currentLang = key;
+
+    document.documentElement.lang = dict.lang;
+    document.title = dict.title;
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function(el){
+      var k = el.getAttribute('data-i18n');
+      if(dict[k] != null) el.textContent = dict[k];
+    });
+
+    langBtns.forEach(function(b){
+      var on = b.getAttribute('data-lang') === key;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+
+    var label = !hasMusic() ? dict.musicNone : (playing ? dict.musicPause : dict.musicPlay);
+    musicBtn.setAttribute('aria-label', label);
+    musicBtn.setAttribute('title', label);
+
+    try{ localStorage.setItem('letterLang', key); }catch(e){}
+
+    // Translation lengths differ, so re-measure an open letter instead of clipping it.
+    if(letter.classList.contains('is-floating') && !closing){
+      var target = finalRect();
+      letter.style.transition = 'left .6s cubic-bezier(.22,1,.36,1), top .6s cubic-bezier(.22,1,.36,1),' +
+                                ' width .6s cubic-bezier(.22,1,.36,1), height .6s cubic-bezier(.22,1,.36,1)';
+      place(target);
+      placeClose(target);
+      window.setTimeout(function(){ letter.style.transition = ''; }, 650);
+    }
+  }
+
+  langBtns.forEach(function(b){
+    b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang')); });
+  });
+
+  var savedLang = null;
+  try{ savedLang = localStorage.getItem('letterLang'); }catch(e){}
+  applyLang(savedLang || 'zh');
+})();
+</script>
+</body>
+</html>
