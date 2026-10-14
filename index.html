@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>致最敬爱的老师 · 毕业感谢信</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+Tamil:wght@400;600;700&family=Noto+Sans+Tamil:wght@300;400;500&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-1:#fff3e4;
+    --sky-2:#fbd2a8;
+    --sky-3:#e99a9e;
+    --sky-4:#a06382;
+    --sky-5:#5c3f5c;
+    --gold:#cf9a4c;
+    --gold-light:#f1d9a6;
+    --paper:#fbf4e6;
+    --paper-deep:#f2e6cd;
+    --ink:#5b4636;
+    --ink-soft:#8a7461;
+    --silhouette:#42324a;
+    --shadow:rgba(74,42,58,.28);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    min-height:100svh;
+    overflow-x:hidden;
+    font-family:"Noto Sans SC","Noto Sans Tamil","PingFang SC",sans-serif;
+    background:linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 32%,var(--sky-3) 62%,var(--sky-4) 84%,var(--sky-5) 100%);
+    color:var(--ink);
+    position:relative;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- Ambient light sweep ---------- */
+  .sunbeam{
+    position:fixed;
+    inset:-20% -20% auto -20%;
+    height:140%;
+    background:conic-gradient(from 200deg at 50% 0%,
+      rgba(255,244,214,0) 0deg,
+      rgba(255,244,214,.55) 8deg,
+      rgba(255,244,214,0) 22deg,
+      rgba(255,244,214,0) 40deg,
+      rgba(255,244,214,.35) 50deg,
+      rgba(255,244,214,0) 65deg,
+      rgba(255,244,214,0) 100deg,
+      rgba(255,244,214,.4) 112deg,
+      rgba(255,244,214,0) 130deg,
+      rgba(255,244,214,0) 360deg);
+    mix-blend-mode:soft-light;
+    animation:rotateBeam 60s linear infinite;
+    pointer-events:none;
+    z-index:1;
+  }
+  @keyframes rotateBeam{ to{ transform:rotate(360deg); } }
+
+  /* ---------- Floating light particles ---------- */
+  .particles{
+    position:fixed; inset:0; overflow:hidden; z-index:2; pointer-events:none;
+  }
+  .particle{
+    position:absolute;
+    bottom:-5%;
+    width:6px;height:6px;
+    border-radius:50%;
+    background:radial-gradient(circle,#fff6df 0%,rgba(255,246,223,0) 70%);
+    opacity:.8;
+    animation:floatUp linear infinite;
+  }
+  @keyframes floatUp{
+    0%{ transform:translate(0,0) scale(1); opacity:0; }
+    10%{ opacity:.85; }
+    50%{ transform:translate(var(--drift,20px),-55vh) scale(1.1); }
+    90%{ opacity:.4; }
+    100%{ transform:translate(calc(var(--drift,20px) * 2),-110vh) scale(.6); opacity:0; }
+  }
+
+  /* ---------- Campus silhouette ---------- */
+  .campus{
+    position:fixed; left:0; right:0; bottom:0; width:100%;
+    height:min(28vh,220px);
+    z-index:3; pointer-events:none;
+  }
+  .campus svg{ width:100%; height:100%; display:block; }
+  .campus path{ fill:var(--silhouette); opacity:.85; }
+
+  /* ---------- Paper airplanes ---------- */
+  .plane{
+    position:fixed; top:-40px; z-index:4; pointer-events:none;
+    opacity:.75; filter:drop-shadow(0 4px 6px rgba(0,0,0,.08));
+    animation:planeFly linear infinite;
+  }
+  .plane svg{ width:34px; height:34px; display:block; }
+  .plane.p1{ left:8%;  top:12%; animation-duration:22s; animation-delay:1s; }
+  .plane.p2{ left:70%; top:60%; animation-duration:28s; animation-delay:6s; transform:scale(.8) rotate(20deg); }
+  .plane.p3{ left:-10%; top:35%; animation-duration:26s; animation-delay:12s; transform:scale(.65); }
+  @keyframes planeFly{
+    0%{ transform:translate(0,0) rotate(-8deg); opacity:0; }
+    8%{ opacity:.75; }
+    50%{ transform:translate(48vw,-6vh) rotate(4deg); }
+    92%{ opacity:.55; }
+    100%{ transform:translate(112vw,-14vh) rotate(-4deg); opacity:0; }
+  }
+
+  /* ---------- Drifting graduation caps ---------- */
+  .cap-drift{
+    position:fixed; z-index:4; pointer-events:none; opacity:.5;
+    animation:capFloat ease-in-out infinite;
+  }
+  .cap-drift svg{ width:26px; height:26px; }
+  .cap-drift.c1{ left:18%; top:70%; animation-duration:9s; }
+  .cap-drift.c2{ left:82%; top:22%; animation-duration:11s; animation-delay:2s; }
+  @keyframes capFloat{
+    0%,100%{ transform:translateY(0) rotate(-6deg); }
+    50%{ transform:translateY(-22px) rotate(6deg); }
+  }
+
+  /* ---------- Music toggle ---------- */
+  .music-toggle{
+    position:fixed; right:max(18px,env(safe-area-inset-right));
+    bottom:max(18px,env(safe-area-inset-bottom));
+    z-index:20;
+    width:48px; height:48px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.55);
+    background:rgba(255,255,255,.35);
+    backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    box-shadow:0 4px 14px rgba(90,55,45,.18);
+    transition:transform .25s ease, background .25s ease;
+  }
+  .music-toggle:hover{ transform:scale(1.08); }
+  .music-toggle:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  .music-toggle svg{ width:20px; height:20px; color:var(--ink); }
+  .music-toggle .bar{ transform-origin:bottom; transition:transform .3s ease; }
+  .music-toggle.playing .bar1{ animation:eq 1s ease-in-out infinite; }
+  .music-toggle.playing .bar2{ animation:eq 1s ease-in-out infinite .2s; }
+  .music-toggle.playing .bar3{ animation:eq 1s ease-in-out infinite .4s; }
+  @keyframes eq{ 0%,100%{ transform:scaleY(.4); } 50%{ transform:scaleY(1); } }
+
+  /* ---------- Stage ---------- */
+  .stage{
+    position:relative; z-index:10;
+    min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:8vh 5vw;
+  }
+
+  .headline{
+    text-align:center;
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-weight:500;
+    letter-spacing:.06em;
+    color:var(--ink);
+    opacity:.85;
+    font-size:clamp(15px,2.4vw,19px);
+    margin:0 0 clamp(24px,5vh,48px);
+    transition:opacity .6s ease;
+  }
+  .stage.is-opening .headline,
+  .stage.is-closing .headline{ opacity:0; height:0; margin:0; }
+
+  /* ---------- Envelope ---------- */
+  .envelope-wrap{
+    position:relative;
+    width:clamp(230px,62vw,360px);
+    aspect-ratio:3/2;
+    perspective:1400px;
+    transform:translateY(-160vh);
+    animation:dropIn 1.4s cubic-bezier(.22,1.4,.36,1) forwards;
+    animation-delay:.3s;
+  }
+  @keyframes dropIn{
+    0%{ transform:translateY(-160vh) rotate(-4deg); }
+    62%{ transform:translateY(6%) rotate(1.5deg); }
+    78%{ transform:translateY(-2.5%) rotate(-.8deg); }
+    90%{ transform:translateY(1%) rotate(.4deg); }
+    100%{ transform:translateY(0) rotate(0deg); }
+  }
+
+  .envelope-wrap.is-flying-out{
+    animation:flyOut 1.2s cubic-bezier(.55,-.15,.75,.25) forwards;
+  }
+  @keyframes flyOut{
+    0%{ transform:translate(0,0) rotate(0) scale(1); opacity:1; }
+    18%{ transform:translate(3vw,-3vh) rotate(4deg) scale(1.03); opacity:1; }
+    85%{ opacity:1; }
+    100%{ transform:translate(-85vw,85vh) rotate(-32deg) scale(.6); opacity:0; }
+  }
+
+  .envelope-wrap.is-flying-in{
+    animation:flyIn 1.6s cubic-bezier(.22,1,.36,1) forwards;
+  }
+  @keyframes flyIn{
+    0%{ transform:translate(85vw,-85vh) rotate(24deg) scale(.7); opacity:0; }
+    12%{ opacity:1; }
+    62%{ transform:translate(-2%,4%) rotate(-2deg) scale(1.01); }
+    78%{ transform:translate(1%,-2%) rotate(.8deg) scale(1); }
+    90%{ transform:translate(-.4%,.8%) rotate(-.3deg); }
+    100%{ transform:translate(0,0) rotate(0) scale(1); opacity:1; }
+  }
+
+  .envelope{
+    position:absolute; inset:0;
+    filter:drop-shadow(0 18px 30px var(--shadow));
+    transition:filter .6s ease;
+  }
+  .stage.is-opening .envelope,
+  .stage.is-open .envelope{ filter:drop-shadow(0 6px 14px var(--shadow)); }
+
+  .pocket{
+    position:absolute; inset:0;
+    background:linear-gradient(160deg,#e9d09a 0%,#cfa663 100%);
+    border-radius:6px;
+    box-shadow:inset 0 12px 24px rgba(90,55,20,.32), inset 0 0 0 1px rgba(207,154,76,.35);
+    z-index:1;
+  }
+
+  /* front lower panel: hides the letter while it is still "inside" the envelope */
+  .pocket-front{
+    position:absolute; left:0; right:0; bottom:0; top:52%;
+    background:linear-gradient(180deg,var(--paper) 0%,var(--paper-deep) 100%);
+    border-radius:0 0 6px 6px;
+    box-shadow:inset 0 0 0 1px rgba(207,154,76,.35), 0 -1px 4px rgba(90,60,40,.1);
+    z-index:3;
+    overflow:hidden;
+  }
+  .pocket-front::before, .pocket-front::after{
+    content:""; position:absolute; top:0; width:52%; height:100%;
+    background:linear-gradient(135deg,rgba(255,255,255,.55),rgba(255,255,255,0) 65%);
+    opacity:.55;
+  }
+  .pocket-front::before{ left:0; clip-path:polygon(0 0,100% 0,0 100%); }
+  .pocket-front::after{ right:0; clip-path:polygon(100% 0,100% 100%,0 0); transform:scaleX(-1); }
+
+  .flap{
+    position:absolute; top:0; left:0; right:0;
+    height:62%;
+    clip-path:polygon(0 0,100% 0,50% 100%);
+    background:linear-gradient(160deg,var(--gold-light) 0%,var(--paper) 55%,var(--paper-deep) 100%);
+    transform-origin:50% 0%;
+    transform-style:preserve-3d;
+    transition:transform 1s cubic-bezier(.6,.05,.2,1), z-index 0s .35s;
+    z-index:4;
+    box-shadow:inset 0 -6px 10px -6px rgba(90,60,40,.25);
+  }
+  .stage.is-opening .flap,
+  .stage.is-open .flap{
+    transform:rotateX(-172deg);
+    z-index:0;
+  }
+
+  .seal{
+    position:absolute; left:50%; top:34%;
+    width:52px; height:52px; margin:-26px 0 0 -26px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#e8bd6c,var(--gold) 60%,#a97a2f 100%);
+    box-shadow:0 3px 8px rgba(90,55,20,.4), inset 0 -2px 4px rgba(0,0,0,.2);
+    display:flex; align-items:center; justify-content:center;
+    z-index:5;
+    transition:transform .5s ease, opacity .5s ease;
+  }
+  .seal svg{ width:26px; height:26px; color:#fff8ea; opacity:.95; }
+  .stage.is-opening .seal,
+  .stage.is-open .seal{
+    transform:scale(.4) rotate(35deg);
+    opacity:0;
+  }
+
+  /* ---------- Letter ----------
+     The slot is a clipping window whose bottom edge sits on the pocket's
+     opening line, so the letter is only visible once it has been pulled
+     above that line — like drawing a real letter out of an envelope. */
+  .letter-slot{
+    position:absolute; left:0; right:0; bottom:48%;
+    height:300vh;
+    overflow:hidden;
+    z-index:2;
+    pointer-events:none;
+  }
+  .letter{
+    position:absolute; left:8%; bottom:0;
+    width:84%;
+    aspect-ratio:1.6;
+    background:
+      repeating-linear-gradient(180deg,transparent 0,transparent 34px,rgba(207,154,76,.12) 35px),
+      linear-gradient(170deg,#fffaf0,var(--paper) 70%);
+    border-radius:3px;
+    box-shadow:0 10px 24px -10px rgba(74,42,58,.35), 0 1px 4px rgba(74,42,58,.12);
+    overflow:hidden;
+    transform:translateY(102%);
+    transition:transform 1.4s cubic-bezier(.45,.05,.3,1);
+  }
+  /* crease of the folded letter */
+  .letter::after{
+    content:""; position:absolute; left:0; right:0; top:50%; height:10px; margin-top:-5px;
+    background:linear-gradient(180deg,rgba(150,110,70,0),rgba(150,110,70,.14) 50%,rgba(255,255,255,.6) 55%,rgba(150,110,70,0));
+    transition:opacity .6s ease;
+    pointer-events:none;
+  }
+  .stage.is-rising .letter{ transform:translateY(-78%); }
+
+  .letter.is-floating{
+    position:fixed; bottom:auto;
+    aspect-ratio:auto;
+    transform:none;
+    z-index:15;
+    box-shadow:0 26px 54px -14px rgba(74,42,58,.4), 0 2px 8px rgba(74,42,58,.15);
+    transition:left 1s cubic-bezier(.22,1,.36,1), top 1s cubic-bezier(.22,1,.36,1),
+               width 1s cubic-bezier(.22,1,.36,1), height 1s cubic-bezier(.22,1,.36,1),
+               box-shadow 1s ease;
+  }
+  .letter.is-unfolding::after{ opacity:0; }
+  .letter.is-revealed{ overflow-x:hidden; overflow-y:auto; }
+
+  .letter-inner{
+    width:var(--final-w,340px);
+    padding:clamp(22px,5vw,40px) clamp(20px,5vw,36px) clamp(26px,5vw,40px);
+  }
+
+  /* While folded / rising, the sheet is narrow — centre the text on its own
+     width instead of on the wider reading width used once it floats. */
+  .letter:not(.is-floating) .letter-inner{ width:100%; }
+
+  /* Malay, English and Tamil run longer than the Chinese original: tighter
+     leading and a slightly smaller size so the whole letter still fits on one
+     screen. Tamil keeps a little more leading for its ascenders/descenders. */
+  html[lang="ms"] .letter-body p,
+  html[lang="en"] .letter-body p{ font-size:clamp(12.8px,2.4vw,14.8px); line-height:1.72; }
+  html[lang="ta"] .letter-body p{ font-size:clamp(12.5px,2.3vw,14.5px); line-height:1.9; }
+  html[lang="ta"] .letter-title{ font-size:clamp(18px,3.4vw,23px); }
+  html[lang="ms"] .letter-sign,
+  html[lang="en"] .letter-sign,
+  html[lang="ta"] .letter-sign{ font-size:clamp(16px,3vw,20px); }
+
+  .letter-title{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-weight:700;
+    font-size:clamp(20px,4vw,26px);
+    text-align:center;
+    color:var(--ink);
+    letter-spacing:.04em;
+    margin:0 0 clamp(16px,3vh,24px);
+    opacity:0;
+    transform:translateY(6px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+  .letter-title::before,.letter-title::after{
+    content:"";
+    display:block;
+    width:28px; height:1px;
+    background:var(--gold);
+    margin:10px auto;
+    opacity:.7;
+  }
+
+  /* Subtitle line from the letter's own opening sentence */
+  .letter-sub{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-size:clamp(12.5px,2.3vw,14.5px);
+    text-align:center;
+    color:var(--gold);
+    letter-spacing:.06em;
+    margin:-4px 0 clamp(16px,3vh,24px);
+    opacity:0;
+    transform:translateY(6px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+
+  /* The letter is long, so the whole body fades in as one block and the sheet
+     scrolls; per-paragraph staggering would never finish. */
+  .letter-body{
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+  .letter-body p{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-weight:400;
+    font-size:clamp(13.5px,2.6vw,15.5px);
+    line-height:2;
+    color:var(--ink);
+    margin:0 0 1.1em;
+  }
+
+  .letter-sign{
+    font-family:"Ma Shan Zheng","Noto Serif Tamil",cursive;
+    font-size:clamp(18px,3.4vw,22px);
+    color:var(--gold);
+    text-align:right;
+    margin-top:1.4em;
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+
+  .letter.is-revealed .letter-title{ transition-delay:.1s; opacity:1; transform:none; }
+  .letter.is-revealed .letter-sub{ transition-delay:.25s; opacity:1; transform:none; }
+  .letter.is-revealed .letter-body{ transition-delay:.4s; opacity:1; transform:none; }
+  .letter.is-revealed .letter-sign{ transition-delay:.55s; opacity:1; transform:none; }
+
+  /* ---------- CTA ---------- */
+  .cta{
+    margin-top:clamp(28px,7vh,52px);
+    background:none; border:none; cursor:pointer;
+    font-family:"Ma Shan Zheng","Noto Serif SC","Noto Serif Tamil",cursive;
+    font-size:clamp(17px,2.8vw,21px);
+    color:var(--ink);
+    letter-spacing:.08em;
+    padding:10px 22px;
+    position:relative;
+    animation:breathe 2.6s ease-in-out infinite;
+    transition:opacity .5s ease, transform .5s ease;
+    opacity:1;
+    animation-delay:1.9s;
+  }
+  .cta::after{
+    content:"";
+    position:absolute; left:50%; bottom:2px; width:0%; height:1px;
+    background:var(--gold);
+    transform:translateX(-50%);
+    transition:width .4s ease;
+  }
+  .cta:hover::after{ width:70%; }
+  .cta:focus-visible{ outline:2px solid var(--gold); outline-offset:4px; border-radius:4px; }
+  @keyframes breathe{
+    0%,100%{ opacity:.65; transform:scale(1); }
+    50%{ opacity:1; transform:scale(1.045); }
+  }
+  .stage.is-opening .cta,
+  .stage.is-closing .cta,
+  .stage.is-away .cta{
+    opacity:0; transform:scale(.9);
+    pointer-events:none;
+    animation:none;
+  }
+
+  /* ---------- Close ---------- */
+  .close-btn{
+    position:fixed; left:50%; top:0;
+    transform:translate(-50%,6px);
+    z-index:16;
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:13px; letter-spacing:.12em;
+    color:var(--ink-soft);
+    background:rgba(255,250,240,.88);
+    border:1px solid rgba(207,154,76,.45);
+    border-radius:999px;
+    padding:6px 16px;
+    backdrop-filter:blur(6px);
+    cursor:pointer;
+    opacity:0; pointer-events:none;
+    transition:opacity .5s ease, transform .5s ease, color .25s ease, border-color .25s ease;
+  }
+  .close-btn.is-visible{ opacity:1; pointer-events:auto; transform:translate(-50%,0); }
+  .close-btn:hover{ color:var(--ink); border-color:var(--gold); }
+  .close-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+
+  /* ---------- Scroll hint (the letter is long) ---------- */
+  .scroll-hint{
+    position:fixed;
+    z-index:17;
+    text-align:center;
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:12px; line-height:1.5; letter-spacing:.1em; white-space:nowrap;
+    color:var(--ink-soft);
+    padding:46px 12px 12px;
+    background:linear-gradient(180deg,
+      rgba(251,244,230,0) 0%,
+      rgba(251,244,230,.5) 20%,
+      rgba(251,244,230,.95) 44%,
+      var(--paper) 100%);
+    border-radius:0 0 6px 6px;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity .6s ease;
+  }
+  .scroll-hint.is-visible{ opacity:1; }
+  .scroll-hint .arrow{ display:block; margin-top:2px; font-size:13px; animation:nudge 1.6s ease-in-out infinite; }
+  @keyframes nudge{ 0%,100%{ transform:translateY(0); opacity:.55; } 50%{ transform:translateY(4px); opacity:1; } }
+
+  .letter.is-hiding-text .letter-title,
+  .letter.is-hiding-text .letter-sub,
+  .letter.is-hiding-text .letter-body,
+  .letter.is-hiding-text .letter-body p,
+  .letter.is-hiding-text .letter-sign{ transition-duration:.45s; }
+
+  /* ---------- Language switcher ---------- */
+  .lang-switch{
+    position:fixed;
+    left:max(14px,env(safe-area-inset-left));
+    top:max(14px,env(safe-area-inset-top));
+    z-index:30;
+    display:flex; align-items:center; gap:4px;
+    padding:4px;
+    background:rgba(255,250,240,.72);
+    border:1px solid rgba(207,154,76,.42);
+    border-radius:999px;
+    backdrop-filter:blur(8px);
+    box-shadow:0 4px 14px rgba(90,55,45,.12);
+  }
+  .lang-btn{
+    border:none; background:none; cursor:pointer;
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:12.5px; line-height:1; letter-spacing:.03em;
+    color:var(--ink-soft);
+    padding:7px 12px; border-radius:999px;
+    transition:background .25s ease, color .25s ease, box-shadow .25s ease;
+  }
+  .lang-btn:hover{ color:var(--ink); background:rgba(207,154,76,.16); }
+  .lang-btn.is-active{
+    color:#fff8ea; font-weight:500;
+    background:linear-gradient(160deg,var(--gold-light),var(--gold));
+    box-shadow:0 2px 6px rgba(90,55,20,.28);
+  }
+  .lang-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  /* ---------- Read-aloud button + progress ---------- */
+  .read-btn{
+    position:fixed;
+    right:calc(max(18px,env(safe-area-inset-right)) + 58px);
+    bottom:max(18px,env(safe-area-inset-bottom));
+    z-index:20;
+    display:flex; align-items:center; gap:7px;
+    height:48px; padding:0 16px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.55);
+    background:rgba(255,255,255,.35);
+    backdrop-filter:blur(6px);
+    box-shadow:0 4px 14px rgba(90,55,45,.18);
+    color:var(--ink);
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:14px; letter-spacing:.04em;
+    cursor:pointer; overflow:hidden;
+    transition:transform .25s ease, background .25s ease, opacity .25s ease;
+  }
+  .read-btn:hover{ transform:scale(1.04); }
+  .read-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  .read-btn svg{ width:18px; height:18px; flex:none; }
+  .read-btn .ri-pause{ display:none; }
+  .read-btn.is-playing .ri-play{ display:none; }
+  .read-btn.is-playing .ri-pause{ display:block; }
+  .read-btn.is-unavailable{ opacity:.45; cursor:not-allowed; }
+  .read-progress{
+    position:absolute; left:0; bottom:0; height:3px; width:0%;
+    background:linear-gradient(90deg,var(--gold-light),var(--gold));
+    transition:width .25s linear;
+  }
+
+  /* ---------- AI voice notice ---------- */
+  .modal-backdrop{
+    position:fixed; inset:0; z-index:60;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+    background:rgba(60,36,48,.42);
+    backdrop-filter:blur(3px);
+    opacity:0; pointer-events:none; visibility:hidden;
+    transition:opacity .3s ease, visibility 0s linear .3s;
+  }
+  .modal-backdrop.is-open{
+    opacity:1; pointer-events:auto; visibility:visible;
+    transition:opacity .3s ease, visibility 0s;
+  }
+  .modal{
+    width:min(460px,100%);
+    max-height:86vh; overflow-y:auto;
+    background:linear-gradient(170deg,#fffaf0,var(--paper) 70%);
+    border:1px solid rgba(207,154,76,.45);
+    border-radius:12px;
+    padding:clamp(22px,4vw,32px);
+    box-shadow:0 24px 60px -18px rgba(74,42,58,.5);
+    transform:translateY(10px) scale(.98);
+    transition:transform .3s cubic-bezier(.22,1,.36,1);
+  }
+  .modal-backdrop.is-open .modal{ transform:none; }
+  .modal-title{
+    display:flex; align-items:center; gap:9px;
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-size:19px; font-weight:600; letter-spacing:.06em;
+    color:var(--ink); margin:0 0 14px;
+  }
+  .modal-title::before{
+    content:""; flex:none; width:3px; height:18px;
+    background:var(--gold); border-radius:2px;
+  }
+  .modal-body{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-size:14px; line-height:1.95; color:var(--ink);
+    margin:0 0 18px;
+  }
+  .modal-check{
+    display:flex; align-items:center; gap:8px; cursor:pointer;
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:12.5px; color:var(--ink-soft);
+    margin-bottom:20px;
+  }
+  .modal-check input{ width:15px; height:15px; accent-color:var(--gold); cursor:pointer; }
+  .modal-actions{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; }
+  .modal-btn{
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:13.5px; letter-spacing:.04em;
+    padding:9px 18px; border-radius:999px; cursor:pointer;
+    transition:transform .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .modal-btn.ghost{ background:none; border:1px solid rgba(207,154,76,.5); color:var(--ink-soft); }
+  .modal-btn.ghost:hover{ color:var(--ink); border-color:var(--gold); }
+  .modal-btn.primary{
+    border:1px solid transparent; color:#fff8ea;
+    background:linear-gradient(160deg,var(--gold-light),var(--gold));
+    box-shadow:0 3px 10px rgba(90,55,20,.28);
+  }
+  .modal-btn.primary:hover{ transform:translateY(-1px); }
+  .modal-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+
+  /* ---------- Reduced motion ---------- */
+  @media (prefers-reduced-motion:reduce){
+    .sunbeam,.particle,.plane,.cap-drift,.cta,.scroll-hint .arrow{ animation:none !important; }
+    .envelope-wrap{ animation:none !important; transform:none !important; }
+    .flap,.letter,.seal,.letter-title,.letter-body p,.letter-sign{ transition-duration:.3s !important; }
+  }
+
+  @media (max-width:480px){
+    .music-toggle{ width:42px; height:42px; }
+    .lang-switch{ gap:3px; padding:3px; }
+    .lang-btn{ font-size:11.5px; padding:6px 8px; }
+    .read-btn{ height:42px; padding:0 12px; font-size:12.5px; right:calc(max(18px,env(safe-area-inset-right)) + 50px); }
+    .read-btn svg{ width:16px; height:16px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="lang-switch" role="group" aria-label="语言 / Bahasa / Language / மொழி">
+    <button class="lang-btn is-active" type="button" data-lang="zh" aria-pressed="true" title="中文">中文</button>
+    <button class="lang-btn" type="button" data-lang="ms" aria-pressed="false" title="Bahasa Melayu">Melayu</button>
+    <button class="lang-btn" type="button" data-lang="en" aria-pressed="false" title="English">English</button>
+    <button class="lang-btn" type="button" data-lang="ta" aria-pressed="false" title="தமிழ்">தமிழ்</button>
+  </div>
+
+  <div class="sunbeam" aria-hidden="true"></div>
+  <div class="particles" id="particles" aria-hidden="true"></div>
+
+  <div class="campus" aria-hidden="true">
+    <svg viewBox="0 0 1200 220" preserveAspectRatio="none">
+      <path d="M0,220 L0,150 L40,150 L40,120 L70,120 L70,150 L120,150 L120,90 L150,90 L150,70 L170,70 L170,50 L190,70 L190,90 L220,90 L220,150 L280,150 L280,110 L300,110 L300,80 L330,60 L360,80 L360,110 L380,110 L380,150 L430,150 L430,130 L460,130 L460,150 L520,150 L520,100 L560,100 L560,40 L580,20 L600,40 L600,100 L640,100 L640,150 L700,150 L700,120 L730,120 L730,150 L790,150 L790,95 L820,95 L820,70 L840,50 L860,70 L860,95 L900,95 L900,150 L960,150 L960,130 L990,130 L990,150 L1050,150 L1050,110 L1090,110 L1090,150 L1150,150 L1150,170 L1200,170 L1200,220 Z"/>
+    </svg>
+  </div>
+
+  <div class="plane p1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--paper)"><path d="M2 12l19-9-6 9 6 9-19-9zm2.6.4l10.9 4.3-3.8-4.3 3.8-4.3-10.9 4.3z" opacity=".9"/><path d="M2 12l19-9-9 9z" opacity=".55"/></svg></div>
+  <div class="plane p2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--paper)"><path d="M2 12l19-9-6 9 6 9-19-9zm2.6.4l10.9 4.3-3.8-4.3 3.8-4.3-10.9 4.3z" opacity=".9"/><path d="M2 12l19-9-9 9z" opacity=".55"/></svg></div>
+  <div class="plane p3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--paper)"><path d="M2 12l19-9-6 9 6 9-19-9zm2.6.4l10.9 4.3-3.8-4.3 3.8-4.3-10.9 4.3z" opacity=".9"/><path d="M2 12l19-9-9 9z" opacity=".55"/></svg></div>
+
+  <div class="cap-drift c1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="var(--silhouette)" stroke-width="1.4"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/><path d="M22 8v6"/></svg></div>
+  <div class="cap-drift c2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="var(--silhouette)" stroke-width="1.4"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/><path d="M22 8v6"/></svg></div>
+
+  <button class="music-toggle" id="musicToggle" aria-label="播放背景音乐" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" id="musicIcon">
+      <path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="7" cy="18" r="2.3" fill="currentColor"/>
+      <circle cx="17" cy="16" r="2.3" fill="currentColor"/>
+    </svg>
+  </button>
+  <audio id="bgm" loop preload="none">
+    <!-- 请在此处替换为你自己的背景音乐文件路径，例如： <source src="music.mp3" type="audio/mpeg"> -->
+  </audio>
+
+  <main class="stage" id="stage">
+    <p class="headline" data-i18n="headline">献给陪伴我们走过三年青春的人</p>
+
+    <div class="envelope-wrap">
+      <div class="envelope">
+        <div class="pocket"></div>
+        <div class="letter-slot">
+          <div class="letter" id="letter">
+            <div class="letter-inner" id="letterInner">
+              <h1 class="letter-title" data-i18n="letterTitle">致所有教过的老师</h1>
+              <p class="letter-sub" data-i18n="letterSub">谢谢您们，陪我们走过 2024—2026</p>
+              <div class="letter-body" id="letterBody"><!-- 段落由 applyLang() 按语言注入 --></div>
+              <p class="letter-sign" data-i18n="sign">2024—2026年，您们的学生，敬上。</p>
+            </div>
+          </div>
+        </div>
+        <div class="pocket-front"></div>
+        <div class="flap">
+          <div class="seal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 3 3 7.5l9 4.5 9-4.5L12 3z"/>
+              <path d="M7 9.8V15c0 1.4 2.2 2.6 5 2.6s5-1.2 5-2.6V9.8"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="cta" id="openBtn" type="button" data-i18n="cta">点击开启老师的感谢信</button>
+  </main>
+
+  <button class="close-btn" id="closeBtn" type="button" data-i18n="close">关闭该信封</button>
+
+  <div class="scroll-hint" id="scrollHint" aria-hidden="true">
+    <span data-i18n="scrollHint">向下滑动，读完这封信</span>
+    <span class="arrow">↓</span>
+  </div>
+
+  <button class="read-btn" id="readBtn" type="button" aria-pressed="false" aria-label="朗读这封信" title="朗读这封信">
+    <svg class="ri-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6L19 12 8 5.2z"/></svg>
+    <svg class="ri-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.5 5h3.2v14H7.5zM13.3 5h3.2v14h-3.2z"/></svg>
+    <span class="read-label" data-i18n="readLabel">朗读这封信</span>
+    <span class="read-progress" id="readProgress" aria-hidden="true"></span>
+  </button>
+
+  <!-- Shown before the AI voice-over starts for the first time -->
+  <div class="modal-backdrop" id="noticeModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="noticeTitle" aria-describedby="noticeBody">
+      <h2 class="modal-title" id="noticeTitle" data-i18n="noticeTitle">温馨提醒</h2>
+      <p class="modal-body" id="noticeBody" data-i18n="noticeBody">本音频由人工智能（AI）生成，配音内容、发音或停顿可能与原文略有差异。如有任何出入，请以原始文字内容为准。感谢您的理解与配合。</p>
+      <label class="modal-check">
+        <input type="checkbox" id="noticeSkip">
+        <span data-i18n="noticeSkip">不再显示此提醒</span>
+      </label>
+      <div class="modal-actions">
+        <button class="modal-btn ghost" id="noticeCancel" type="button" data-i18n="noticeCancel">取消</button>
+        <button class="modal-btn primary" id="noticeOk" type="button" data-i18n="noticeOk">我明白了，开始播放</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  var btn = document.getElementById('openBtn');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var letter = document.getElementById('letter');
+  var inner = document.getElementById('letterInner');
+  var slot = document.querySelector('.letter-slot');
+  var envWrap = document.querySelector('.envelope-wrap');
+  var closeBtn = document.getElementById('closeBtn');
+  var bodyEl = document.getElementById('letterBody');
+  var scrollHint = document.getElementById('scrollHint');
+  var opened = false;
+  var closing = false;
+  function wait(ms){ return reduced ? Math.min(ms, 60) : ms; }
+
+  function finalRect(){
+    var vw = window.innerWidth, vh = window.innerHeight;
+    // Latin / Tamil translations are longer than the Chinese original, so they
+    // get a wider sheet and a taller ceiling; Chinese keeps the original sizes.
+    var wide = currentLang !== 'zh';
+    var w = Math.min(wide ? 470 : 380, Math.round(vw * 0.88));
+    inner.style.setProperty('--final-w', w + 'px');
+    var h = Math.min(inner.scrollHeight, Math.round(vh * (wide ? 0.88 : 0.82)));
+    return { left:(vw - w) / 2, top:(vh - h) / 2, width:w, height:h };
+  }
+
+  function place(r){
+    letter.style.left = r.left + 'px';
+    letter.style.top = r.top + 'px';
+    letter.style.width = r.width + 'px';
+    letter.style.height = r.height + 'px';
+  }
+
+  function placeClose(r){
+    closeBtn.style.top = Math.min(r.top + r.height + 14, window.innerHeight - 48) + 'px';
+  }
+
+  function placeHint(r){
+    scrollHint.style.left = r.left + 'px';
+    // keep the whole band inside the sheet, clear of the close button below it
+    scrollHint.style.top = (r.top + r.height - Math.max(96, scrollHint.offsetHeight || 0)) + 'px';
+    scrollHint.style.width = r.width + 'px';
+  }
+
+  // The letter is far taller than the sheet, so offer a scroll cue — but only
+  // while there is actually something left to read.
+  function syncHint(){
+    if(!letter.classList.contains('is-revealed') || closing) return;
+    if(letter.scrollHeight - letter.clientHeight > 60) scrollHint.classList.add('is-visible');
+  }
+
+  // Where the folded letter sits when it has just been pulled out of the
+  // slot (mirrors .letter + .is-rising geometry).
+  function pulledOutRect(){
+    var s = slot.getBoundingClientRect();
+    var w = s.width * 0.84;
+    var h = w / 1.6;
+    return { left:s.left + s.width * 0.08, top:s.bottom - h - h * 0.78, width:w, height:h };
+  }
+
+  // Once fully out of the envelope, lift the letter into a fixed layer
+  // at its current on-screen rect, then unfold it to reading size.
+  function liftAndUnfold(){
+    var r = letter.getBoundingClientRect();
+    letter.style.transition = 'none';
+    document.body.appendChild(letter);
+    letter.classList.add('is-floating');
+    place(r);
+    letter.getBoundingClientRect();
+    letter.style.transition = '';
+    letter.classList.add('is-unfolding');
+    var target = finalRect();
+    place(target);
+    placeClose(target);
+    placeHint(target);
+    window.setTimeout(function(){ letter.classList.add('is-revealed'); }, wait(900));
+    window.setTimeout(syncHint, wait(1600));
+    window.setTimeout(function(){ closeBtn.classList.add('is-visible'); }, wait(3200));
+  }
+
+  btn.addEventListener('click', function(){
+    if(opened) return;
+    opened = true;
+    stage.classList.add('is-opening');
+    window.setTimeout(function(){ stage.classList.add('is-rising'); }, wait(550));
+    window.setTimeout(liftAndUnfold, wait(2000));
+  });
+
+  // Reverse of opening: text out -> fold back -> slide into pocket -> flap closes.
+  closeBtn.addEventListener('click', function(){
+    if(closing || !letter.classList.contains('is-floating')) return;
+    closing = true;
+    closeBtn.classList.remove('is-visible');
+    scrollHint.classList.remove('is-visible');
+    letter.classList.add('is-hiding-text');
+    letter.classList.remove('is-revealed');
+    letter.scrollTop = 0;
+
+    window.setTimeout(function(){
+      letter.classList.remove('is-unfolding');
+      place(pulledOutRect());
+    }, wait(500));
+
+    window.setTimeout(function(){
+      letter.style.transition = 'none';
+      letter.classList.remove('is-floating', 'is-hiding-text');
+      letter.removeAttribute('style');
+      letter.style.transition = 'none';
+      slot.appendChild(letter);
+      letter.getBoundingClientRect();
+      letter.style.transition = '';
+      stage.classList.remove('is-rising');
+    }, wait(1550));
+
+    window.setTimeout(function(){
+      stage.classList.add('is-closing');
+      stage.classList.remove('is-opening');
+    }, wait(3000));
+
+    // Sealed again: fly away to the bottom-left, then return from the top-right 5s later.
+    window.setTimeout(function(){
+      envWrap.classList.remove('is-flying-in');
+      envWrap.classList.add('is-flying-out');
+    }, wait(4100));
+
+    window.setTimeout(function(){
+      // Envelope is off-screen now, so restoring the headline's height can't cause a visible jump.
+      stage.classList.add('is-away');
+      stage.classList.remove('is-closing');
+    }, wait(5300));
+
+    window.setTimeout(function(){
+      envWrap.classList.remove('is-flying-out');
+      envWrap.classList.add('is-flying-in');
+    }, wait(5300 + 5000));
+
+    window.setTimeout(function(){
+      stage.classList.remove('is-away');
+      closing = false;
+      opened = false;
+      btn.focus({ preventScroll:true });
+    }, wait(5300 + 5000 + 1500));
+  });
+
+  window.addEventListener('resize', function(){
+    if(closing || !letter.classList.contains('is-floating')) return;
+    var target = finalRect();
+    letter.style.transition = 'none';
+    place(target);
+    placeClose(target);
+    placeHint(target);
+    letter.getBoundingClientRect();
+    letter.style.transition = '';
+  });
+
+  // Dismiss the scroll cue as soon as the reader starts moving through the letter.
+  letter.addEventListener('scroll', function(){
+    if(!scrollHint.classList.contains('is-visible')) return;
+    if(letter.scrollTop > 60 || letter.scrollTop + letter.clientHeight >= letter.scrollHeight - 12){
+      scrollHint.classList.remove('is-visible');
+    }
+  });
+
+  // Floating particles
+  var field = document.getElementById('particles');
+  var count = window.innerWidth < 600 ? 10 : 18;
+  if(!reduced){
+    for(var i=0;i<count;i++){
+      var p = document.createElement('span');
+      p.className = 'particle';
+      var left = Math.random()*100;
+      var size = 3 + Math.random()*5;
+      var duration = 10 + Math.random()*14;
+      var delay = Math.random()*-duration;
+      var drift = (Math.random()*60-30) + 'px';
+      p.style.left = left + '%';
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.setProperty('--drift', drift);
+      p.style.animationDuration = duration + 's';
+      p.style.animationDelay = delay + 's';
+      field.appendChild(p);
+    }
+  }
+
+  // Background music toggle
+  var musicBtn = document.getElementById('musicToggle');
+  var bgm = document.getElementById('bgm');
+  var playing = false;
+
+  function hasMusic(){ return !!(bgm.querySelector('source') || bgm.currentSrc); }
+
+  musicBtn.addEventListener('click', function(){
+    var dict = I18N[currentLang];
+    if(!hasMusic()){
+      musicBtn.setAttribute('aria-label', dict.musicNone);
+      musicBtn.setAttribute('title', dict.musicNone);
+      return;
+    }
+    if(playing){
+      bgm.pause();
+      playing = false;
+    } else {
+      pauseReading();               // never let two tracks play at once
+      bgm.play().catch(function(){});
+      playing = true;
+    }
+    musicBtn.classList.toggle('playing', playing);
+    musicBtn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    musicBtn.setAttribute('aria-label', playing ? dict.musicPause : dict.musicPlay);
+    musicBtn.setAttribute('title', playing ? dict.musicPause : dict.musicPlay);
+  });
+
+  /* ---------- Language switching: 中文 / Bahasa Melayu / English / தமிழ் ----------
+     Every translatable node carries data-i18n="<key>"; applyLang() swaps the text,
+     the <html lang> attribute, the page title and the music button's labels, then
+     re-fits the letter if it happens to be open (translations have different lengths). */
+  var I18N = {
+    zh: {
+      lang:'zh-CN',
+      title:'致所有教过的老师 · 2024—2026 毕业感谢信',
+      headline:'献给所有教过我们的老师',
+      letterTitle:'致所有教过的老师',
+      letterSub:'谢谢您们，陪我们走过 2024—2026',
+      sign:'2024—2026年，您们的学生，敬上。',
+      cta:'点击开启老师们的感谢信',
+      close:'关闭该信封',
+      scrollHint:'向下滑动，读完这封信',
+      readLabel:'朗读这封信', readPause:'暂停朗读', readNoAudio:'此语言暂无语音',
+      noticeTitle:'温馨提醒',
+      noticeBody:'本音频由人工智能（AI）生成，配音内容、发音或停顿可能与原文略有差异。如有任何出入，请以原始文字内容为准。感谢您的理解与配合。',
+      noticeSkip:'不再显示此提醒',
+      noticeCancel:'取消', noticeOk:'我明白了，开始播放',
+      musicPlay:'播放背景音乐', musicPause:'暂停背景音乐', musicNone:'未配置背景音乐',
+      body:[
+        '亲爱的老师们：',
+        '展信安。',
+        '写下这封信的时候，心里有很多话想说，却又不知道该从哪里开始。回想起初一到初三的这段时光，真的值得我们细细品味。原来，三年的时间可以过得这么快，快到我们还没来得及好好珍惜，就已经走到了初中生活的尾声。',
+        '当我们觉得时间还很多的时候，一转眼才发现，留给我们的时间已经不多了。曾经以为每天都会重复的上课、下课、被老师提醒、和同学打闹的日子，如今再回头看，竟然成了我们最舍不得的回忆。',
+        '初一的时候，我们还是大家口中的“小天使”。那时的我们懂礼貌，会主动向老师问好，也懂得尊重老师，因此得到了不少老师的称赞。那时候的我们，或许还带着一点青涩，对接下来的中学生活充满期待，也还没有完全展现出真正的“实力”。',
+        '然而，随着时间慢慢过去，我们似乎也开始变了。',
+        '到了初二，我们逐渐从“小天使”变成了“魔丸”。上课时偶尔冒出来的奇怪发言、让老师哭笑不得的行为，还有各种层出不穷的小插曲，都让我们的班级越来越热闹。到了初三，更是彻底放飞自我，仿佛把初一时积攒下来的活力一次过释放出来。上课吃东西、大吵大闹，整个教室有时简直宛如孙悟空大闹天宫。回想起来，我们真的很佩服老师们，竟然能够陪着这样一群越来越调皮的学生走过三年。',
+        '三年里，人来人往，身边的面孔不断改变，但属于我们这个班的故事，从来没有停止过。有新同学加入，也有同学离开；有新老师走进我们的课堂，也有曾经教过我们的老师离开了学校。即使有些老师后来不再陪伴我们上课，有些面孔也渐渐只能留在回忆里，但您们曾经教过我们的事实，却不会因为时间过去而改变。无论您们陪伴我们的时间是长是短，都已经成为我们中学生活的一部分。',
+        '说起我们班的回忆，真的有太多太多值得拿出来讲的事情了。',
+        '还记得从初一到初二，有位女生总是重复着那句：“老师，我要吃鸡腿！老师，我要吃鸡腿！”现在想起来，这句话简直成了我们班独特的回忆之一。也许当时只是随口说说，但正是这些看似平凡、甚至有点莫名其妙的小事，才让我们的校园生活变得如此有趣。',
+        '还有我们的义卖会。为了这次活动，大家都做了不少准备。那段时间里，我们为了共同的目标一起忙碌，也一起完成了属于班级的任务。回想起来，义卖会不只是一场活动，更是我们一起努力、一起合作的证明。也许当时的我们只顾着把事情做好，却没有意识到，这些共同经历的时刻，将来都会成为值得回味的青春片段。',
+        '当然，我们班也不是每一天都这么有秩序。',
+        '初二的历史课上，曾经有人把历史老师气得当场生气。现在回头想想，我们确实有时候太爱闹了，常常顾着自己的开心，却忘了老师也需要维持课堂秩序，也有自己的情绪。可是，即使我们偶尔让历史老师头疼，老师还是一次又一次地包容我们、耐心地教导我们。谢谢您没有因为我们的调皮就轻易放弃我们，也谢谢您在生气之后，依然愿意继续教我们。',
+        '而到了初三，我们的调皮程度似乎又上升了一个层次。',
+        '下课铃声一响，我们班的教室就仿佛变成了另一个世界。大家常常不约而同地聚集到老师的桌子旁边，一个接一个地围在那里，有的坐下来，有的拿出食物，大家就这样聚在一起吃东西、聊天、说说笑笑。明明老师本人并不在那里，坐在老师桌子旁边的却是我们这些学生，甚至还直接在老师的桌子上吃东西。',
+        '远远看过去，那阵仗简直像是在召开什么重要的大会议。每个人都仿佛有自己的意见要发表，有自己的事情要讨论，大家围成一团，热闹得不得了。明明只是下课时间，明明只是聚在一起吃东西，却硬是弄出了全班代表齐聚一堂、商讨重大事情的气势。',
+        '而这也正是我们班被称为“联合国”的原因。到了初三，许多其他班的同学也会直接走进我们的课室，加入这场热闹的“会议”。原本只是属于我们班的空间，却因为这些来来往往的同学，变成了一个小小的“联合国”。有时候看着大家聚在老师桌边吃东西、聊天、打闹，真的很像一场永远开不完的大会议。',
+        '那张老师的桌子，原本是老师上课时使用的地方，到了我们班，却仿佛变成了“联合国会议厅”。而我们这些学生，就是每天准时出席会议的代表。也许当时的我们只是觉得这样聚在一起很有趣，但如今想起来，那些围在一起吃东西、聊天、打闹的时光，反而成了初三生活里特别鲜明的一部分。',
+        '从初二到初三，其他班甚至还给我们班取了一个特别的称号——“冷笑话开源地”。也不知道到底是谁贡献了那么多冷笑话，让我们获得了这样的名声，但既然这个称号都传出去了，看来我们班确实有自己的“幽默实力”。',
+        '还有那位声音特别响亮的女生，每次一开口，音量都夸张得仿佛快要震碎大家的耳膜。每当这样的场面发生时，整个班级总会多出一些令人哭笑不得的瞬间。现在回想起来，这些吵吵闹闹的画面，竟然也成了我们舍不得的一部分。',
+        '还有一个星期五，至今想起来，似乎都能感受到当时的疯狂。',
+        '因为隔天就是星期六，终于可以休息了，大家一到放学前就兴奋得不得了。教室里大喊大叫，有人甚至把东西丢来丢去，整个班级乱成一团。那一刻，大家仿佛已经迫不及待地想冲出校园，迎接属于自己的休息时间。现在想想，我们对放假的期待真的可以有这么夸张，而老师们在这样的日子里，还得努力维持课堂秩序，实在辛苦了。',
+        '说到这里，我们也不得不特别感谢数学老师。',
+        '数学老师，谢谢您一直以来对我们的耐心与包容。我们知道，我们并不是每次都让您省心。有时候，即使您已经被我们气到了，您还是会继续站在讲台上，认真地教课、解释题目，希望我们能够听懂、学会。',
+        '可是，有一件事，直到现在回想起来，我们还是会觉得有些难过。',
+        '那一次，一位女生和数学老师发生了冲突。老师说一句，她便顶一句，双方的话语一句接着一句，气氛也越来越紧张。或许当时的我们并没有真正意识到事情的严重性，也可能只是站在旁边看着，却没有想到，这场争执会让老师难过到这样的程度。',
+        '最后，老师真的忍不住哭了。',
+        '当老师生气地关上门离开时，原本吵吵闹闹的教室，突然变得寂静无声。前一刻还热热闹闹的我们，仿佛一下子失去了声音。那一瞬间，大家才慢慢意识到，事情已经不再只是平常的拌嘴，也不再只是一次普通的课堂冲突。',
+        '原来，那个平时一直站在讲台上教我们数学、耐心地为我们解释题目的老师，也会因为我们的言语和行为而感到委屈，也会有承受不住的时候。',
+        '当时，有两位男生和三位女生先意识到老师是真的难过了。后来，也有同学主动走到老师身边，对老师说了一声“对不起”。',
+        '也许那句道歉并不能让所有难过立刻消失，但至少，我们希望让老师知道，我们并不是不在乎您的感受。也许当时的我们还不够成熟，不懂得如何好好表达自己的情绪，也不懂得一句顶嘴、一句不经思考的话，可能会让别人难过。',
+        '数学老师，对不起。',
+        '对不起我们曾经有那么多不懂事的时候，对不起我们有时只顾着争辩，却忘了好好听您说话。您每天站在讲台上，努力把知识教给我们，希望我们能够学会、能够进步，可是有时候，我们却没有给您应有的尊重。',
+        '谢谢您，即使曾经被我们气到难过，还是一次又一次地耐心教导我们。谢谢您没有因为那一次的冲突，就放弃继续教我们。我们知道，您不只是希望我们学会数学题，也希望我们学会尊重别人、承担责任，以及在发生冲突时，懂得好好沟通。',
+        '或许当时的我们没有把这些话说出口，但现在，我们想认真地向您说一声谢谢，也想说一声对不起。',
+        '希望以后当您想起我们这个班时，除了那些让您头疼的日子，也能记得我们曾经意识到自己的不懂事，曾经试着向您道歉，也曾经在成长的过程中，慢慢学会理解您的辛苦与付出。',
+        '因为我们不希望，留在您记忆里的我们，只是一群曾经让您难过的学生。我们更希望，您能记得，您曾经教过一群还不够成熟、偶尔会犯错，却也正在慢慢长大的孩子。',
+        '而我们也会记得，曾经有一位数学老师，即使有时候被我们气得难过，依然认真地教过我们。',
+        '谢谢您，数学老师。',
+        '而我们的科学老师，同时也是我们的班导，更是陪伴我们走过这三年的重要人物。',
+        '每当我们闹得太过分，或者有什么事情让老师不得不认真起来时，老师总会说一句：“我们是一个班的。”',
+        '这句话听起来或许很简单，但现在想想，它包含了很多意思。因为我们是一个班的，所以我们不应该只顾着自己；因为我们是一个班的，所以我们应该学会互相理解、互相包容，也应该为自己的行为负责。一个班级不可能永远没有问题，也不可能每个人都一样，但只要我们愿意站在彼此的立场想一想，就能够一起变得更好。',
+        '谢谢老师在我们调皮的时候提醒我们，在我们需要被管教的时候认真对待我们，也谢谢您愿意让我们在课堂上玩游戏，让学习不只是课本、作业和考试。那些充满欢笑的课堂，让我们在忙碌的学习生活中，也拥有了一些轻松而快乐的时刻。',
+        '或许多年以后，我们不一定还记得每一道做过的题目，但我们很可能还会记得那些让全班笑起来的课堂，也会记得老师那句“我们是一个班的”。',
+        '也谢谢马来文老师一直以来认真地教导我们。谢谢您愿意花时间解释、指导我们，让我们在学习的过程中一点一点进步。您的认真与用心，我们都看在眼里。即使有时候我们未必能立刻做到最好，也谢谢您没有因此失去耐心，而是继续带着我们往前走。',
+        '还有华文老师，谢谢您陪我们度过了那么多课堂时光。我们总是有办法让您笑起来，有时候或许连我们自己都不知道，究竟是哪一句话、哪个反应，又把您逗笑了。现在想想，能够在课堂上和老师拥有这样的互动，也是很难得的事情。',
+        '谢谢您让华文课不只是学习文字与知识的地方，也留下了许多轻松、温暖的回忆。也许我们曾经在课堂上说过一些让您忍不住笑出来的话，也许我们曾经让原本普通的一堂课变得特别热闹，但这些看似平凡的小事，如今回想起来，却成了我们心里珍贵的片段。',
+        '我们也想特别对初一到初三教过我们的英文老师们说一声谢谢。',
+        '虽然在这三年里，我们不断更换英文老师，但每一位曾经教过我们的英文老师，都值得我们感谢。谢谢您们曾经教导过我们，也谢谢您们在这段时间里的付出。',
+        '尤其是到了初三，英文课的课堂秩序变得非常混乱。有时候，甚至有些同学不听老师所说的话，还会在课堂上当众大吵大闹。现在回想起来，我们知道自己有时候确实做得不够好，也可能曾经让英文老师感到无奈和头疼。',
+        '无论这三年里教我们的英文老师换了多少位，我们都想借这个机会，对每一位曾经教过我们的英文老师说一声谢谢。谢谢您们曾经走进我们的课堂，教导过我们，也谢谢您们为我们付出的时间与心血。虽然有些老师可能已经不再教我们，但您们曾经教过我们的事实，我们依然会记得。',
+        '当然，还有许多其他教过我们的老师。',
+        '也许您们曾经因为我们的表现而生气，也许曾经对我们感到无奈，也许有时候明明已经决定要认真管教我们，最后却还是心软了。',
+        '谢谢您们愿意给我们机会，愿意包容我们的不成熟，也愿意在我们做得不够好的时候，再一次提醒我们、纠正我们。我们知道，老师的心软并不代表我们可以随意任性，而是因为您们在严格要求我们的同时，也仍然关心着我们。',
+        '谢谢您们愿意在我们犯错之后，继续相信我们能够学会成长。',
+        '现在回想起来，我们三年的生活里，似乎总是少不了吵闹、笑声、玩笑和偶尔让老师头疼的时刻。我们有时候太兴奋，有时候不够懂事，有时候甚至忘了老师也是需要被理解和尊重的人。',
+        '可是，正是因为有您们的教导与包容，我们才能在一次又一次的经历中慢慢成长。',
+        '或许，我们未必能够记住每一堂课的内容，也未必能够把每一次考试都考好；或许，我们曾经让您们失望，也曾经让您们操心。但请相信，您们花在我们身上的时间与心血，并不是毫无意义的。',
+        '因为除了课本上的知识，您们也教会了我们如何与人相处，如何面对错误，如何为自己的行为负责，如何在一个集体里学会理解与包容。',
+        '那些当时觉得平常的提醒，那些曾经听了觉得烦的唠叨，甚至那些让我们害怕的训话，到了今天，都逐渐有了不一样的意义。',
+        '老师们，写到这里，我们才发现，三年真的很短。',
+        '短到我们还没来得及把每一天都记清楚，就已经走到了初中生活的尾声。曾经每天见面的老师，曾经习以为常的教室，曾经觉得永远不会结束的上课与下课，如今都开始有了不一样的意义。',
+        '想到这里，真的会有一点舍不得。',
+        '舍不得那些熟悉的声音，舍不得那些吵闹的日常，也舍不得那些曾经被我们视为理所当然的陪伴。',
+        '原来，青春并不只是那些轰轰烈烈的大事。更多时候，它是一群人一起度过的平凡日子，是老师在讲台上教书的身影，是课室里此起彼落的笑声，也是那些当时没有特别在意、如今却想好好珍惜的瞬间。',
+        '其实，我们知道，升上高一以后，我们还是有机会在学校里见到您们。',
+        '我们可能还是会在走廊上遇见您们，经过您们的课室时向您们问好，偶尔停下来和您们说几句话。也许下一次见面时，我们依然会笑着和您们打招呼，甚至还会像以前一样开玩笑。',
+        '所以，这并不是一封永别的信。',
+        '我们只是想趁着初中三年的故事还没有完全成为过去，认真地告诉您们：谢谢您们。',
+        '因为以后即使还能见面，也不代表我们还能像以前一样，每天理所当然地待在同一间课室里，听您们讲课，被您们提醒，在下课时吵吵闹闹，然后第二天又若无其事地回到教室。',
+        '以后，我们可能还会经过同一条走廊，看见同样的身影，却已经不再是当年坐在您们课堂里的那个班级了。',
+        '也许某一天，您们走进教室，看见新一届的学生坐在我们的座位上；也许某一天，您们又遇到一个调皮的班级，忍不住想起以前的我们。',
+        '不知道那时候，您们还会不会想起，曾经有一个班级，初一时像“小天使”，初二时慢慢变成“魔丸”，到了初三，更是吵得让人哭笑不得。',
+        '您们会不会想起那个总是喊着要吃鸡腿的女生？',
+        '会不会想起那个被其他班称为“冷笑话开源地”的班级？',
+        '会不会想起下课时挤满老师桌子旁边的学生，仿佛每天都在召开一场重要的“联合国会议”？',
+        '会不会想起那个因为终于可以休息，而在星期五放学前疯狂大喊大叫的班级？',
+        '又或者，会不会想起某一堂课，自己明明已经被我们气得不轻，却还是忍住情绪，继续站在讲台上，把该教的内容认真教完？',
+        '老师们，也许您们教过很多届学生，见过许多不同的班级。对您们来说，我们可能只是教学生涯中的其中一届；三年以后，还会有新的学生走进教室，新的故事继续发生。',
+        '可是，对我们来说，您们却是我们初中三年里，真实存在过、陪伴过我们的人。',
+        '您们看着我们从初一慢慢长大，经历初二的变化，再走到初三。您们见过我们最有礼貌的样子，也见过我们最调皮、最不让人省心的样子。您们可能曾经对我们失望，也曾经因为我们的进步而欣慰。',
+        '这些事情对您们来说，也许只是每天的工作；但对我们来说，却是再也无法原样重来的一段时光。',
+        '我们并不是想让您们觉得我们有多么优秀，也不是想让您们忘记我们曾经犯过的错。',
+        '我们只是希望，很多年以后，当您们偶尔想起2024年至2026年时，能够记得曾经教过这样一个班级。',
+        '一个不算完美，却有着许多故事的班级。',
+        '一个会让您们生气、让您们无奈，却也会在发现您们难过时感到心疼的班级。',
+        '一个可能没有让您们每一天都感到骄傲，却真心感谢过您们的班级。',
+        '我们也许不是每次都能达到您们的期待，也未必能让每一位老师都为我们的成绩感到骄傲，但我们希望，当您们以后回想起这段日子时，能够知道，您们在我们心里的位置，从来不会因为成绩、时间，或是我们以后走得多远而改变。',
+        '如果曾经有哪一次，我们的行为让您们难过了，请原谅当时还不够懂事的我们。如果曾经有哪一句提醒，我们当时没有认真听进去，也希望您们知道，我们正在慢慢长大，慢慢学着理解那些以前不明白的事情。',
+        '也许现在的我们，还无法完全体会老师这份工作的辛苦；也许我们还不懂得如何把感谢说得很好听。但至少，在初中三年即将结束的时候，我们想把这份感谢，好好地交到您们手中。',
+        '谢谢您们没有因为我们不够完美，就停止教导我们。',
+        '谢谢您们愿意在我们犯错的时候提醒我们，在我们不懂的时候耐心解释，在我们让您们头疼的时候，仍然给我们机会。',
+        '谢谢您们让我们明白，老师留给学生的，不只是课本上的知识，还有那些多年以后回想起来，依然能够让人心里一暖的瞬间。',
+        '老师们，往后我们还是会在学校里见到您们。',
+        '所以，下次再遇见的时候，我们可能不会说太多感人的话，可能还是会像平常一样笑着向您们问好。',
+        '可是，如果有一天，您们突然想起我们，想起我们曾经坐过的座位，想起那间吵吵闹闹的课室，想起那些曾经让您们又生气又无奈的日子，希望您们也能记得，在那些吵闹的日子背后，有一群学生，其实一直都很感谢您们。',
+        '我们会继续长大，继续走向自己未来的生活。',
+        '而您们也会继续教导新的学生，继续站在讲台上，继续成为许多学生成长路上的老师。',
+        '只是希望，在您们教过的那么多届学生之中，我们也能成为偶尔会让您们想起、想起时会忍不住笑一下的那一届。',
+        '谢谢您们，陪我们走过2024年至2026年。',
+        '这三年，我们一起经历过的事情，可能不是什么惊天动地的大事，却是只属于我们这个班、只属于您们与我们的回忆。',
+        '我们很庆幸，曾经成为您们的学生。',
+        '也很庆幸，在我们还不够懂事、还不够成熟的时候，遇见了愿意耐心教导我们的您们。',
+        '我们虽然不是您们最出色的学生，但您们却是我们最尊敬的老师。',
+        '往后余生，愿您们开心快乐，平安健康。',
+        '愿您们往后的每一天，都少一些疲惫，多一些欢笑；愿您们曾经为学生付出的耐心与关爱，也能在生活中得到温柔的回应。',
+        '也希望当您们有一天想起我们这个班时，想起的不是我们曾经有多吵、多调皮，而是想起那些一起度过的日子，想起我们曾经在您的课堂里成长过。',
+        '谢谢您们，老师。',
+        '这一次，我们想认真地说。',
+        '我们没有要和您们永别。我们只是想在离开初中的时候，好好地告诉您们：能够成为您们的学生，是我们青春里很值得珍惜的一件事。'
+      ]
+    },
+    ms: {
+      lang:'ms',
+      title:'Kepada Semua Guru yang Pernah Mengajar Kami · 2024–2026',
+      headline:'Untuk semua guru yang pernah mengajar kami',
+      letterTitle:'Kepada Semua Guru yang Pernah Mengajar Kami',
+      letterSub:'Terima Kasih kerana Menemani Kami Sepanjang Tahun 2024–2026',
+      sign:'Tahun 2024–2026, daripada anak-anak murid cikgu dengan penuh hormat dan penghargaan.',
+      cta:'Buka surat penghargaan untuk cikgu-cikgu',
+      close:'Tutup sampul surat ini',
+      scrollHint:'Tatal ke bawah untuk membaca sepenuhnya',
+      readLabel:'Bacakan surat ini', readPause:'Hentikan bacaan', readNoAudio:'Audio belum tersedia untuk bahasa ini',
+      noticeTitle:'Perhatian',
+      noticeBody:'Audio ini dijana oleh kecerdasan buatan (AI). Kandungan bacaan, sebutan atau jeda mungkin berbeza sedikit daripada teks asal. Jika terdapat sebarang perbezaan, sila rujuk teks asal. Terima kasih atas kefahaman anda.',
+      noticeSkip:'Jangan tunjukkan peringatan ini lagi',
+      noticeCancel:'Batal', noticeOk:'Faham, mainkan',
+      musicPlay:'Mainkan muzik latar', musicPause:'Hentikan muzik latar', musicNone:'Muzik latar belum disediakan',
+      body:[
+        'Guru-guru yang kami kasihi,',
+        'Salam sejahtera.',
+        'Ketika menulis surat ini, sebenarnya ada begitu banyak perkara yang ingin kami luahkan, tetapi kami sendiri tidak tahu dari mana hendak bermula. Apabila mengenang kembali perjalanan kami dari Tingkatan 1 hingga Tingkatan 3, terasa begitu banyak kenangan yang patut kami hayati satu demi satu. Rupa-rupanya, tiga tahun boleh berlalu dengan begitu pantas, sehinggakan kami belum sempat menghargainya dengan sepenuhnya, kami sudah pun sampai ke penghujung kehidupan sekolah menengah rendah.',
+        'Ketika kami menyangka bahawa masa masih panjang, tanpa disedari, kami akhirnya sedar bahawa masa yang masih tinggal untuk kami sebenarnya tidak banyak lagi. Hari-hari yang dahulu kami sangka akan berulang seperti biasa, seperti masuk kelas, keluar kelas, ditegur oleh guru dan bergurau senda dengan rakan-rakan, kini apabila dikenang kembali, rupa-rupanya menjadi kenangan yang paling sukar untuk kami lepaskan.',
+        'Semasa Tingkatan 1, kami masih dikenali oleh semua orang sebagai “malaikat kecil”. Ketika itu, kami tahu menjaga adab, akan menyapa guru terlebih dahulu dan juga tahu menghormati guru. Oleh sebab itu, kami menerima banyak pujian daripada guru-guru. Pada waktu itu, kami mungkin masih sedikit kekok dan mentah, penuh dengan harapan terhadap kehidupan sekolah menengah yang bakal kami lalui, dan masih belum menunjukkan “kemampuan sebenar” kami sepenuhnya.',
+        'Namun, seiring dengan berlalunya masa, kami seolah-olah mula berubah.',
+        'Apabila masuk Tingkatan 2, kami perlahan-lahan berubah daripada “malaikat kecil” menjadi “syaitan kecil”. Kata-kata pelik yang tiba-tiba terkeluar semasa kelas, tingkah laku kami yang membuatkan guru-guru tidak tahu sama ada hendak ketawa atau menangis, serta pelbagai kejadian kecil yang tidak pernah habis, semuanya menjadikan kelas kami semakin meriah. Apabila masuk Tingkatan 3, kami pula benar-benar semakin bebas melakukan apa sahaja, seolah-olah melepaskan sekaligus segala tenaga yang telah kami kumpulkan sejak Tingkatan 1. Kami makan di dalam kelas, menjerit dan membuat bising, sehingga seluruh kelas kadangkala kelihatan seperti Sun Wukong yang menggemparkan Istana Syurga. Apabila mengenangnya kembali, kami benar-benar kagum dengan guru-guru kerana masih mampu menemani sekumpulan pelajar yang semakin nakal ini sepanjang tiga tahun.',
+        'Sepanjang tiga tahun ini, orang datang dan pergi, wajah-wajah di sekeliling kami sentiasa berubah, tetapi kisah kelas kami tidak pernah berhenti. Ada rakan baharu yang menyertai kami, dan ada juga rakan yang meninggalkan kami. Ada guru baharu yang masuk ke kelas kami, dan ada juga guru yang pernah mengajar kami tetapi kemudiannya meninggalkan sekolah ini. Walaupun ada guru yang tidak lagi menemani kami di dalam kelas, dan ada wajah yang kini hanya tinggal dalam kenangan, hakikat bahawa cikgu pernah mengajar kami tidak akan berubah walaupun masa terus berlalu. Tidak kira sama ada cikgu menemani kami untuk tempoh yang panjang atau singkat, cikgu tetap menjadi sebahagian daripada kehidupan sekolah menengah kami.',
+        'Apabila bercakap tentang kenangan kelas kami, sebenarnya terlalu banyak perkara yang boleh kami ceritakan.',
+        'Kami masih ingat, dari Tingkatan 1 hingga Tingkatan 2, ada seorang pelajar perempuan yang selalu mengulangi ayat ini: “Cikgu, saya nak makan paha ayam! Cikgu, saya nak makan paha ayam!” Apabila difikirkan sekarang, ayat ini seolah-olah sudah menjadi salah satu kenangan istimewa kelas kami. Mungkin ketika itu dia hanya menyebutnya secara spontan, tetapi perkara-perkara kecil yang kelihatan biasa, malah kadangkala agak pelik ini, sebenarnya menjadikan kehidupan persekolahan kami begitu menyeronokkan.',
+        'Selain itu, kami juga mempunyai aktiviti jualan amal. Untuk aktiviti ini, semua orang telah membuat pelbagai persiapan. Pada waktu itu, kami sibuk bersama-sama demi mencapai matlamat yang sama dan menyelesaikan tugasan kelas kami. Apabila mengenangnya kembali, jualan amal itu bukan sekadar satu aktiviti, malah menjadi bukti bahawa kami pernah berusaha dan bekerjasama bersama-sama. Mungkin ketika itu kami hanya menumpukan perhatian untuk menyelesaikan segala urusan dengan baik, tanpa menyedari bahawa pengalaman yang dikongsi bersama ini suatu hari nanti akan menjadi cebisan kenangan zaman remaja yang sangat berharga.',
+        'Sudah tentu, kelas kami juga bukanlah kelas yang sentiasa teratur setiap hari.',
+        'Semasa kelas Sejarah di Tingkatan 2, pernah ada seseorang yang membuatkan guru Sejarah kami begitu marah. Apabila mengenangnya kembali, kami sedar bahawa kadangkala kami memang terlalu suka membuat bising. Kami sering terlalu mementingkan keseronokan sendiri sehingga terlupa bahawa guru juga perlu menjaga disiplin kelas dan mempunyai perasaan mereka sendiri. Namun begitu, walaupun kadangkala kami membuatkan guru Sejarah pening kepala, cikgu tetap berulang kali bertolak ansur dengan kami dan mengajar kami dengan sabar. Terima kasih kerana tidak mudah berputus asa terhadap kami hanya kerana kenakalan kami. Terima kasih juga kerana selepas berasa marah, cikgu masih sudi meneruskan pengajaran kepada kami.',
+        'Apabila masuk Tingkatan 3, tahap kenakalan kami seolah-olah meningkat sekali lagi.',
+        'Sebaik sahaja loceng tamat kelas berbunyi, kelas kami seolah-olah berubah menjadi dunia yang lain. Kami sering berkumpul di sekeliling meja guru tanpa dirancang. Seorang demi seorang datang mengerumuni meja itu. Ada yang duduk, ada yang mengeluarkan makanan, dan kami semua berkumpul untuk makan, berbual, bergurau dan ketawa bersama-sama. Walaupun guru itu sendiri tidak berada di situ, yang duduk di sekeliling meja guru ialah kami, para pelajarnya. Malah, kami turut makan di atas meja guru itu.',
+        'Jika dilihat dari jauh, suasananya benar-benar seperti satu mesyuarat besar yang penting. Setiap orang seolah-olah mempunyai pendapat untuk disampaikan dan perkara untuk dibincangkan. Kami berkumpul dalam satu kelompok, begitu meriah dan bising. Walaupun sebenarnya hanya waktu rehat dan kami cuma berkumpul untuk makan bersama-sama, suasananya tetap kelihatan seperti semua wakil kelas telah berhimpun untuk membincangkan perkara besar.',
+        'Inilah juga sebabnya kelas kami digelar “Pertubuhan Bangsa-Bangsa Bersatu” atau “PBB”. Apabila masuk Tingkatan 3, ramai pelajar daripada kelas lain turut masuk terus ke kelas kami untuk menyertai “mesyuarat” yang meriah ini. Ruang yang pada asalnya hanya milik kelas kami akhirnya berubah menjadi sebuah “PBB” kecil kerana kehadiran pelajar yang datang dan pergi. Kadangkala, apabila melihat semua orang berkumpul di tepi meja guru untuk makan, berbual dan bergurau, suasananya benar-benar seperti mesyuarat besar yang tidak akan pernah selesai.',
+        'Meja guru itu pada asalnya ialah tempat yang digunakan oleh guru semasa mengajar. Namun, apabila berada di kelas kami, meja itu seolah-olah bertukar menjadi “Dewan Mesyuarat PBB”. Kami pula ialah wakil-wakil yang hadir ke mesyuarat itu tepat pada masanya setiap hari. Mungkin ketika itu kami hanya berasa seronok kerana dapat berkumpul bersama-sama, tetapi apabila mengenangnya sekarang, saat-saat kami makan, berbual dan bergurau di situ sebenarnya menjadi antara kenangan Tingkatan 3 yang paling jelas dalam ingatan kami.',
+        'Dari Tingkatan 2 hingga Tingkatan 3, kelas-kelas lain turut memberikan gelaran khas kepada kelas kami, iaitu “pusat pembekal jenaka hambar”. Kami sendiri tidak tahu siapa yang telah menyumbangkan begitu banyak jenaka hambar sehingga kami mendapat nama sedemikian. Namun, memandangkan gelaran itu sudah tersebar, nampaknya kelas kami memang mempunyai “bakat humor” yang tersendiri.',
+        'Selain itu, ada juga seorang pelajar perempuan yang suaranya sangat kuat. Setiap kali dia membuka mulut, kelantangan suaranya begitu keterlaluan sehingga seolah-olah hampir memecahkan gegendang telinga semua orang. Setiap kali perkara seperti ini berlaku, pasti ada lagi detik yang membuatkan seluruh kelas tidak tahu sama ada hendak ketawa atau menggelengkan kepala. Apabila mengenangnya kembali, suasana bising dan riuh itu rupa-rupanya turut menjadi sebahagian daripada kenangan yang sukar kami lepaskan.',
+        'Ada juga satu hari Jumaat yang apabila dikenang sehingga hari ini, seolah-olah kami masih dapat merasai kegilaan suasana ketika itu.',
+        'Oleh sebab keesokan harinya ialah hari Sabtu dan kami akhirnya dapat berehat, semua orang menjadi sangat teruja menjelang waktu pulang. Ada yang menjerit dengan kuat, malah ada yang membaling barang ke sana sini sehingga seluruh kelas menjadi huru-hara. Pada saat itu, semua orang seolah-olah sudah tidak sabar untuk keluar dari kawasan sekolah dan menyambut waktu rehat masing-masing. Apabila difikirkan sekarang, rupa-rupanya kami boleh menjadi begitu teruja hanya kerana mahu bercuti. Guru-guru pula masih perlu berusaha menjaga disiplin kelas pada hari-hari seperti ini. Cikgu benar-benar telah bersusah payah.',
+        'Sampai di sini, kami juga perlu mengucapkan terima kasih secara khusus kepada guru Matematik kami.',
+        'Guru Matematik, terima kasih kerana sentiasa bersabar dan bertolak ansur dengan kami selama ini. Kami tahu bahawa kami bukanlah pelajar yang sentiasa membuatkan cikgu berasa tenang. Kadangkala, walaupun kami sudah membuatkan cikgu marah, cikgu tetap berdiri di hadapan kelas untuk mengajar dengan bersungguh-sungguh dan menerangkan soalan, dengan harapan agar kami dapat memahami dan menguasainya.',
+        'Namun, ada satu perkara yang apabila dikenang sehingga hari ini, masih membuatkan kami berasa sedih.',
+        'Pada suatu ketika dahulu, seorang pelajar perempuan telah berselisih faham dengan guru Matematik. Setiap kali cikgu mengatakan sesuatu, dia akan menjawab kembali. Kata-kata mereka bersambung satu demi satu, dan suasana menjadi semakin tegang. Mungkin pada waktu itu kami belum benar-benar menyedari betapa seriusnya perkara tersebut. Mungkin ada antara kami yang hanya berdiri di tepi dan melihat apa yang berlaku, tanpa menyangka bahawa pertengkaran itu akan membuatkan cikgu begitu sedih.',
+        'Akhirnya, cikgu benar-benar tidak dapat menahan perasaan lalu menangis.',
+        'Apabila cikgu menutup pintu dengan marah lalu meninggalkan kelas, bilik darjah yang pada mulanya riuh-rendah tiba-tiba menjadi sunyi sepi. Kami yang sebentar tadi masih bising dan bergelak ketawa seolah-olah kehilangan suara dalam sekelip mata. Pada saat itu, barulah kami perlahan-lahan menyedari bahawa perkara tersebut bukan lagi sekadar pertengkaran biasa atau konflik kecil semasa kelas.',
+        'Rupa-rupanya, guru yang selama ini berdiri di hadapan kelas untuk mengajar Matematik dan menerangkan soalan kepada kami dengan sabar juga boleh berasa terluka akibat kata-kata dan perbuatan kami. Cikgu juga mempunyai batas kesabaran dan ada masanya tidak mampu menanggung semuanya.',
+        'Pada waktu itu, dua orang pelajar lelaki dan tiga orang pelajar perempuan merupakan antara yang mula-mula menyedari bahawa cikgu benar-benar sedang bersedih. Kemudian, ada juga rakan sekelas yang mengambil inisiatif untuk pergi berjumpa dengan cikgu dan mengucapkan “maaf”.',
+        'Mungkin permohonan maaf itu tidak dapat menghilangkan semua kesedihan dengan serta-merta, tetapi sekurang-kurangnya kami berharap agar cikgu tahu bahawa kami sebenarnya mengambil berat tentang perasaan cikgu. Mungkin pada waktu itu kami masih belum cukup matang dan tidak tahu cara yang baik untuk meluahkan emosi. Kami juga tidak menyedari bahawa satu jawapan yang membantah atau satu kata-kata yang diucapkan tanpa berfikir boleh membuatkan orang lain bersedih.',
+        'Guru Matematik, kami minta maaf.',
+        'Maaf kerana dahulu kami sering bersikap tidak matang. Maaf kerana kadangkala kami terlalu sibuk mempertahankan pendapat sendiri sehingga terlupa untuk mendengar kata-kata cikgu dengan baik. Setiap hari, cikgu berdiri di hadapan kelas dan berusaha menyampaikan ilmu kepada kami dengan harapan agar kami dapat belajar dan maju. Namun, ada kalanya kami tidak memberikan penghormatan yang sewajarnya kepada cikgu.',
+        'Terima kasih kerana walaupun kami pernah membuatkan cikgu begitu marah dan sedih, cikgu masih berulang kali mengajar kami dengan sabar. Terima kasih kerana tidak berhenti mengajar kami hanya disebabkan konflik tersebut. Kami tahu bahawa cikgu bukan sahaja mahu kami memahami soalan Matematik, tetapi juga mahu kami belajar menghormati orang lain, bertanggungjawab atas perbuatan sendiri dan berkomunikasi dengan baik apabila berlaku perselisihan faham.',
+        'Mungkin pada waktu itu kami tidak meluahkan semua ini, tetapi sekarang kami ingin mengucapkan terima kasih dengan bersungguh-sungguh, dan pada masa yang sama, memohon maaf kepada cikgu.',
+        'Kami berharap apabila cikgu mengenang kelas kami pada masa hadapan, selain mengingati hari-hari yang membuatkan cikgu pening kepala, cikgu juga dapat mengingati bahawa kami pernah menyedari kesilapan sendiri, pernah cuba meminta maaf dan pernah perlahan-lahan belajar memahami kesusahan serta pengorbanan cikgu sepanjang proses kami membesar.',
+        'Kami tidak mahu satu-satunya perkara yang tertinggal dalam ingatan cikgu tentang kami hanyalah sekumpulan pelajar yang pernah membuatkan cikgu bersedih. Kami lebih berharap agar cikgu mengingati kami sebagai sekumpulan anak murid yang masih belum cukup matang, kadangkala melakukan kesilapan, tetapi sedang berusaha untuk membesar dan menjadi lebih baik.',
+        'Kami juga akan mengingati bahawa kami pernah mempunyai seorang guru Matematik yang, walaupun kadangkala dibuat sedih oleh kenakalan kami, tetap bersungguh-sungguh mengajar kami.',
+        'Terima kasih, guru Matematik.',
+        'Guru Sains kami, yang juga merupakan guru kelas kami, turut menjadi salah seorang insan penting yang menemani kami sepanjang tiga tahun ini.',
+        'Setiap kali kami berkelakuan terlalu nakal atau melakukan sesuatu yang memaksa cikgu mengambil perkara itu dengan serius, cikgu akan mengatakan satu ayat: “Kita satu kelas.”',
+        'Ayat ini mungkin kedengaran sangat ringkas, tetapi apabila difikirkan sekarang, ayat tersebut sebenarnya membawa banyak maksud. Oleh sebab kita satu kelas, kita tidak sepatutnya hanya mementingkan diri sendiri. Oleh sebab kita satu kelas, kita perlu belajar memahami dan bertolak ansur antara satu sama lain, serta bertanggungjawab atas perbuatan sendiri. Sesebuah kelas tidak mungkin sentiasa bebas daripada masalah, dan setiap orang juga tidak mungkin mempunyai perangai yang sama. Namun, selagi kita sanggup melihat sesuatu daripada sudut pandangan orang lain, kita pasti dapat menjadi lebih baik bersama-sama.',
+        'Terima kasih kerana menegur kami apabila kami terlalu nakal, mengambil serius perkara yang memerlukan kami didisiplinkan, dan juga membenarkan kami bermain permainan di dalam kelas. Dengan itu, pembelajaran bukan sekadar buku teks, kerja rumah dan peperiksaan. Kelas-kelas yang dipenuhi gelak tawa itu memberikan kami saat-saat yang santai dan menggembirakan di tengah-tengah kehidupan pembelajaran yang sibuk.',
+        'Mungkin bertahun-tahun kemudian, kami tidak lagi mengingati setiap soalan yang pernah kami jawab, tetapi kami mungkin masih mengingati kelas-kelas yang pernah membuatkan seluruh kelas ketawa. Kami juga akan mengingati ayat cikgu, “Kita satu kelas.”',
+        'Kami juga ingin mengucapkan terima kasih kepada guru Bahasa Melayu yang sentiasa mengajar kami dengan bersungguh-sungguh. Terima kasih kerana sudi meluangkan masa untuk menerangkan dan membimbing kami agar kami dapat membuat kemajuan sedikit demi sedikit sepanjang proses pembelajaran. Kesungguhan dan usaha cikgu sentiasa kami perhatikan. Walaupun kadangkala kami tidak dapat melakukan yang terbaik dengan serta-merta, terima kasih kerana tidak hilang kesabaran terhadap kami, sebaliknya terus membimbing kami untuk melangkah ke hadapan.',
+        'Kepada guru Bahasa Cina pula, terima kasih kerana menemani kami melalui begitu banyak waktu pembelajaran. Kami sentiasa mempunyai cara untuk membuatkan cikgu ketawa. Kadangkala, kami sendiri pun tidak tahu ayat atau reaksi yang mana satu telah membuatkan cikgu ketawa. Apabila difikirkan sekarang, dapat berinteraksi dengan guru seperti ini di dalam kelas sebenarnya merupakan satu perkara yang sangat berharga.',
+        'Terima kasih kerana menjadikan kelas Bahasa Cina bukan sekadar tempat untuk mempelajari tulisan dan ilmu pengetahuan, tetapi juga tempat yang meninggalkan banyak kenangan yang santai dan penuh kehangatan. Mungkin pernah ada kata-kata kami yang membuatkan cikgu tidak dapat menahan ketawa, atau mungkin kami pernah menjadikan kelas yang biasa itu lebih meriah. Namun, perkara-perkara kecil yang kelihatan biasa ini kini menjadi kenangan berharga dalam hati kami.',
+        'Kami juga ingin mengucapkan terima kasih secara khusus kepada semua guru Bahasa Inggeris yang pernah mengajar kami dari Tingkatan 1 hingga Tingkatan 3.',
+        'Walaupun sepanjang tiga tahun ini guru Bahasa Inggeris kami sering bertukar ganti, kami tetap ingin mengucapkan terima kasih kepada setiap guru Bahasa Inggeris yang pernah mengajar kami. Terima kasih kerana pernah mendidik kami dan terima kasih juga atas segala usaha serta pengorbanan cikgu sepanjang tempoh tersebut.',
+        'Terutamanya ketika Tingkatan 3, suasana kelas Bahasa Inggeris sangat tidak teratur. Ada kalanya, sesetengah pelajar langsung tidak mendengar kata-kata guru, malah membuat bising dan bertengkar dengan suara yang kuat di dalam kelas di hadapan semua orang. Apabila mengenangnya kembali, kami sedar bahawa kadangkala tingkah laku kami memang tidak sepatutnya begitu, dan mungkin kami pernah membuatkan guru Bahasa Inggeris berasa kecewa serta pening kepala.',
+        'Tidak kira berapa kali guru Bahasa Inggeris kami bertukar sepanjang tiga tahun ini, kami tetap ingin mengambil kesempatan ini untuk mengucapkan terima kasih kepada setiap guru Bahasa Inggeris yang pernah mengajar kami. Terima kasih kerana pernah melangkah masuk ke kelas kami untuk mengajar dan membimbing kami. Terima kasih juga atas masa dan tenaga yang telah cikgu curahkan kepada kami. Walaupun ada guru yang mungkin tidak lagi mengajar kami sekarang, hakikat bahawa cikgu pernah menjadi guru kami akan tetap kami ingati.',
+        'Sudah tentu, masih ramai lagi guru lain yang pernah mengajar kami.',
+        'Mungkin cikgu pernah marah kerana tingkah laku kami, mungkin pernah berasa tidak berdaya menghadapi kenakalan kami, dan mungkin ada kalanya cikgu sudah bertekad untuk mendisiplinkan kami dengan tegas, tetapi akhirnya tetap berlembut hati.',
+        'Terima kasih kerana sudi memberikan kami peluang, bertolak ansur dengan sikap kami yang belum matang dan terus menegur serta membetulkan kesilapan kami apabila kami melakukan sesuatu yang tidak sepatutnya. Kami tahu bahawa apabila guru berlembut hati, itu bukan bermakna kami boleh berkelakuan sesuka hati. Sebaliknya, walaupun cikgu menetapkan peraturan dan mendisiplinkan kami dengan tegas, cikgu tetap mengambil berat tentang kami.',
+        'Terima kasih kerana selepas kami melakukan kesilapan, cikgu masih percaya bahawa kami mampu belajar dan menjadi lebih matang.',
+        'Apabila mengenang kembali, kehidupan kami sepanjang tiga tahun ini seolah-olah tidak pernah kekurangan bunyi bising, gelak tawa, gurauan dan kejadian yang kadangkala membuatkan guru pening kepala. Ada kalanya kami terlalu teruja, ada kalanya kami kurang matang, malah kadangkala kami terlupa bahawa guru juga memerlukan pemahaman dan penghormatan daripada orang lain.',
+        'Namun, kerana didikan dan sikap bertolak ansur cikgu, kami dapat perlahan-lahan membesar melalui setiap pengalaman yang kami lalui.',
+        'Mungkin kami tidak mampu mengingati kandungan setiap kelas, dan mungkin juga kami tidak dapat memperoleh keputusan yang baik dalam setiap peperiksaan. Mungkin kami pernah mengecewakan cikgu dan membuatkan cikgu risau. Namun, percayalah bahawa masa, usaha dan pengorbanan yang cikgu curahkan kepada kami bukanlah sesuatu yang sia-sia.',
+        'Selain ilmu yang terdapat dalam buku teks, cikgu juga mengajar kami cara bergaul dengan orang lain, cara menghadapi kesilapan, cara bertanggungjawab atas perbuatan sendiri, serta cara memahami dan bertolak ansur dalam sesebuah kumpulan.',
+        'Teguran yang dahulu kami anggap biasa, nasihat yang pernah membuatkan kami berasa bosan, malah teguran tegas yang pernah membuatkan kami takut, semuanya kini membawa makna yang berbeza apabila dikenang kembali.',
+        'Guru-guru, apabila menulis sehingga ke bahagian ini, barulah kami menyedari bahawa tiga tahun sebenarnya sangat singkat.',
+        'Terlalu singkat sehingga kami belum sempat mengingati setiap hari dengan jelas, kami sudah pun sampai ke penghujung kehidupan sekolah menengah rendah. Guru-guru yang dahulu kami temui setiap hari, kelas yang sudah menjadi kebiasaan, serta waktu pembelajaran dan waktu rehat yang pernah kami sangka tidak akan berakhir, kini semuanya membawa makna yang berbeza.',
+        'Apabila memikirkan semua ini, kami benar-benar berasa sedikit berat hati untuk berpisah.',
+        'Kami akan merindui suara-suara yang sudah biasa kami dengar, suasana harian yang bising dan kenangan ditemani oleh cikgu yang selama ini kami anggap sebagai sesuatu yang biasa.',
+        'Rupa-rupanya, zaman remaja bukan hanya tentang perkara-perkara besar yang menggemparkan. Selalunya, zaman remaja terdiri daripada hari-hari biasa yang dilalui bersama sekumpulan orang, bayangan guru yang berdiri mengajar di hadapan kelas, gelak tawa yang bersahut-sahutan di dalam bilik darjah, serta detik-detik yang dahulu tidak begitu kami hargai tetapi kini ingin kami simpan baik-baik dalam ingatan.',
+        'Sebenarnya, kami tahu bahawa selepas naik ke Tingkatan 4, kami masih berpeluang untuk bertemu dengan cikgu di sekolah.',
+        'Kami mungkin masih akan terserempak dengan cikgu di koridor, menyapa cikgu apabila melalui kelas cikgu, dan sesekali berhenti untuk berbual beberapa patah perkataan. Mungkin apabila bertemu lagi nanti, kami masih akan tersenyum dan menyapa cikgu, malah mungkin masih bergurau seperti dahulu.',
+        'Oleh itu, surat ini bukanlah surat perpisahan buat selama-lamanya.',
+        'Kami cuma ingin mengambil kesempatan ini, selagi kisah tiga tahun sekolah menengah rendah kami belum sepenuhnya menjadi masa lalu, untuk memberitahu cikgu dengan bersungguh-sungguh: terima kasih.',
+        'Kerana walaupun kami masih boleh bertemu selepas ini, itu tidak bermakna kami masih dapat berada di dalam kelas yang sama setiap hari seperti dahulu, mendengar cikgu mengajar, ditegur oleh cikgu, membuat bising ketika waktu rehat, kemudian kembali ke kelas pada keesokan harinya seolah-olah tiada apa-apa yang berlaku.',
+        'Selepas ini, kami mungkin masih akan melalui koridor yang sama dan melihat wajah-wajah yang sama, tetapi kami tidak lagi menjadi kelas yang duduk di dalam bilik darjah cikgu seperti dahulu.',
+        'Mungkin suatu hari nanti, cikgu akan masuk ke kelas dan melihat sekumpulan pelajar baharu duduk di tempat yang pernah menjadi tempat duduk kami. Mungkin pada suatu hari yang lain, cikgu akan bertemu dengan kelas yang nakal sekali lagi, lalu tanpa sedar teringat akan kami.',
+        'Kami tertanya-tanya, pada waktu itu, adakah cikgu masih akan mengingati bahawa pernah ada sebuah kelas yang semasa Tingkatan 1 seperti “malaikat kecil”, kemudian perlahan-lahan menjadi “syaitan kecil” ketika Tingkatan 2, dan akhirnya menjadi begitu bising sehingga membuatkan orang tidak tahu sama ada hendak ketawa atau menggelengkan kepala ketika Tingkatan 3?',
+        'Adakah cikgu akan teringat akan pelajar perempuan yang selalu melaungkan bahawa dia mahu makan paha ayam?',
+        'Adakah cikgu akan teringat akan kelas yang digelar oleh kelas lain sebagai “pusat pembekal jenaka hambar”?',
+        'Adakah cikgu akan teringat akan pelajar-pelajar yang memenuhi kawasan meja guru ketika waktu rehat, seolah-olah setiap hari sedang mengadakan “mesyuarat PBB” yang penting?',
+        'Adakah cikgu akan teringat akan kelas yang menjerit dan membuat bising dengan begitu gembira pada hari Jumaat sebelum cuti kerana akhirnya dapat berehat?',
+        'Atau adakah cikgu akan teringat akan suatu kelas yang pernah membuatkan cikgu begitu marah, tetapi cikgu tetap menahan perasaan dan terus berdiri di hadapan kelas untuk menghabiskan pengajaran dengan bersungguh-sungguh?',
+        'Guru-guru, mungkin cikgu sudah mengajar begitu banyak kumpulan pelajar dan bertemu dengan pelbagai jenis kelas. Bagi cikgu, kami mungkin hanyalah salah satu kumpulan pelajar sepanjang kerjaya perguruan cikgu. Tiga tahun kemudian, akan ada pelajar baharu yang masuk ke kelas dan kisah-kisah baharu yang akan terus tercipta.',
+        'Namun, bagi kami, cikgu ialah insan yang benar-benar pernah hadir dan menemani kami sepanjang tiga tahun sekolah menengah rendah ini.',
+        'Cikgu melihat kami membesar sedikit demi sedikit sejak Tingkatan 1, melalui perubahan ketika Tingkatan 2, sehinggalah kami sampai ke Tingkatan 3. Cikgu pernah melihat kami ketika paling sopan, dan juga ketika kami paling nakal serta paling sukar dikawal. Mungkin cikgu pernah berasa kecewa terhadap kami, tetapi mungkin juga cikgu pernah berasa gembira melihat kemajuan kami.',
+        'Semua perkara ini mungkin hanyalah sebahagian daripada tugas harian cikgu. Namun, bagi kami, semua ini merupakan satu tempoh kehidupan yang tidak mungkin dapat diulangi dengan cara yang sama.',
+        'Kami bukanlah mahu cikgu menganggap kami sebagai pelajar yang sangat hebat, dan kami juga bukan mahu cikgu melupakan kesilapan yang pernah kami lakukan.',
+        'Kami cuma berharap agar bertahun-tahun dari sekarang, apabila cikgu sesekali mengenang tahun 2024 hingga 2026, cikgu masih dapat mengingati bahawa pernah ada sebuah kelas yang cikgu ajar.',
+        'Sebuah kelas yang tidak sempurna, tetapi mempunyai begitu banyak cerita.',
+        'Sebuah kelas yang boleh membuatkan cikgu marah dan berasa tidak berdaya, tetapi pada masa yang sama akan berasa sedih apabila menyedari bahawa cikgu sendiri sedang bersedih.',
+        'Sebuah kelas yang mungkin tidak membuatkan cikgu berasa bangga setiap hari, tetapi benar-benar menghargai cikgu dari hati mereka.',
+        'Mungkin kami tidak sentiasa dapat memenuhi harapan cikgu, dan mungkin keputusan peperiksaan kami tidak sentiasa membuatkan setiap guru berasa bangga. Namun, kami berharap apabila cikgu mengenang kembali tempoh ini pada masa hadapan, cikgu akan tahu bahawa kedudukan cikgu dalam hati kami tidak akan berubah hanya kerana keputusan peperiksaan, peredaran masa atau sejauh mana kami melangkah dalam kehidupan nanti.',
+        'Jika pernah ada tindakan kami yang membuatkan cikgu bersedih, maafkanlah kami yang ketika itu masih belum cukup matang. Jika pernah ada nasihat cikgu yang tidak kami ambil serius pada waktu itu, kami juga berharap cikgu tahu bahawa kami sedang membesar sedikit demi sedikit dan belajar memahami perkara-perkara yang dahulu tidak kami fahami.',
+        'Mungkin sekarang kami masih belum dapat memahami sepenuhnya betapa susahnya tugas seorang guru. Mungkin kami juga belum tahu cara yang paling indah untuk menyampaikan rasa terima kasih. Namun, sekurang-kurangnya, ketika tiga tahun sekolah menengah rendah kami hampir berakhir, kami ingin menyampaikan penghargaan ini kepada cikgu dengan sebaik-baiknya.',
+        'Terima kasih kerana tidak berhenti mengajar kami hanya kerana kami tidak sempurna.',
+        'Terima kasih kerana menegur kami apabila kami melakukan kesilapan, menerangkan dengan sabar apabila kami tidak memahami sesuatu, dan tetap memberikan kami peluang walaupun kami sering membuatkan cikgu pening kepala.',
+        'Terima kasih kerana membuatkan kami memahami bahawa apa yang ditinggalkan oleh seorang guru kepada pelajarnya bukan hanya ilmu daripada buku teks, tetapi juga detik-detik yang apabila dikenang bertahun-tahun kemudian, masih mampu menghangatkan hati.',
+        'Guru-guru, selepas ini kami masih akan bertemu dengan cikgu di sekolah.',
+        'Jadi, apabila kita bertemu lagi nanti, mungkin kami tidak akan mengucapkan terlalu banyak kata-kata yang menyentuh hati. Mungkin kami masih akan tersenyum dan menyapa cikgu seperti biasa.',
+        'Namun, jika suatu hari nanti cikgu tiba-tiba teringat akan kami, teringat akan tempat duduk yang pernah kami gunakan, teringat akan kelas yang bising itu dan teringat akan hari-hari yang pernah membuatkan cikgu marah serta berasa tidak berdaya, kami berharap cikgu juga akan mengingati bahawa di sebalik semua kebisingan itu, sebenarnya ada sekumpulan pelajar yang sentiasa berterima kasih kepada cikgu.',
+        'Kami akan terus membesar dan melangkah ke arah kehidupan masa hadapan masing-masing.',
+        'Cikgu pula akan terus mendidik pelajar-pelajar baharu, terus berdiri di hadapan kelas dan terus menjadi guru dalam perjalanan hidup ramai pelajar.',
+        'Kami cuma berharap agar, antara begitu banyak kumpulan pelajar yang pernah cikgu ajar, kami juga dapat menjadi salah satu kumpulan yang sesekali membuatkan cikgu teringat akan kami dan tersenyum kecil apabila mengenangnya.',
+        'Terima kasih kerana menemani kami sepanjang tahun 2024 hingga 2026.',
+        'Perkara-perkara yang kita lalui bersama sepanjang tiga tahun ini mungkin bukanlah sesuatu yang menggemparkan dunia, tetapi semuanya merupakan kenangan yang hanya dimiliki oleh kelas kami, kenangan antara cikgu dengan kami.',
+        'Kami berasa sangat bertuah kerana pernah menjadi anak murid cikgu.',
+        'Kami juga berasa sangat bertuah kerana ketika kami masih belum cukup matang dan belum cukup memahami banyak perkara, kami dipertemukan dengan cikgu yang sudi mengajar kami dengan sabar.',
+        'Walaupun kami bukanlah pelajar cikgu yang paling cemerlang, cikgu tetap merupakan guru yang paling kami hormati.',
+        'Semoga sepanjang kehidupan cikgu selepas ini, cikgu sentiasa gembira, bahagia, aman dan sihat sejahtera.',
+        'Semoga setiap hari yang mendatang membawa lebih sedikit keletihan dan lebih banyak gelak tawa. Semoga kesabaran dan kasih sayang yang pernah cikgu curahkan kepada para pelajar juga dibalas dengan kebaikan dan kelembutan dalam kehidupan cikgu sendiri.',
+        'Kami juga berharap bahawa apabila suatu hari nanti cikgu teringat akan kelas kami, perkara yang cikgu kenang bukanlah betapa bising dan nakalnya kami, tetapi hari-hari yang pernah kita lalui bersama dan hakikat bahawa kami pernah membesar di dalam kelas cikgu.',
+        'Terima kasih, guru-guru kami.',
+        'Kali ini, kami benar-benar ingin mengucapkannya dengan ikhlas.',
+        'Kami bukan hendak mengucapkan selamat tinggal kepada cikgu buat selama-lamanya. Kami cuma ingin menggunakan kesempatan ketika meninggalkan sekolah menengah rendah ini untuk memberitahu cikgu dengan seikhlas hati: dapat menjadi anak murid cikgu merupakan salah satu perkara yang sangat berharga dalam zaman remaja kami.'
+      ]
+    },
+    en: {
+      lang:'en',
+      title:'To All the Teachers Who Have Taught Us · 2024–2026',
+      headline:'For every teacher who has ever taught us',
+      letterTitle:'To All the Teachers Who Have Taught Us',
+      letterSub:'Thank You for Accompanying Us Throughout 2024–2026',
+      sign:'2024–2026, respectfully and gratefully, your students.',
+      cta:'Open our teachers’ thank-you letter',
+      close:'Close the envelope',
+      scrollHint:'Scroll down to read the whole letter',
+      readLabel:'Listen to the letter', readPause:'Pause reading', readNoAudio:'No audio for this language yet',
+      noticeTitle:'Please note',
+      noticeBody:'This audio was generated by artificial intelligence (AI). The narration, pronunciation or pauses may differ slightly from the original text. If there is any discrepancy, please refer to the original written text. Thank you for your understanding.',
+      noticeSkip:'Don’t show this reminder again',
+      noticeCancel:'Cancel', noticeOk:'Got it, play',
+      musicPlay:'Play background music', musicPause:'Pause background music', musicNone:'No background music configured',
+      body:[
+        'Dear Teachers,',
+        'We hope this letter finds you well.',
+        'As we write this letter, there are so many things we want to say, yet we do not know where to begin. Looking back on our journey from Form 1 to Form 3, we realise that these three years are truly worth remembering and cherishing. It turns out that three years can pass so quickly. Before we even had the chance to treasure every moment, we had already reached the end of our lower secondary school life.',
+        'When we thought we still had plenty of time, we suddenly realised that the time we had left was not much at all. The days we once thought would repeat themselves forever—going to class, leaving class, being reminded by teachers, and fooling around with our classmates—have now become the memories we find hardest to let go of.',
+        'When we were in Form 1, we were still the “little angels” everyone talked about. Back then, we were polite, greeted our teachers voluntarily, and knew how to show respect. Because of that, we received quite a lot of praise from our teachers. At that time, we were perhaps still a little inexperienced, full of expectations for the secondary school life ahead of us, and had not yet fully revealed our true “potential”.',
+        'However, as time slowly passed, it seemed that we began to change.',
+        'By Form 2, we gradually transformed from “little angels” into “little devils”. The strange comments that occasionally slipped out during lessons, the things we did that left our teachers laughing and shaking their heads, and the endless little incidents all made our class livelier and livelier. By Form 3, we had completely let ourselves loose, as though we were releasing all the energy we had stored up since Form 1 at once. We ate during lessons, shouted and made a lot of noise, and sometimes the whole classroom was practically like Sun Wukong causing havoc in Heaven. Looking back, we truly admire our teachers for being able to accompany such an increasingly mischievous group of students throughout these three years.',
+        'Throughout these three years, people came and went, and the faces around us kept changing, but the stories belonging to our class never stopped. Some new classmates joined us, while others left. Some new teachers entered our classrooms, while some teachers who had taught us eventually left the school. Even though some teachers no longer teach us and some familiar faces can now only be found in our memories, the fact that you once taught us will never change with the passing of time. Whether you accompanied us for a long time or only briefly, you have already become part of our secondary school life.',
+        'When it comes to the memories of our class, there are truly far too many stories worth sharing.',
+        'We still remember a girl who, from Form 1 to Form 2, would always repeat the same words: “Teacher, I want to eat a chicken drumstick! Teacher, I want to eat a chicken drumstick!” Looking back now, that sentence has practically become one of our class’s unique memories. Perhaps she said it casually at the time, but it is precisely these seemingly ordinary, and sometimes rather ridiculous, little moments that made our school life so interesting.',
+        'Then there was our charity sale. Everyone made quite a lot of preparations for the event. During that period, we worked hard together towards a common goal and completed a task that belonged to our class. Looking back, the charity sale was more than just an activity. It was proof that we had worked hard and cooperated with one another. Perhaps at the time, we were too busy trying to get everything done properly to realise that these shared experiences would one day become precious memories of our youth.',
+        'Of course, our class was not well-behaved every single day.',
+        'During a History lesson in Form 2, someone once made our History teacher so angry that the teacher became visibly upset. Looking back, we realise that we really were too fond of fooling around sometimes. We often cared too much about our own enjoyment and forgot that teachers also had to maintain classroom discipline and had feelings of their own. Even though we sometimes gave our History teacher a headache, the teacher continued to tolerate us and patiently guide us time and time again. Thank you for not giving up on us easily because of our mischievous behaviour. Thank you also for continuing to teach us even after becoming angry with us.',
+        'By Form 3, our level of mischief seemed to rise to another level.',
+        'As soon as the recess bell rang, our classroom seemed to turn into a completely different world. We would often gather around the teacher’s desk without even planning to do so. One after another, we would crowd around it. Some would sit down, while others would take out their food. We would gather there to eat, chat, joke around and laugh together. Even though the teacher was not there, it was we, the students, who occupied the area around the teacher’s desk. We even ate directly on the teacher’s desk.',
+        'From a distance, the scene looked as though we were holding some kind of important meeting. Everyone seemed to have an opinion to express and something to discuss. We gathered in a big group, making the place incredibly lively and noisy. Although it was only recess and we were simply eating together, we somehow managed to create the atmosphere of a meeting where representatives from every part of the class had gathered to discuss major matters.',
+        'This was also why our class came to be known as the “United Nations”. By Form 3, many students from other classes would walk straight into our classroom and join our lively “meetings”. What had originally been a space belonging to our class became a little “United Nations” because of all the students coming and going. Sometimes, watching everyone gather around the teacher’s desk to eat, chat and fool around really felt like watching a meeting that would never end.',
+        'The teacher’s desk was originally a place for the teacher to use while teaching. However, in our class, it seemed to have become the “United Nations Conference Hall”. We students were the representatives who attended the meeting on time every day. Perhaps at the time, we simply thought it was fun to gather together like that. But looking back now, those moments of eating, chatting and fooling around together have become some of the most vivid memories of our Form 3 life.',
+        'From Form 2 to Form 3, other classes even gave us a special nickname: the “open-source hub for lame jokes”. We do not know who contributed so many lame jokes that we earned such a reputation. But since the nickname has already spread, it seems our class really did have its own “sense of humour”.',
+        'There was also the girl whose voice was exceptionally loud. Every time she opened her mouth, her volume was so exaggerated that it seemed as though she could shatter everyone’s eardrums. Whenever something like that happened, the whole class would have another moment that left us not knowing whether to laugh or shake our heads. Looking back now, those noisy and chaotic scenes have also become part of the memories we find difficult to let go of.',
+        'There was also one Friday that still feels crazy whenever we think about it.',
+        'Since the next day was Saturday and we could finally rest, everyone became incredibly excited before school ended. People shouted loudly in the classroom, and some even threw things around, leaving the whole class in chaos. At that moment, everyone seemed unable to wait to rush out of school and enjoy their well-deserved rest. Looking back, we really could become that excited just because a break was coming. Meanwhile, our teachers still had to work hard to maintain classroom discipline on days like these. You truly had a difficult time dealing with us.',
+        'At this point, we also have to give special thanks to our Mathematics teacher.',
+        'Dear Mathematics teacher, thank you for your patience and understanding throughout all this time. We know that we have not always been the easiest students to teach. Sometimes, even when we had already made you angry, you would still continue standing at the front of the classroom, teaching seriously and explaining the questions in the hope that we would understand and learn.',
+        'However, there is one incident that still makes us feel sad whenever we think about it.',
+        'On one occasion, a girl had a conflict with our Mathematics teacher. Every time the teacher said something, she would talk back. Their words continued back and forth, and the atmosphere became increasingly tense. Perhaps at the time, we did not truly realise how serious the situation was. Some of us may have simply stood by and watched, never imagining that the argument would make the teacher so upset.',
+        'In the end, the teacher could no longer hold back the tears.',
+        'When the teacher angrily closed the door and left, our once noisy classroom suddenly fell completely silent. Just moments earlier, we had been laughing and making a lot of noise, but suddenly it was as though everyone had lost their voice. Only then did we slowly begin to realise that this was no longer just an ordinary disagreement or a normal classroom conflict.',
+        'We realised that the teacher who usually stood at the front of the classroom teaching us Mathematics and patiently explaining questions could also feel hurt by our words and actions. Teachers have feelings too, and there are times when even they cannot bear everything any longer.',
+        'At that time, two boys and three girls were among the first to realise that the teacher was genuinely upset. Later, another classmate took the initiative to approach the teacher and say, “I’m sorry.”',
+        'Perhaps that apology could not immediately make all the sadness disappear, but at least we hoped it would let the teacher know that we did care about your feelings. Maybe we were not mature enough at the time and did not know how to express our emotions properly. We also did not understand that talking back or saying something without thinking could hurt another person.',
+        'Dear Mathematics teacher, we are sorry.',
+        'We are sorry for all the times we acted immaturely. We are sorry that sometimes we were too busy arguing and defending ourselves that we forgot to listen to you properly. Every day, you stood at the front of the classroom and worked hard to teach us, hoping that we would learn and improve. Yet sometimes, we failed to give you the respect you deserved.',
+        'Thank you for continuing to teach us patiently, even after we had made you so angry and upset. Thank you for not giving up on teaching us because of that one conflict. We know that you did not only want us to learn how to solve Mathematics questions. You also wanted us to learn how to respect others, take responsibility for our actions, and communicate properly when disagreements occurred.',
+        'Perhaps we did not say these words at the time, but now we sincerely want to thank you and apologise to you.',
+        'We hope that when you think of our class in the future, you will remember more than just the days when we gave you a headache. We hope you will also remember that we eventually recognised our immaturity, that we tried to apologise to you, and that we gradually learned to understand your hard work and dedication as we grew up.',
+        'We do not want the only thing you remember about us to be a group of students who once made you sad. We hope you will remember us as a group of children who were not yet mature enough, who sometimes made mistakes, but who were also slowly growing up.',
+        'We will also remember that we once had a Mathematics teacher who, even when we made you upset, continued to teach us sincerely and wholeheartedly.',
+        'Thank you, Mathematics teacher.',
+        'Our Science teacher, who was also our class teacher, was another important person who accompanied us throughout these three years.',
+        'Whenever we became too mischievous or did something that required the teacher to take matters seriously, the teacher would always say one sentence: “We are one class.”',
+        'The sentence may sound simple, but looking back now, we realise that it carries a much deeper meaning. Because we are one class, we should not only think about ourselves. Because we are one class, we should learn to understand and tolerate one another, and take responsibility for our own behaviour. A class cannot be free of problems all the time, and not everyone will have the same personality. However, as long as we are willing to put ourselves in one another’s shoes, we can become better together.',
+        'Thank you for reminding us when we became too mischievous, taking matters seriously when we needed discipline, and allowing us to play games in class. Because of that, learning was not limited to textbooks, homework and examinations. Those laughter-filled lessons gave us some relaxing and happy moments amid our busy school lives.',
+        'Perhaps many years from now, we will not remember every question we once answered, but we will probably remember the lessons that made the whole class laugh. We will also remember the teacher’s words: “We are one class.”',
+        'We would also like to thank our Bahasa Melayu teacher for always teaching us seriously and wholeheartedly. Thank you for taking the time to explain things and guide us so that we could improve little by little throughout our learning journey. We noticed your dedication and effort. Even when we could not immediately do our best, thank you for not losing patience with us and for continuing to guide us forward.',
+        'To our Chinese Language teacher, thank you for sharing so many classroom moments with us. We always seemed to find a way to make you laugh. Sometimes, even we ourselves did not know which sentence or reaction had made you laugh. Looking back now, being able to share this kind of interaction with a teacher in the classroom is truly something special.',
+        'Thank you for making Chinese Language lessons more than just a place to learn writing and knowledge. You also left us with many warm and light-hearted memories. Perhaps we once said something in class that made you burst out laughing, or perhaps we made an ordinary lesson much livelier. These seemingly ordinary little moments have now become precious memories in our hearts.',
+        'We would also like to express our special thanks to all the English teachers who taught us from Form 1 to Form 3.',
+        'Although our English teachers changed several times throughout these three years, we still want to thank every English teacher who has ever taught us. Thank you for teaching us and for all the effort you put into guiding us during that time.',
+        'Especially in Form 3, our English lessons were extremely chaotic. Sometimes, some students simply refused to listen to what the teacher said and even shouted and made a scene in front of everyone in the classroom. Looking back now, we realise that our behaviour was not always appropriate, and we may have caused our English teachers to feel frustrated and helpless.',
+        'No matter how many times our English teachers changed throughout these three years, we would still like to take this opportunity to thank every English teacher who has taught us. Thank you for coming into our classroom to teach and guide us. Thank you also for the time and effort you devoted to us. Even if some of you no longer teach us, we will still remember that you were once our teachers.',
+        'Of course, there are many other teachers who have taught us as well.',
+        'Perhaps you were once angry because of our behaviour. Perhaps you sometimes felt helpless when dealing with us. Perhaps there were times when you had already decided to discipline us strictly, but in the end, you still softened your approach out of kindness.',
+        'Thank you for giving us opportunities, accepting our immaturity and continuing to remind us and correct us whenever we did something wrong. We know that a teacher being kind and forgiving does not mean that we can behave however we want. Rather, even while setting rules and disciplining us, you still care about us.',
+        'Thank you for continuing to believe that we can learn and grow after making mistakes.',
+        'Looking back, our lives throughout these three years always seemed to be filled with noise, laughter, jokes and moments that occasionally gave our teachers a headache. Sometimes we were too excited. Sometimes we were not mature enough. Sometimes we even forgot that teachers also need to be understood and respected.',
+        'However, because of your guidance and patience, we were able to grow little by little through every experience we went through.',
+        'Perhaps we will not remember the content of every lesson, and perhaps we will not achieve good results in every examination. Perhaps we have disappointed you and made you worry about us. But please believe that the time, effort and dedication you invested in us were not meaningless.',
+        'Besides the knowledge in our textbooks, you also taught us how to get along with others, how to face our mistakes, how to take responsibility for our actions, and how to learn understanding and tolerance as part of a group.',
+        'The reminders that once seemed ordinary, the advice that sometimes made us feel annoyed, and even the stern scoldings that once frightened us have gradually taken on a different meaning as we look back today.',
+        'Teachers, as we write this letter, we finally realise how short three years really are.',
+        'They are so short that before we could remember every single day clearly, we had already reached the end of our lower secondary school life. The teachers we used to see every day, the classrooms we had grown accustomed to, and the lessons and breaks we once thought would never end now carry a different meaning.',
+        'When we think about all this, we truly feel a little reluctant to move on.',
+        'We will miss the familiar voices, the noisy everyday moments, and the companionship we once took for granted.',
+        'It turns out that youth is not only about grand and extraordinary events. More often, it is about ordinary days spent with a group of people, the sight of teachers teaching at the front of the classroom, the sound of laughter echoing throughout the room, and the little moments we did not pay much attention to at the time but now wish we could treasure properly.',
+        'Actually, we know that after moving up to Form 4, we will still have opportunities to see you at school.',
+        'We may still bump into you in the corridors, greet you when passing your classroom, and occasionally stop to have a short conversation with you. Perhaps the next time we meet, we will still smile and greet you, and might even joke around with you as we used to.',
+        'Therefore, this is not a letter of farewell forever.',
+        'We simply want to take this opportunity, while the story of our three years in lower secondary school has not yet completely become a thing of the past, to tell you sincerely: thank you.',
+        'Even though we may still see you in the future, that does not mean we can continue spending every day in the same classroom as before, listening to your lessons, being reminded by you, making noise during recess, and then returning to class the next day as though nothing had happened.',
+        'In the future, we may still walk along the same corridors and see the same familiar faces, but we will no longer be the same class that once sat in your classrooms.',
+        'Perhaps one day, you will walk into a classroom and see a new group of students sitting in the seats that once belonged to us. Perhaps on another day, you will meet another mischievous class and find yourselves thinking of us again.',
+        'We wonder whether, at that time, you will still remember that there was once a class that was like “little angels” in Form 1, slowly turned into “little devils” in Form 2, and became so noisy in Form 3 that it left people not knowing whether to laugh or shake their heads.',
+        'Will you remember the girl who always shouted that she wanted to eat chicken drumsticks?',
+        'Will you remember the class that other classes called the “open-source hub for lame jokes”?',
+        'Will you remember the students crowding around the teacher’s desk during recess, as though they were holding an important “United Nations meeting” every day?',
+        'Will you remember the class that shouted and screamed wildly before school ended on Friday because we could finally have a break?',
+        'Or will you remember a particular lesson when you were already extremely frustrated with us, yet still held back your emotions and continued standing at the front of the classroom to finish teaching the lesson properly?',
+        'Teachers, perhaps you have taught many generations of students and met all kinds of classes. To you, we may simply be one of the many groups of students you have taught throughout your teaching career. Three years from now, new students will enter your classrooms, and new stories will continue to unfold.',
+        'However, to us, you are the people who were truly present in our lives and accompanied us throughout these three years of lower secondary school.',
+        'You watched us grow from Form 1, go through the changes of Form 2, and finally reach Form 3. You saw us at our most polite, and you also saw us at our most mischievous and troublesome. Perhaps we disappointed you at times, but perhaps you also felt happy when you saw us improve.',
+        'These things may simply be part of your daily work, but to us, they are moments in our lives that can never be repeated in exactly the same way.',
+        'We are not writing this letter because we want you to think that we are exceptionally outstanding students, nor are we asking you to forget the mistakes we once made.',
+        'We simply hope that many years from now, when you occasionally think back to the years 2024 to 2026, you will remember that you once taught a class like ours.',
+        'A class that was not perfect, but had many stories to tell.',
+        'A class that could make you angry and leave you feeling helpless, yet would also feel sad upon realising that you were hurt.',
+        'A class that might not have made you proud every single day, but was truly grateful to you.',
+        'Perhaps we could not always meet your expectations, and perhaps our examination results did not always make every teacher proud. Nevertheless, we hope that when you look back on these days in the future, you will know that your place in our hearts will never change because of our grades, the passing of time, or how far we eventually go in life.',
+        'If there was ever a time when our behaviour made you sad, please forgive us for being immature at that time. If there was ever a reminder from you that we failed to take seriously, we hope you will know that we are slowly growing up and learning to understand the things we did not understand before.',
+        'Perhaps we still cannot fully understand how difficult a teacher’s job can be. Perhaps we still do not know how to express our gratitude in the most beautiful words. But at least, as our three years of lower secondary school come to an end, we want to offer you our appreciation sincerely and wholeheartedly.',
+        'Thank you for not stopping teaching us just because we were not perfect.',
+        'Thank you for reminding us when we made mistakes, patiently explaining things when we did not understand, and continuing to give us opportunities even when we gave you a headache.',
+        'Thank you for helping us understand that what a teacher leaves behind for students is not only knowledge from textbooks, but also those moments that can still warm our hearts when we remember them many years later.',
+        'Teachers, we will still see you around school in the future.',
+        'So, the next time we meet, we may not say many touching words. We might simply smile and greet you as we usually do.',
+        'However, if one day you suddenly think of us, remember the seats we once occupied, remember that noisy classroom, and remember the days when we made you both angry and helpless, we hope you will also remember that behind all the noise was a group of students who were truly grateful to you.',
+        'We will continue to grow up and move towards our own futures.',
+        'You, on the other hand, will continue teaching new students, standing at the front of your classrooms, and becoming teachers who guide many students along their journeys of growth.',
+        'We simply hope that among all the generations of students you have taught, we can be one of those classes that occasionally comes to mind and makes you smile a little whenever you remember us.',
+        'Thank you for accompanying us throughout 2024 to 2026.',
+        'The things we experienced together during these three years may not have been extraordinary events that shook the world, but they are memories that belong only to our class, memories shared between you and us.',
+        'We are grateful that we had the chance to become your students.',
+        'We are also grateful that, at a time when we were still immature and did not yet understand many things, we met teachers who were willing to guide us patiently.',
+        'Although we may not be your most outstanding students, you are the teachers we respect the most.',
+        'For all the years ahead, we wish you happiness, joy, peace and good health.',
+        'May every day ahead bring you less exhaustion and more laughter. May the patience and care you have given to your students be returned to you through kindness and warmth in your own lives.',
+        'We also hope that one day, when you remember our class, what comes to mind will not simply be how noisy and mischievous we were, but the days we spent together and the fact that we grew up in your classrooms.',
+        'Thank you, our teachers.',
+        'This time, we truly want to say it sincerely.',
+        'We are not saying goodbye to you forever. We simply want to take this opportunity, as we leave lower secondary school, to tell you properly: being your students has been one of the most precious experiences of our youth.'
+      ]
+    },
+    ta: {
+      lang:'ta',
+      title:'எங்களுக்குக் கற்பித்த அனைத்து ஆசிரியர்களுக்கும் · 2024–2026',
+      headline:'எங்களுக்குக் கற்பித்த ஒவ்வொரு ஆசிரியருக்கும்',
+      letterTitle:'எங்களுக்குக் கற்பித்த அனைத்து ஆசிரியர்களுக்கும்',
+      letterSub:'2024–2026 வரை எங்களுடன் பயணித்ததற்கு நன்றி',
+      sign:'2024–2026 ஆண்டுகளில், உங்கள் மாணவர்களிடமிருந்து அன்புடனும் மரியாதையுடனும்.',
+      cta:'ஆசிரியர்களுக்கான நன்றிக் கடிதத்தைத் திறக்க',
+      close:'இந்த உறையை மூடு',
+      scrollHint:'முழுக் கடிதத்தையும் படிக்க கீழே உருட்டவும்',
+      readLabel:'கடிதத்தைக் கேள்', readPause:'வாசிப்பை நிறுத்து', readNoAudio:'இந்த மொழிக்கு ஒலி இன்னும் இல்லை',
+      noticeTitle:'கவனத்திற்கு',
+      noticeBody:'இந்த ஒலி செயற்கை நுண்ணறிவு (AI) மூலம் உருவாக்கப்பட்டது. வாசிப்பு, உச்சரிப்பு அல்லது இடைவெளிகள் அசல் உரையிலிருந்து சற்று வேறுபடலாம். ஏதேனும் வேறுபாடு இருந்தால், அசல் எழுத்து உரையையே பார்க்கவும். உங்கள் புரிதலுக்கு நன்றி.',
+      noticeSkip:'இந்த நினைவூட்டலை மீண்டும் காட்ட வேண்டாம்',
+      noticeCancel:'ரத்து', noticeOk:'புரிந்தது, இயக்கு',
+      musicPlay:'பின்னணி இசையை இயக்கு', musicPause:'பின்னணி இசையை நிறுத்து', musicNone:'பின்னணி இசை அமைக்கப்படவில்லை',
+      body:[
+        'அன்பிற்குரிய ஆசிரியர்களே,',
+        'இந்தக் கடிதம் உங்கள் கைகளில் சேரும்போது, நீங்கள் நலமாகவும் அமைதியாகவும் இருப்பீர்கள் என்று நம்புகிறோம்.',
+        'இந்தக் கடிதத்தை எழுதும்போது, எங்கள் மனதில் சொல்ல வேண்டிய பல விஷயங்கள் இருக்கின்றன. ஆனால், எங்கிருந்து தொடங்குவது என்று தெரியவில்லை. படிவம் 1 முதல் படிவம் 3 வரை கடந்த இந்தக் காலத்தைத் திரும்பிப் பார்க்கும்போது, உண்மையிலேயே ஒவ்வொரு தருணத்தையும் மெதுவாக நினைவுகூர்ந்து ரசிக்கத் தோன்றுகிறது. மூன்று ஆண்டுகள் இவ்வளவு விரைவாகக் கடந்துவிடும் என்று நாங்கள் நினைக்கவே இல்லை. அந்த நாட்களைச் சரியாகப் பொக்கிஷமாகப் பாதுகாத்து ரசிப்பதற்குள், எங்கள் இடைநிலைப் பள்ளி வாழ்க்கையின் இறுதிக்கட்டத்தை வந்தடைந்துவிட்டோம்.',
+        'நேரம் இன்னும் நிறைய இருக்கிறது என்று நினைத்துக்கொண்டிருந்தபோது, ஒரு கணத்தில் திரும்பிப் பார்த்தால் எங்களிடம் மீதமிருக்கும் நேரம் மிகவும் குறைவாகிவிட்டது. ஒவ்வொரு நாளும் மீண்டும் மீண்டும் நடக்கும் என்று நினைத்த வகுப்புகள், இடைவேளைகள், ஆசிரியர்களின் அறிவுரைகள், நண்பர்களுடன் விளையாடிக் குறும்பு செய்த நாட்கள்—இவற்றை இன்று திரும்பிப் பார்க்கும்போது, இவையே எங்களால் மிகவும் பிரிய மனமில்லாத நினைவுகளாக மாறிவிட்டன.',
+        'படிவம் 1-இல் இருந்தபோது, நாங்கள் அனைவரும் சொல்வதுபோல், “சின்னத் தேவதைகள்” ஆக இருந்தோம். அப்போது நாங்கள் மரியாதையாக நடந்துகொண்டோம், ஆசிரியர்களைப் பார்த்தவுடன் முன்வந்து வணக்கம் சொன்னோம், ஆசிரியர்களை மதிக்கவும் தெரிந்திருந்தது. அதனால் பல ஆசிரியர்களிடமிருந்து பாராட்டுகளையும் பெற்றோம். அப்போது நாங்கள் இன்னும் கொஞ்சம் பக்குவமடையாதவர்களாகவும், அடுத்தகட்ட இடைநிலைப் பள்ளி வாழ்க்கையைப் பற்றிப் பல எதிர்பார்ப்புகளைக் கொண்டவர்களாகவும் இருந்திருக்கலாம். எங்களுடைய உண்மையான “திறமைகளை” அப்போது இன்னும் முழுமையாக வெளிப்படுத்தியிருக்கவில்லை.',
+        'ஆனால், காலம் மெதுவாகக் கடந்தபோது, நாங்களும் மாறத் தொடங்கிவிட்டோம்.',
+        'படிவம் 2-க்கு வந்தபோது, நாங்கள் படிப்படியாக “சின்னத் தேவதைகளிலிருந்து” “குறும்புப் பிசாசுகளாக” மாறினோம். வகுப்பின்போது திடீரென்று வெளிவரும் விசித்திரமான கருத்துகள், ஆசிரியர்களைச் சிரிப்பதா அழுவதா என்று தெரியாமல் செய்யும் செயல்கள், தொடர்ந்து நிகழ்ந்துகொண்டிருந்த பல்வேறு சிறு சம்பவங்கள்—இவை அனைத்தும் எங்கள் வகுப்பை நாளுக்கு நாள் இன்னும் கலகலப்பாக மாற்றின. படிவம் 3-க்கு வந்தபோது, நாங்கள் முற்றிலும் கட்டுப்பாடின்றி நடந்துகொள்ளத் தொடங்கிவிட்டோம். படிவம் 1-இல் சேர்த்துவைத்திருந்த எங்கள் உற்சாகத்தையும் குறும்புத்தனத்தையும் ஒரே நேரத்தில் வெளியேற்றிவிட்டதுபோல் இருந்தது. வகுப்பில் சாப்பிடுவது, உரக்கக் கூச்சலிடுவது, சத்தம் போடுவது என்று சில நேரங்களில் எங்கள் வகுப்பறையே சுன் வுகோங் சொர்க்கத்தில் கலகம் செய்ததைப் போல இருந்தது. இப்போது நினைத்துப் பார்க்கும்போது, நாளுக்கு நாள் இன்னும் குறும்புக்காரர்களாக மாறிய எங்களை மூன்று ஆண்டுகள் பொறுமையுடன் வழிநடத்திய ஆசிரியர்களை உண்மையிலேயே வியக்காமல் இருக்க முடியவில்லை.',
+        'இந்த மூன்று ஆண்டுகளில் பலர் வந்தார்கள், பலர் சென்றார்கள். எங்களைச் சுற்றியிருந்த முகங்கள் தொடர்ந்து மாறிக்கொண்டே இருந்தன. ஆனால், எங்கள் வகுப்புக்குச் சொந்தமான கதைகள் மட்டும் ஒருபோதும் நின்றுவிடவில்லை. புதிய மாணவர்கள் எங்கள் வகுப்பில் சேர்ந்தார்கள்; சில மாணவர்கள் எங்களை விட்டுச் சென்றார்கள். புதிய ஆசிரியர்கள் எங்கள் வகுப்பறைக்குள் வந்தார்கள்; முன்பு எங்களுக்குக் கற்பித்த சில ஆசிரியர்கள் பள்ளியைவிட்டுச் சென்றார்கள். சில ஆசிரியர்கள் பின்னர் எங்களுடன் வகுப்பில் இல்லாமல் போனாலும், சில முகங்கள் படிப்படியாக நினைவுகளில் மட்டுமே தங்கிவிட்டாலும், நீங்கள் எங்களுக்குக் கற்பித்தீர்கள் என்ற உண்மை காலம் கடந்ததால் மாறிவிடாது. எங்களுடன் நீங்கள் இருந்த காலம் நீண்டதாக இருந்தாலும் குறுகியதாக இருந்தாலும், நீங்கள் எங்கள் இடைநிலைப் பள்ளி வாழ்க்கையின் ஒரு பகுதியாகிவிட்டீர்கள்.',
+        'எங்கள் வகுப்பின் நினைவுகளைப் பற்றிப் பேசத் தொடங்கினால், சொல்லிக்கொண்டே இருக்கக்கூடிய எண்ணற்ற சம்பவங்கள் இருக்கின்றன.',
+        'படிவம் 1 முதல் படிவம் 2 வரை, ஒரு பெண் மாணவி எப்போதும் ஒரே வார்த்தைகளைத் திரும்பத் திரும்பச் சொல்வது நினைவிருக்கிறதா? “ஆசிரியரே, எனக்குக் கோழிக்கால் சாப்பிட வேண்டும்! ஆசிரியரே, எனக்குக் கோழிக்கால் சாப்பிட வேண்டும்!” என்று அவர் அடிக்கடி கூறுவார். இப்போது நினைத்துப் பார்த்தால், அந்த வாக்கியம் எங்கள் வகுப்பின் தனித்துவமான நினைவுகளில் ஒன்றாகவே மாறிவிட்டது. அப்போது அது சாதாரணமாகச் சொல்லப்பட்ட ஒரு வார்த்தையாக மட்டுமே இருந்திருக்கலாம். ஆனால், அன்றாட வாழ்க்கையில் நடந்த இப்படிப்பட்ட சாதாரணமான, சில நேரங்களில் காரணமே புரியாத சிறிய சம்பவங்கள்தான் எங்கள் பள்ளி வாழ்க்கையை இவ்வளவு சுவாரஸ்யமாக மாற்றின.',
+        'எங்கள் தொண்டு விற்பனை நிகழ்ச்சியும் நினைவிருக்கிறது. அந்த நிகழ்ச்சிக்காக அனைவரும் நிறையத் தயாரிப்புகளைச் செய்தோம். அந்தக் காலத்தில், ஒரே இலக்கை அடைவதற்காக நாங்கள் அனைவரும் ஒன்றாகப் பணிகளில் ஈடுபட்டோம்; வகுப்பிற்குச் சொந்தமான பொறுப்புகளையும் ஒன்றாக நிறைவேற்றினோம். இன்று திரும்பிப் பார்க்கும்போது, அந்தத் தொண்டு விற்பனை நிகழ்ச்சி வெறும் ஒரு நிகழ்ச்சி மட்டுமல்ல. நாங்கள் ஒன்றாக முயற்சி செய்து, ஒன்றாக ஒத்துழைத்ததற்கான சான்றாகவும் அது இருக்கிறது. அப்போது நாங்கள் செய்ய வேண்டிய வேலையைச் சரியாக முடிப்பதில் மட்டுமே கவனம் செலுத்தியிருக்கலாம். ஆனால், ஒன்றாக அனுபவித்த அந்தத் தருணங்கள் எதிர்காலத்தில் நினைத்துப் பார்க்கத் தகுந்த இளமைக்கால நினைவுகளாக மாறும் என்பதை அப்போது உணரவில்லை.',
+        'நிச்சயமாக, எங்கள் வகுப்பில் ஒவ்வொரு நாளும் இவ்வளவு ஒழுங்காக இருக்கவில்லை.',
+        'படிவம் 2-இல் நடந்த வரலாற்றுப் பாடத்தின்போது, எங்களில் ஒருவர் வரலாற்று ஆசிரியரைக் கோபப்படுத்தி, அவர் அங்கேயே கோபமடைந்த சம்பவம் நடந்தது. இப்போது திரும்பிப் பார்க்கும்போது, சில நேரங்களில் நாங்கள் உண்மையிலேயே அளவுக்கு அதிகமாகக் குறும்பு செய்தோம் என்பதை ஒப்புக்கொள்ள வேண்டும். எங்களுடைய மகிழ்ச்சியில் மட்டுமே கவனம் செலுத்தி, ஆசிரியர்களும் வகுப்பறையின் ஒழுங்கைப் பராமரிக்க வேண்டியிருக்கிறது என்பதையும் அவர்களுக்கும் சொந்தமான உணர்வுகள் இருக்கின்றன என்பதையும் மறந்துவிட்டோம். இருந்தாலும், நாங்கள் சில நேரங்களில் வரலாற்று ஆசிரியருக்குத் தலைவலியாக இருந்தபோதும், ஆசிரியர் மீண்டும் மீண்டும் எங்களைப் பொறுத்துக்கொண்டு பொறுமையாகக் கற்பித்தார். எங்கள் குறும்புத்தனத்தைக் காரணமாகக் கொண்டு எங்களை அவ்வளவு எளிதில் கைவிடாததற்கு நன்றி. கோபமடைந்த பிறகும் தொடர்ந்து எங்களுக்குக் கற்பிக்கத் தயாராக இருந்ததற்கும் நன்றி.',
+        'படிவம் 3-க்கு வந்தபோது, எங்கள் குறும்புத்தனம் இன்னும் ஒரு நிலை உயர்ந்துவிட்டது போல இருந்தது.',
+        'இடைவேளை மணி அடித்தவுடன், எங்கள் வகுப்பறை வேறொரு உலகமாக மாறிவிடும். நாங்கள் அனைவரும் தன்னிச்சையாக ஆசிரியரின் மேசையைச் சுற்றிக் கூடிவிடுவோம். ஒருவர் பின் ஒருவராக அங்கே வந்து நிற்பார்கள்; சிலர் உட்காருவார்கள், சிலர் உணவுப் பொருட்களை எடுத்துவருவார்கள். இப்படியே அனைவரும் ஒன்றாக அமர்ந்து சாப்பிடுவோம், பேசுவோம், சிரித்துக்கொண்டே அரட்டை அடிப்போம். ஆசிரியர் அங்கே இல்லாவிட்டாலும், ஆசிரியரின் மேசையைச் சுற்றி அமர்ந்திருப்பவர்கள் நாங்கள்தான். சில நேரங்களில் ஆசிரியரின் மேசையின் மேலேயே உணவையும் வைத்துச் சாப்பிட்டோம்.',
+        'தொலைவிலிருந்து பார்த்தால், ஏதோ முக்கியமான பெரிய கூட்டம் நடப்பதைப் போலவே தோன்றும். ஒவ்வொருவரும் தங்களுக்குச் சொந்தமான கருத்துகளைச் சொல்ல வேண்டியவர்களைப் போலவும், தங்களுக்குச் சொந்தமான விஷயங்களை விவாதிக்க வேண்டியவர்களைப் போலவும் இருப்பார்கள். அனைவரும் ஒன்றாகக் கூடி, மிகவும் கலகலப்பாக இருப்போம். உண்மையில் அது வெறும் இடைவேளை நேரம் மட்டுமே. ஒன்றாகச் சாப்பிடுவதற்காகக் கூடியிருந்தோம். ஆனால், முழு வகுப்பின் பிரதிநிதிகளும் ஒன்றுகூடி முக்கியமான விஷயங்களை விவாதிப்பதைப் போன்ற தோற்றத்தை நாங்கள் உருவாக்கிவிட்டோம்.',
+        'இதனால்தான் எங்கள் வகுப்புக்கு “ஐக்கிய நாடுகள் சபை” என்ற பெயர் வந்தது. படிவம் 3-க்கு வந்தபோது, மற்ற வகுப்புகளைச் சேர்ந்த பல மாணவர்களும் நேரடியாக எங்கள் வகுப்பறைக்குள் வந்து இந்தக் கலகலப்பான “கூட்டத்தில்” இணைந்துகொள்வார்கள். ஆரம்பத்தில் எங்கள் வகுப்புக்குச் சொந்தமான இடமாக இருந்தது, மாணவர்கள் தொடர்ந்து வந்து போனதால் ஒரு சிறிய “ஐக்கிய நாடுகள் சபை” போல மாறிவிட்டது. சில நேரங்களில் அனைவரும் ஆசிரியரின் மேசையைச் சுற்றி அமர்ந்து சாப்பிடுவதையும், பேசுவதையும், குறும்பு செய்வதையும் பார்த்தால், முடிவே இல்லாத ஒரு பெரிய கூட்டம் நடப்பதைப் போலவே இருக்கும்.',
+        'ஆசிரியரின் மேசை என்பது முதலில் ஆசிரியர் வகுப்பில் பயன்படுத்துவதற்கான இடமாக இருந்தது. ஆனால் எங்கள் வகுப்பில் அது “ஐக்கிய நாடுகள் சபையின் மாநாட்டு மண்டபமாக” மாறிவிட்டது. நாங்கள் மாணவர்களோ, ஒவ்வொரு நாளும் சரியான நேரத்தில் கூட்டத்திற்கு வருகை தரும் பிரதிநிதிகளாக இருந்தோம். அப்போது இப்படி ஒன்றாகக் கூடி உண்பதும் பேசுவதும் மிகவும் வேடிக்கையாக இருந்தது என்று மட்டுமே நினைத்திருக்கலாம். ஆனால் இன்று நினைத்துப் பார்க்கும்போது, ஒன்றாக அமர்ந்து சாப்பிட்ட, பேசிக் கலகலத்த, குறும்பு செய்த அந்த நேரங்கள்தான் படிவம் 3 வாழ்க்கையின் மிகவும் தெளிவாக நினைவில் நிற்கும் பகுதிகளில் ஒன்றாக மாறிவிட்டன.',
+        'படிவம் 2 முதல் படிவம் 3 வரை, மற்ற வகுப்புகளைச் சேர்ந்த மாணவர்கள் எங்கள் வகுப்பிற்கு ஒரு தனிப்பட்ட பெயரையும் வைத்தார்கள்—“மொக்கை நகைச்சுவைகளின் திறந்த மூல மையம்”. இவ்வளவு மொக்கையான நகைச்சுவைகளை யார் வழங்கினார்கள் என்று எங்களுக்கே தெரியவில்லை. ஆனால் இந்தப் பெயர் வெளியே பரவிவிட்டதால், எங்கள் வகுப்பிற்கும் தனக்கென ஒரு “நகைச்சுவைத் திறமை” இருக்கிறது என்று தெரிகிறது.',
+        'எங்கள் வகுப்பில் மிகவும் உரத்த குரலில் பேசும் அந்தப் பெண் மாணவியும் நினைவிருக்கிறார். அவர் பேசத் தொடங்கியவுடன், அனைவரின் செவிப்பறைகளையும் உடைத்துவிடும் அளவுக்கு அவரது குரல் மிகவும் அதிகமாக இருக்கும். இப்படிப்பட்ட சம்பவங்கள் நடக்கும் ஒவ்வொரு முறையும், முழு வகுப்பிலும் சிரிப்பதா என்ன செய்வதா என்று தெரியாத தருணங்கள் உருவாகும். இன்று திரும்பிப் பார்க்கும்போது, அந்தச் சத்தமும் கூச்சலும் நிறைந்த காட்சிகள்கூட நாங்கள் பிரிய மனமில்லாத நினைவுகளின் ஒரு பகுதியாகிவிட்டன.',
+        'ஒரு வெள்ளிக்கிழமையும் இருக்கிறது. இன்றுவரை அதை நினைத்துப் பார்த்தால், அன்றைய பைத்தியக்காரத்தனமான உற்சாகம் இன்னும் உணரப்படுவது போல இருக்கிறது.',
+        'அடுத்த நாள் சனிக்கிழமை என்பதால், இறுதியாக ஓய்வெடுக்க முடியும் என்ற மகிழ்ச்சியில் அனைவரும் பள்ளி முடியும் நேரத்திற்கு முன்பே அளவுக்கு அதிகமாக உற்சாகமடைந்திருந்தோம். வகுப்பறையில் உரக்கக் கத்தினோம்; சிலர் பொருட்களை இங்கும் அங்கும் தூக்கி எறிந்தார்கள். முழு வகுப்பும் குழப்பமாக மாறிவிட்டது. அந்த நேரத்தில், அனைவரும் பள்ளியைவிட்டு வெளியே ஓடி, தங்களுக்கான ஓய்வு நேரத்தை வரவேற்கத் தயாராக இருப்பதைப் போல இருந்தோம். இப்போது நினைத்துப் பார்க்கும்போது, விடுமுறைக்காக நாங்கள் இவ்வளவு அளவுக்கு அதிகமாக உற்சாகமடைய முடிந்ததே என்று தோன்றுகிறது. இப்படிப்பட்ட நாட்களிலும் ஆசிரியர்கள் வகுப்பறையின் ஒழுங்கைப் பராமரிக்க முயற்சி செய்ய வேண்டியிருந்தது. உண்மையிலேயே உங்களுக்கு மிகவும் சிரமமாக இருந்திருக்கும்.',
+        'இங்கே வந்தபோது, கணித ஆசிரியருக்கு நாங்கள் குறிப்பாக நன்றி சொல்ல வேண்டும்.',
+        'கணித ஆசிரியரே, இத்தனை காலமாக எங்களிடம் பொறுமையுடனும் சகிப்புத்தன்மையுடனும் இருந்ததற்கு நன்றி. ஒவ்வொரு முறையும் நாங்கள் உங்களுக்கு நிம்மதியை அளிக்கும் மாணவர்களாக இருக்கவில்லை என்பதை நாங்கள் அறிவோம். சில நேரங்களில் எங்களால் நீங்கள் ஏற்கெனவே கோபமடைந்திருந்தாலும், தொடர்ந்து மேடையில் நின்று பாடம் நடத்துவீர்கள். கணக்குகளைத் தீவிரமாக விளக்குவீர்கள். நாங்கள் புரிந்துகொண்டு கற்றுக்கொள்ள வேண்டும் என்பதற்காக முயற்சி செய்வீர்கள்.',
+        'ஆனால், ஒரு சம்பவம் இருக்கிறது. அதை இன்றுவரை நினைத்துப் பார்க்கும்போது எங்கள் மனதில் சிறிது வருத்தம் ஏற்படுகிறது.',
+        'அந்த முறை, ஒரு பெண் மாணவிக்கும் கணித ஆசிரியருக்கும் இடையே மோதல் ஏற்பட்டது. ஆசிரியர் ஒரு வாக்கியம் சொன்னால், அந்த மாணவி அதற்குப் பதிலாக இன்னொரு வாக்கியத்தைச் சொன்னார். இருவரின் வார்த்தைகளும் ஒன்றன்பின் ஒன்றாகத் தொடர்ந்தன. சூழ்நிலையும் படிப்படியாக மேலும் பதற்றமாக மாறியது. அப்போது அந்தச் சம்பவம் எவ்வளவு தீவிரமானது என்பதை நாங்கள் உண்மையாகப் புரிந்துகொள்ளாமல் இருந்திருக்கலாம். அல்லது அருகில் நின்று பார்த்துக்கொண்டிருந்தாலும், அந்த வாக்குவாதம் ஆசிரியரை இவ்வளவு வருத்தப்படுத்தும் என்று நினைக்காமல் இருந்திருக்கலாம்.',
+        'இறுதியில், ஆசிரியரால் உண்மையிலேயே கண்ணீரைக் கட்டுப்படுத்த முடியவில்லை.',
+        'ஆசிரியர் கோபத்துடன் கதவை மூடிவிட்டு வெளியேறியபோது, சத்தமாகக் கூச்சலிட்டுக்கொண்டிருந்த வகுப்பறை திடீரென்று அமைதியாகிவிட்டது. ஒரு கணத்திற்கு முன்பு வரை கலகலப்பாக இருந்த நாங்கள், ஒரே நேரத்தில் எங்கள் குரலை இழந்துவிட்டதைப் போல இருந்தது. அந்தக் கணத்தில்தான், இது இனிமேலும் சாதாரணமான வாய்த்தகராறு அல்ல, வழக்கமான வகுப்பறை மோதல் மட்டுமல்ல என்பதை அனைவரும் மெதுவாக உணரத் தொடங்கினோம்.',
+        'எப்போதும் மேடையில் நின்று எங்களுக்குக் கணிதம் கற்பித்து, பொறுமையாகக் கணக்குகளை விளக்கும் அந்த ஆசிரியருக்கும் எங்களுடைய வார்த்தைகளாலும் நடத்தையாலும் மனவேதனை ஏற்படலாம்; அவராலும் ஒரு கட்டத்தில் தாங்கிக்கொள்ள முடியாமல் போகலாம் என்பது அப்போதுதான் எங்களுக்குப் புரிந்தது.',
+        'அந்த நேரத்தில், இரண்டு ஆண் மாணவர்களும் மூன்று பெண் மாணவிகளும் ஆசிரியர் உண்மையாகவே வருத்தமடைந்துவிட்டார் என்பதை முதலில் உணர்ந்துகொண்டார்கள். பின்னர், ஒரு மாணவர் தானாகவே ஆசிரியரிடம் சென்று, “மன்னிக்கவும்” என்று கூறினார்.',
+        'அந்த மன்னிப்புக் கோரல் உடனடியாக எல்லா வருத்தங்களையும் மறையச் செய்யாமல் இருந்திருக்கலாம். இருந்தாலும், ஆசிரியரின் உணர்வுகளை நாங்கள் அலட்சியப்படுத்தவில்லை என்பதை உங்களுக்குத் தெரியப்படுத்தவே நாங்கள் விரும்பினோம். அப்போது நாங்கள் இன்னும் போதுமான அளவு பக்குவமடையாமல் இருந்திருக்கலாம். எங்களுடைய உணர்வுகளை எப்படிச் சரியாக வெளிப்படுத்துவது என்பது தெரியாமல் இருந்திருக்கலாம். ஒருவருக்குப் பதிலுக்குப் பதில் பேசுவதும், சிந்திக்காமல் சொல்லும் ஒரு வார்த்தையும் மற்றவரை வருத்தப்படுத்தக்கூடும் என்பதையும் புரிந்துகொள்ளாமல் இருந்திருக்கலாம்.',
+        'கணித ஆசிரியரே, எங்களை மன்னித்துவிடுங்கள்.',
+        'நாங்கள் புரிந்துகொள்ளாமல் நடந்துகொண்ட பல தருணங்களுக்காக மன்னிக்கவும். சில நேரங்களில் வாதிடுவதில் மட்டுமே கவனம் செலுத்தி, நீங்கள் சொல்வதைச் சரியாகக் கேட்க மறந்ததற்காக மன்னிக்கவும். ஒவ்வொரு நாளும் நீங்கள் மேடையில் நின்று, நாங்கள் கற்றுக்கொள்ளவும் முன்னேறவும் வேண்டும் என்ற எண்ணத்துடன் அறிவைப் பகிர்ந்துகொண்டீர்கள். ஆனால் சில நேரங்களில், நாங்கள் உங்களுக்குக் கொடுக்க வேண்டிய மரியாதையை வழங்கவில்லை.',
+        'எங்களால் நீங்கள் வருத்தமடைந்தபோதும், மீண்டும் மீண்டும் பொறுமையுடன் எங்களுக்குக் கற்பித்ததற்கு நன்றி. அந்த ஒரு மோதலுக்குப் பிறகும் தொடர்ந்து எங்களுக்குக் கற்பிப்பதை நிறுத்தாமல் இருந்ததற்கு நன்றி. நாங்கள் கணிதக் கணக்குகளைக் கற்றுக்கொள்ள வேண்டும் என்பதற்காக மட்டுமல்ல; மற்றவர்களை மதிக்கவும், பொறுப்பை ஏற்கவும், மோதல்கள் ஏற்படும்போது நன்றாகப் பேசித் தீர்த்துக்கொள்ளவும் வேண்டும் என்பதற்காகவும் நீங்கள் விரும்பினீர்கள் என்பதை நாங்கள் அறிவோம்.',
+        'ஒருவேளை அப்போது இந்த வார்த்தைகளை உங்களிடம் சொல்லாமல் இருந்திருக்கலாம். ஆனால் இப்போது, மனப்பூர்வமாக உங்களுக்கு நன்றி சொல்லவும், மன்னிப்புக் கேட்கவும் விரும்புகிறோம்.',
+        'எதிர்காலத்தில் நீங்கள் எங்கள் வகுப்பை நினைத்துப் பார்க்கும்போது, உங்களுக்குத் தலைவலியை ஏற்படுத்திய நாட்களை மட்டும் நினைவுகூராமல், எங்கள் அறியாமையை நாங்கள் உணர்ந்துகொண்டதையும், உங்களிடம் மன்னிப்புக் கேட்டதையும், வளர்ச்சிப் பயணத்தில் உங்கள் சிரமங்களையும் அர்ப்பணிப்பையும் மெதுவாகப் புரிந்துகொள்ளத் தொடங்கியதையும் நினைவில் வைத்திருப்பீர்கள் என்று நம்புகிறோம்.',
+        'ஏனெனில், உங்களுடைய நினைவுகளில் நாங்கள் உங்களை வருத்தப்படுத்திய மாணவர்களாக மட்டுமே இருக்க வேண்டாம் என்று விரும்புகிறோம். அதற்குப் பதிலாக, இன்னும் பக்குவமடையாத, சில நேரங்களில் தவறு செய்யும், ஆனால் படிப்படியாக வளர்ந்துகொண்டிருந்த குழந்தைகளுக்குக் கற்பித்த ஆசிரியராக நீங்கள் எங்களை நினைவுகூர வேண்டும் என்று விரும்புகிறோம்.',
+        'நாங்களும் ஒரு கணித ஆசிரியரை நினைவில் வைத்திருப்போம். சில நேரங்களில் எங்களால் வருத்தமடைந்தாலும், தொடர்ந்து எங்களுக்கு உண்மையாகக் கற்பித்த ஆசிரியரை.',
+        'நன்றி, கணித ஆசிரியரே.',
+        'எங்கள் அறிவியல் ஆசிரியரும் அதே நேரத்தில் எங்கள் வகுப்பு ஆசிரியருமான நீங்கள், இந்த மூன்று ஆண்டுகளிலும் எங்களுடன் பயணித்த மிக முக்கியமான ஒருவராக இருந்தீர்கள்.',
+        'நாங்கள் அளவுக்கு அதிகமாகக் குறும்பு செய்தபோதோ, அல்லது நீங்கள் தீவிரமாகக் கவனிக்க வேண்டிய சூழ்நிலை ஏற்பட்டபோதோ, நீங்கள் எப்போதும் ஒரு வாக்கியத்தைச் சொல்வீர்கள்: “நாம் ஒரே வகுப்பைச் சேர்ந்தவர்கள்.”',
+        'இந்த வாக்கியம் கேட்பதற்குச் சாதாரணமாக இருக்கலாம். ஆனால் இப்போது நினைத்துப் பார்க்கும்போது, அதில் பல அர்த்தங்கள் இருப்பதை உணர்கிறோம். நாம் ஒரே வகுப்பைச் சேர்ந்தவர்கள் என்பதால், நம்மைப் பற்றி மட்டுமே சிந்திக்கக் கூடாது. நாம் ஒரே வகுப்பைச் சேர்ந்தவர்கள் என்பதால், ஒருவரையொருவர் புரிந்துகொள்ளவும், பொறுத்துக்கொள்ளவும் கற்றுக்கொள்ள வேண்டும். நம்முடைய செயல்களுக்குப் பொறுப்பேற்கவும் வேண்டும். ஒரு வகுப்பில் ஒருபோதும் பிரச்சினைகள் ஏற்படாமல் இருக்க முடியாது; அனைவரும் ஒரே மாதிரியாகவும் இருக்க முடியாது. ஆனால், நாம் ஒருவருடைய நிலைப்பாட்டில் இருந்து சிந்திக்கத் தயாராக இருந்தால், ஒன்றாகச் சேர்ந்து இன்னும் சிறந்தவர்களாக மாற முடியும்.',
+        'நாங்கள் குறும்பு செய்யும்போது எங்களை நினைவூட்டியதற்கும், எங்களைக் கட்டுப்படுத்த வேண்டிய நேரங்களில் எங்களைத் தீவிரமாக வழிநடத்தியதற்கும் நன்றி. வகுப்பறையில் விளையாட எங்களுக்கு அனுமதி அளித்ததற்கும் நன்றி. இதனால் கற்றல் என்பது பாடப்புத்தகங்கள், வீட்டுப்பாடங்கள், தேர்வுகள் ஆகியவற்றை மட்டும் கொண்டதாக இருக்கவில்லை. சிரிப்பும் மகிழ்ச்சியும் நிறைந்த வகுப்புகள், பரபரப்பான படிப்பு வாழ்க்கைக்கு நடுவில் சில இலகுவான, மகிழ்ச்சியான தருணங்களையும் எங்களுக்கு வழங்கின.',
+        'பல ஆண்டுகளுக்குப் பிறகு, நாங்கள் செய்த ஒவ்வொரு கணக்கையும் நினைவில் வைத்திருக்காமல் இருக்கலாம். ஆனால், முழு வகுப்பையும் சிரிக்க வைத்த அந்தப் பாடங்களையும், ஆசிரியர் சொன்ன “நாம் ஒரே வகுப்பைச் சேர்ந்தவர்கள்” என்ற வார்த்தைகளையும் நினைவில் வைத்திருக்கக்கூடும்.',
+        'மலாய் மொழி ஆசிரியருக்கும் எங்களுடைய நன்றியைத் தெரிவித்துக்கொள்கிறோம். எங்களுக்குத் தொடர்ந்து அக்கறையுடன் கற்பித்ததற்கு நன்றி. விஷயங்களை விளக்குவதற்கும், எங்களுக்கு வழிகாட்டுவதற்கும் நேரம் ஒதுக்கியதற்கு நன்றி. இதன் மூலம் நாங்கள் படிப்படியாக முன்னேற முடிந்தது. உங்களுடைய தீவிரமான முயற்சியையும் அக்கறையையும் நாங்கள் கவனித்திருக்கிறோம். சில நேரங்களில் எங்களால் உடனடியாகச் சிறப்பாகச் செய்ய முடியாமல் இருந்தாலும், அதனால் நீங்கள் பொறுமையை இழக்காமல் தொடர்ந்து எங்களை முன்னோக்கி வழிநடத்தியதற்கு நன்றி.',
+        'சீன மொழி ஆசிரியருக்கும் நன்றி. எங்களுடன் பல வகுப்புத் தருணங்களைப் பகிர்ந்துகொண்டதற்கு நன்றி. எப்படியாவது உங்களைச் சிரிக்க வைக்க நாங்கள் ஒரு வழியைக் கண்டுபிடித்துவிடுவோம். சில நேரங்களில் எந்த வார்த்தையோ, எந்தச் செயலோ உங்களை மீண்டும் சிரிக்க வைத்தது என்பதுகூட எங்களுக்கே தெரியாமல் இருக்கலாம். இப்போது நினைத்துப் பார்க்கும்போது, வகுப்பறையில் ஆசிரியருடன் இப்படிப்பட்ட மகிழ்ச்சியான தொடர்புகளைப் பகிர்ந்துகொள்ள முடிந்தது உண்மையிலேயே அரிய விஷயம்.',
+        'சீன மொழிப் பாடம் என்பது எழுத்துகளையும் அறிவையும் கற்றுக்கொள்ளும் இடமாக மட்டுமே இல்லாமல், பல இலகுவான, அன்பான நினைவுகளையும் விட்டுச் சென்றதற்கு நன்றி. வகுப்பின்போது நாங்கள் சொன்ன ஏதாவது ஒரு வார்த்தை உங்களைச் சிரிக்க வைத்திருக்கலாம்; நாங்கள் செய்த ஏதாவது ஒரு எதிர்வினை சாதாரணமான பாடத்தை இன்னும் கலகலப்பாக மாற்றியிருக்கலாம். இவை அனைத்தும் சாதாரணமான சிறிய விஷயங்களாகத் தோன்றினாலும், இன்று நினைத்துப் பார்க்கும்போது எங்கள் மனதில் மதிப்புமிக்க நினைவுகளாக இருக்கின்றன.',
+        'படிவம் 1 முதல் படிவம் 3 வரை எங்களுக்குக் கற்பித்த ஆங்கில ஆசிரியர்களுக்கும் நாங்கள் சிறப்பாக நன்றி சொல்ல விரும்புகிறோம்.',
+        'இந்த மூன்று ஆண்டுகளில் எங்களுடைய ஆங்கில ஆசிரியர்கள் மாறிக்கொண்டே இருந்தாலும், எங்களுக்குக் கற்பித்த ஒவ்வொரு ஆங்கில ஆசிரியரும் எங்களுடைய நன்றிக்குரியவர்களே. எங்களுக்குக் கற்பித்ததற்கும், இந்தக் காலத்தில் எங்களுக்காக எடுத்த முயற்சிகளுக்கும் நன்றி.',
+        'குறிப்பாக, படிவம் 3-க்கு வந்தபோது ஆங்கில வகுப்பின் ஒழுங்கு மிகவும் குழப்பமாக மாறிவிட்டது. சில நேரங்களில், சில மாணவர்கள் ஆசிரியர் சொல்வதைக் கேட்காமல், வகுப்பறையில் அனைவரின் முன்னிலையிலும் உரக்கக் கூச்சலிட்டு ஆரவாரம் செய்தார்கள். இப்போது திரும்பிப் பார்க்கும்போது, சில நேரங்களில் நாங்கள் உண்மையிலேயே சரியாக நடந்துகொள்ளவில்லை என்பதை அறிவோம். எங்கள் நடத்தையால் ஆங்கில ஆசிரியர்களுக்கு உதவியற்ற உணர்வும் தலைவலியும் ஏற்பட்டிருக்கலாம்.',
+        'இந்த மூன்று ஆண்டுகளில் எங்களுக்குக் கற்பித்த ஆங்கில ஆசிரியர்கள் எத்தனை முறை மாறியிருந்தாலும், எங்களுக்குக் கற்பித்த ஒவ்வொரு ஆங்கில ஆசிரியரிடமும் இந்த வாய்ப்பைப் பயன்படுத்தி நன்றி சொல்ல விரும்புகிறோம். எங்கள் வகுப்பறைக்குள் வந்து எங்களுக்குக் கற்பித்ததற்கும், எங்களுக்காக நேரத்தையும் உழைப்பையும் செலவிட்டதற்கும் நன்றி. சில ஆசிரியர்கள் இப்போது எங்களுக்குக் கற்பிக்காமல் இருக்கலாம். ஆனால், நீங்கள் எங்களுக்குக் கற்பித்தீர்கள் என்ற உண்மையை நாங்கள் தொடர்ந்து நினைவில் வைத்திருப்போம்.',
+        'நிச்சயமாக, எங்களுக்குக் கற்பித்த மற்ற பல ஆசிரியர்களும் இருக்கிறார்கள்.',
+        'எங்கள் நடத்தையால் நீங்கள் கோபமடைந்திருக்கலாம்; சில நேரங்களில் எங்களைப் பற்றி என்ன செய்வது என்று தெரியாமல் இருந்திருக்கலாம். சில சமயங்களில், எங்களைத் தீவிரமாகக் கண்டிக்க வேண்டும் என்று முடிவு செய்திருந்தாலும், இறுதியில் எங்களிடம் மனம் இளகியிருக்கலாம்.',
+        'எங்களுக்கு வாய்ப்புகள் வழங்கியதற்கும், எங்களுடைய பக்குவமின்மையைப் பொறுத்துக்கொண்டதற்கும், நாங்கள் சரியாகச் செய்யாதபோது மீண்டும் மீண்டும் நினைவூட்டி, திருத்தியதற்கும் நன்றி. ஆசிரியர்கள் மனம் இளகுவதால் நாங்கள் விருப்பம்போல் நடந்துகொள்ளலாம் என்று அர்த்தமல்ல என்பதை நாங்கள் அறிவோம். நீங்கள் எங்களைத் தீவிரமாக வழிநடத்தினாலும், அதே நேரத்தில் எங்கள்மீது அக்கறையும் வைத்திருக்கிறீர்கள் என்பதையே அது காட்டுகிறது.',
+        'நாங்கள் தவறு செய்த பிறகும், எங்களால் வளரவும் கற்றுக்கொள்ளவும் முடியும் என்று தொடர்ந்து நம்பியதற்கு நன்றி.',
+        'இப்போது திரும்பிப் பார்க்கும்போது, எங்கள் மூன்று ஆண்டு வாழ்க்கையில் சத்தம், சிரிப்பு, நகைச்சுவை, அவ்வப்போது ஆசிரியர்களுக்குத் தலைவலியை ஏற்படுத்திய தருணங்கள் ஆகியவை எப்போதும் இருந்ததைப் போலத் தோன்றுகிறது. சில நேரங்களில் நாங்கள் அளவுக்கு அதிகமாக உற்சாகமடைந்தோம்; சில நேரங்களில் போதுமான பக்குவமின்றி நடந்துகொண்டோம்; சில நேரங்களில் ஆசிரியர்களும் புரிந்துகொள்ளப்படவும் மதிக்கப்படவும் வேண்டியவர்கள் என்பதை மறந்துவிட்டோம்.',
+        'ஆனால், நீங்கள் கற்றுக்கொடுத்ததாலும் எங்களைப் பொறுத்துக்கொண்டதாலும், ஒவ்வொரு அனுபவத்தின் வழியாகவும் நாங்கள் படிப்படியாக வளர முடிந்தது.',
+        'ஒவ்வொரு பாடத்திலும் கற்றுக்கொண்ட அனைத்தையும் நாங்கள் நினைவில் வைத்திருக்காமல் இருக்கலாம். ஒவ்வொரு தேர்விலும் நல்ல மதிப்பெண்களையும் பெற்றிருக்காமல் இருக்கலாம். ஒருவேளை நாங்கள் உங்களை ஏமாற்றியிருக்கலாம்; உங்களுக்குக் கவலையையும் ஏற்படுத்தியிருக்கலாம். இருந்தாலும், எங்களுக்காக நீங்கள் செலவிட்ட நேரமும் உழைப்பும் வீணாகவில்லை என்பதை நம்புங்கள்.',
+        'ஏனெனில், பாடப்புத்தக அறிவைத் தவிர, மற்றவர்களுடன் எப்படிப் பழகுவது, தவறுகளை எப்படி எதிர்கொள்வது, நம்முடைய செயல்களுக்குப் பொறுப்பேற்பது எப்படி, ஒரு குழுவில் இருக்கும்போது மற்றவர்களை எப்படிப் புரிந்துகொண்டு பொறுத்துக்கொள்வது என்பதையும் நீங்கள் எங்களுக்குக் கற்றுக்கொடுத்தீர்கள்.',
+        'அப்போது சாதாரணமாகத் தோன்றிய அந்த நினைவூட்டல்கள், முன்பு கேட்டபோது எரிச்சலாகத் தோன்றிய அறிவுரைகள், எங்களைப் பயமுறுத்திய கண்டிப்புகள்கூட இன்று படிப்படியாக வேறொரு அர்த்தத்தைப் பெற்றுள்ளன.',
+        'ஆசிரியர்களே, இங்கே எழுதிக்கொண்டிருக்கும்போதுதான் மூன்று ஆண்டுகள் உண்மையிலேயே மிகக் குறுகிய காலம் என்பதை உணர்கிறோம்.',
+        'ஒவ்வொரு நாளையும் தெளிவாக நினைவில் வைத்துக்கொள்வதற்குள், எங்கள் இடைநிலைப் பள்ளி வாழ்க்கையின் இறுதிக்கட்டத்தை வந்தடைந்துவிட்டோம். ஒவ்வொரு நாளும் சந்தித்த ஆசிரியர்கள், பழக்கமான வகுப்பறை, ஒருபோதும் முடிவடையாது என்று நினைத்த பாட நேரங்களும் இடைவேளைகளும்—இவை அனைத்தும் இப்போது வேறொரு அர்த்தத்தைப் பெறத் தொடங்கியுள்ளன.',
+        'இதை நினைக்கும்போது, உண்மையிலேயே சிறிது பிரிய மனமில்லை.',
+        'பழக்கமான குரல்களைப் பிரிய மனமில்லை; சத்தமும் கூச்சலும் நிறைந்த அன்றாட வாழ்க்கையைப் பிரிய மனமில்லை; முன்பு இயல்பான ஒன்றாகக் கருதிய உங்கள் உடனிருப்பையும் பிரிய மனமில்லை.',
+        'இளமை என்பது பெரிய, பரபரப்பான சம்பவங்களால் மட்டுமே உருவாகுவதில்லை என்பதை இப்போது உணர்கிறோம். பெரும்பாலும், ஒரு குழுவினர் ஒன்றாகக் கழிக்கும் சாதாரணமான நாட்கள்தான் அது. மேடையில் நின்று பாடம் நடத்தும் ஆசிரியரின் உருவம், வகுப்பறையில் தொடர்ந்து ஒலிக்கும் சிரிப்புகள், அப்போது பெரிதாகக் கவனிக்காதிருந்தாலும் இன்று நன்றாகப் பாதுகாத்துக்கொள்ள விரும்பும் அந்தத் தருணங்கள்—இவையே இளமைக்காலத்தின் உண்மையான நினைவுகள்.',
+        'உண்மையில், நாங்கள் படிவம் 4-க்குச் சென்ற பிறகும் பள்ளியில் உங்களைச் சந்திக்கும் வாய்ப்பு இருக்கும் என்பதை அறிவோம்.',
+        'பள்ளியின் நடைபாதையில் உங்களைச் சந்திக்கலாம்; உங்கள் வகுப்பறையைக் கடந்து செல்லும்போது உங்களுக்கு வணக்கம் சொல்லலாம்; சில நேரங்களில் நின்று உங்களுடன் சில வார்த்தைகளும் பேசலாம். அடுத்த முறை சந்திக்கும்போதும், நாங்கள் வழக்கம்போலச் சிரித்துக்கொண்டு உங்களுக்கு வணக்கம் சொல்லலாம்; முன்பு போலவே உங்களுடன் நகைச்சுவையாகவும் பேசலாம்.',
+        'எனவே, இது என்றென்றும் விடைபெறும் கடிதம் அல்ல.',
+        'எங்கள் இடைநிலைப் பள்ளியின் மூன்று ஆண்டு கதைகள் முழுமையாகக் கடந்தகாலமாக மாறுவதற்கு முன்பு, உங்களிடம் ஒரு விஷயத்தை மனப்பூர்வமாகச் சொல்ல விரும்புகிறோம்: நன்றி.',
+        'ஏனெனில், எதிர்காலத்தில் நாங்கள் மீண்டும் சந்திக்கலாம் என்பதால், முன்பு போலவே ஒவ்வொரு நாளும் ஒரே வகுப்பறையில் இயல்பாக ஒன்றாக இருக்க முடியும் என்று அர்த்தமல்ல. உங்கள் பாடங்களைக் கேட்கவும், உங்களால் நினைவூட்டப்படவும், இடைவேளையில் சத்தமாகக் கூச்சலிட்டு, அடுத்த நாள் எதுவும் நடக்காததுபோல் மீண்டும் வகுப்பறைக்குத் திரும்பவும் இனிமேல் முடியாது.',
+        'எதிர்காலத்தில் நாங்கள் அதே நடைபாதையில் நடந்து செல்லலாம்; அதே பழக்கமான முகங்களைக் காணலாம். ஆனால், அப்போது உங்கள் வகுப்பறையில் அமர்ந்திருந்த அந்த வகுப்பு மாணவர்களாக நாங்கள் இருக்கமாட்டோம்.',
+        'ஒருவேளை ஒரு நாள் நீங்கள் வகுப்பறைக்குள் நுழையும்போது, எங்கள் இருக்கைகளில் புதிய மாணவர்கள் அமர்ந்திருப்பார்கள். அல்லது வேறொரு நாளில், இன்னொரு குறும்புக்கார வகுப்பைச் சந்தித்து, முன்பு இருந்த எங்களை நினைத்துப் பார்க்கலாம்.',
+        'அப்போது, ஒருகாலத்தில் உங்களுக்குப் பாடம் கற்பிக்க வேண்டியிருந்த ஒரு வகுப்பு இருந்தது என்பதை நினைவுகூர்வீர்களா என்று தெரியவில்லை. படிவம் 1-இல் “சின்னத் தேவதைகள்” போல இருந்த அந்த வகுப்பு, படிவம் 2-இல் மெதுவாக “குறும்புப் பிசாசுகளாக” மாறி, படிவம் 3-இல் சிரிப்பதா அழுவதா என்று தெரியாத அளவுக்குச் சத்தம் போட்டதை நினைவுகூர்வீர்களா?',
+        'எப்போதும் கோழிக்கால் சாப்பிட வேண்டும் என்று கேட்டுக்கொண்டிருந்த அந்தப் பெண் மாணவியை நினைவுகூர்வீர்களா?',
+        'மற்ற வகுப்புகளால் “மொக்கை நகைச்சுவைகளின் திறந்த மூல மையம்” என்று அழைக்கப்பட்ட அந்த வகுப்பை நினைவுகூர்வீர்களா?',
+        'இடைவேளையின்போது ஆசிரியரின் மேசையைச் சுற்றிக் கூட்டமாக அமர்ந்து, ஒவ்வொரு நாளும் முக்கியமான “ஐக்கிய நாடுகள் சபைக் கூட்டம்” நடத்துவதைப் போல இருந்த மாணவர்களை நினைவுகூர்வீர்களா?',
+        'இறுதியாக ஓய்வெடுக்கப் போகிறோம் என்ற மகிழ்ச்சியில் வெள்ளிக்கிழமை பள்ளி முடிவதற்கு முன்பே பைத்தியக்காரத்தனமாகக் கூச்சலிட்ட அந்த வகுப்பை நினைவுகூர்வீர்களா?',
+        'அல்லது, ஒரு பாடத்தின்போது எங்களால் ஏற்கெனவே மிகவும் கோபமடைந்திருந்தாலும், உங்கள் உணர்ச்சிகளைக் கட்டுப்படுத்திக்கொண்டு, மேடையில் தொடர்ந்து நின்று கற்பிக்க வேண்டிய பாடத்தை அக்கறையுடன் முடித்த அந்தத் தருணத்தை நினைவுகூர்வீர்களா?',
+        'ஆசிரியர்களே, நீங்கள் பல தலைமுறை மாணவர்களுக்குக் கற்பித்திருக்கலாம்; பலவிதமான வகுப்புகளைச் சந்தித்திருக்கலாம். உங்களைப் பொறுத்தவரை, நாங்கள் உங்கள் ஆசிரியர் பணிக்காலத்தில் கற்பித்த பல வகுப்புகளில் ஒன்றாக மட்டுமே இருக்கலாம். மூன்று ஆண்டுகளுக்குப் பிறகு, புதிய மாணவர்கள் வகுப்பறைக்குள் வருவார்கள்; புதிய கதைகளும் தொடர்ந்து உருவாகும்.',
+        'ஆனால், எங்களைப் பொறுத்தவரை, எங்கள் இடைநிலைப் பள்ளியின் மூன்று ஆண்டுகளில் உண்மையாக இருந்தும், எங்களுடன் பயணித்தும், எங்களுக்குத் துணையாக இருந்தவர்கள்தான் நீங்கள்.',
+        'நாங்கள் படிவம் 1-இல் இருந்தபோது நீங்கள் எங்களைப் பார்த்தீர்கள்; படிவம் 2-இல் ஏற்பட்ட மாற்றங்களையும் பார்த்தீர்கள்; பின்னர் படிவம் 3 வரை வளர்ந்ததையும் பார்த்தீர்கள். எங்களுடைய மிகவும் மரியாதையான தோற்றத்தையும் நீங்கள் பார்த்திருக்கிறீர்கள்; அதேபோல், எங்களுடைய மிகவும் குறும்பான, உங்களுக்குச் சற்றும் ஓய்வளிக்காத தோற்றத்தையும் பார்த்திருக்கிறீர்கள். சில நேரங்களில் நீங்கள் எங்களால் ஏமாற்றமடைந்திருக்கலாம்; எங்களுடைய முன்னேற்றத்தால் மகிழ்ச்சியும் அடைந்திருக்கலாம்.',
+        'இந்த விஷயங்கள் உங்களைப் பொறுத்தவரை அன்றாட வேலையின் ஒரு பகுதியாக மட்டுமே இருந்திருக்கலாம். ஆனால், எங்களைப் பொறுத்தவரை, மீண்டும் அதேபோல் திரும்பப் பெற முடியாத ஒரு காலப்பகுதியாகும்.',
+        'நாங்கள் எவ்வளவு சிறந்தவர்கள் என்று உங்களை நினைக்க வைக்க வேண்டும் என்பதற்காக இதை எழுதவில்லை. நாங்கள் செய்த தவறுகளை நீங்கள் மறந்துவிட வேண்டும் என்பதற்காகவும் எழுதவில்லை.',
+        'பல ஆண்டுகளுக்குப் பிறகு, நீங்கள் எப்போதாவது 2024 முதல் 2026 வரையிலான காலத்தை நினைத்துப் பார்க்கும்போது, ஒருகாலத்தில் நீங்கள் கற்பித்த ஒரு வகுப்பு இருந்தது என்பதை நினைவில் வைத்திருக்க வேண்டும் என்பதே எங்களுடைய விருப்பம்.',
+        'முழுமையானதாக இல்லாவிட்டாலும், எண்ணற்ற கதைகளைக் கொண்டிருந்த ஒரு வகுப்பு.',
+        'உங்களைச் சில நேரங்களில் கோபப்படுத்திய, உதவியற்ற நிலைக்குத் தள்ளிய, ஆனால் நீங்கள் வருத்தமடைந்ததை உணர்ந்தபோது தாங்களும் மனம் வருந்திய ஒரு வகுப்பு.',
+        'ஒவ்வொரு நாளும் உங்களைப் பெருமைப்படுத்தியிருக்காமல் இருக்கலாம்; ஆனால் உங்களுக்கு உண்மையாக நன்றி கூறிய ஒரு வகுப்பு.',
+        'ஒவ்வொரு முறையும் உங்கள் எதிர்பார்ப்புகளை எங்களால் பூர்த்திசெய்ய முடியாமல் இருந்திருக்கலாம். எங்களுடைய மதிப்பெண்களால் ஒவ்வொரு ஆசிரியரையும் பெருமைப்படுத்தவும் முடியாமல் இருந்திருக்கலாம். இருந்தாலும், எதிர்காலத்தில் நீங்கள் இந்த நாட்களை நினைவுகூரும்போது, எங்களுடைய மனதில் உங்களுக்குரிய இடம் எங்களுடைய மதிப்பெண்களாலும், காலத்தாலும், எதிர்காலத்தில் நாங்கள் எவ்வளவு தூரம் சென்றாலும் மாறாது என்பதை அறிந்துகொள்ள வேண்டும் என்று விரும்புகிறோம்.',
+        'எங்களுடைய நடத்தையால் எப்போதாவது நீங்கள் வருத்தமடைந்திருந்தால், அப்போது போதுமான பக்குவமில்லாத எங்களை மன்னித்துவிடுங்கள். நீங்கள் கூறிய அறிவுரைகளில் ஏதாவது ஒன்றை அப்போது நாங்கள் கவனமாகக் கேட்காமல் இருந்திருந்தால், நாங்கள் இப்போது மெதுவாக வளர்ந்து வருகிறோம்; முன்பு புரியாத விஷயங்களைப் புரிந்துகொள்ளக் கற்றுக்கொண்டிருக்கிறோம் என்பதைத் தெரிந்துகொள்ளுங்கள்.',
+        'ஆசிரியர் பணியின் சிரமத்தை முழுமையாகப் புரிந்துகொள்ளும் அளவுக்கு நாங்கள் இன்னும் வளராமல் இருக்கலாம். நன்றியை அழகாகச் சொல்லவும் எங்களுக்குத் தெரியாமல் இருக்கலாம். ஆனால், எங்கள் இடைநிலைப் பள்ளியின் மூன்று ஆண்டுகள் முடிவடையும் இந்த நேரத்திலாவது, இந்த நன்றியை உங்களிடம் முறையாகச் சேர்க்க விரும்புகிறோம்.',
+        'நாங்கள் முழுமையான மாணவர்களாக இல்லாததால், எங்களுக்குக் கற்பிப்பதை நிறுத்திவிடாமல் இருந்ததற்கு நன்றி.',
+        'நாங்கள் தவறு செய்தபோது எங்களை நினைவூட்டியதற்கும், எங்களுக்குப் புரியாதபோது பொறுமையாக விளக்கியதற்கும், எங்களால் தலைவலி ஏற்பட்டபோதும் எங்களுக்கு மீண்டும் வாய்ப்பளித்ததற்கும் நன்றி.',
+        'ஆசிரியர்கள் மாணவர்களுக்கு விட்டுச் செல்வது பாடப்புத்தக அறிவு மட்டுமல்ல; பல ஆண்டுகளுக்குப் பிறகு நினைத்துப் பார்த்தாலும் மனதை வெப்பமடையச் செய்யும் தருணங்களும் என்பதை எங்களுக்கு உணர்த்தியதற்கு நன்றி.',
+        'ஆசிரியர்களே, எதிர்காலத்திலும் நாங்கள் பள்ளியில் உங்களைச் சந்திப்போம்.',
+        'எனவே, அடுத்த முறை சந்திக்கும்போது, நாங்கள் உணர்ச்சிபூர்வமான பல வார்த்தைகளைச் சொல்லாமல் இருக்கலாம். வழக்கம்போலச் சிரித்துக்கொண்டு உங்களுக்கு வணக்கம் மட்டுமே சொல்லலாம்.',
+        'ஆனால், ஒரு நாள் நீங்கள் திடீரென்று எங்களை நினைத்துப் பார்த்தால், நாங்கள் முன்பு அமர்ந்திருந்த இருக்கைகளையும், சத்தமும் கூச்சலும் நிறைந்த அந்த வகுப்பறையையும், உங்களை ஒருபுறம் கோபப்படுத்தி மறுபுறம் உதவியற்றவர்களாக உணர வைத்த நாட்களையும் நினைத்துப் பார்த்தால், அந்தச் சத்தமான நாட்களின் பின்னால் ஒரு மாணவர் குழு இருந்தது என்பதை நினைவில் கொள்ளுங்கள். அந்த மாணவர்கள் உங்களுக்கு எப்போதும் நன்றியுள்ளவர்களாகவே இருந்தார்கள்.',
+        'நாங்கள் தொடர்ந்து வளர்வோம்; எங்களுடைய எதிர்கால வாழ்க்கையை நோக்கித் தொடர்ந்து பயணிப்போம்.',
+        'நீங்களும் தொடர்ந்து புதிய மாணவர்களுக்குக் கற்பிப்பீர்கள்; மேடையில் நின்று பாடம் நடத்துவீர்கள்; பல மாணவர்களின் வளர்ச்சிப் பயணத்தில் ஆசிரியர்களாகத் தொடர்ந்து இருப்பீர்கள்.',
+        'ஆனால், நீங்கள் கற்பித்த எண்ணற்ற மாணவர் குழுக்களில், எப்போதாவது உங்களுக்கு நினைவுக்கு வந்து, நினைத்தவுடன் உங்களைச் சிரிக்க வைக்கும் ஒரு வகுப்பாக நாங்களும் இருக்க வேண்டும் என்பதே எங்களுடைய விருப்பம்.',
+        '2024 முதல் 2026 வரை எங்களுடன் பயணித்ததற்கு நன்றி.',
+        'இந்த மூன்று ஆண்டுகளில் நாங்கள் ஒன்றாக அனுபவித்த விஷயங்கள் உலகையே வியக்க வைக்கும் பெரிய சம்பவங்களாக இல்லாமல் இருக்கலாம். ஆனால், அவை எங்கள் வகுப்புக்கும் உங்களுக்கும் மட்டுமே சொந்தமான நினைவுகள்.',
+        'உங்கள் மாணவர்களாக இருந்ததை நினைத்து நாங்கள் மகிழ்ச்சியடைகிறோம்.',
+        'நாங்கள் இன்னும் போதுமான பக்குவமடையாதவர்களாகவும், புரிந்துகொள்ளும் திறன் குறைந்தவர்களாகவும் இருந்தபோது, பொறுமையுடன் எங்களுக்குக் கற்பிக்கத் தயாராக இருந்த உங்களைச் சந்தித்ததையும் நினைத்து நாங்கள் மகிழ்ச்சியடைகிறோம்.',
+        'நாங்கள் உங்களுடைய மிகச் சிறந்த மாணவர்களாக இல்லாவிட்டாலும், நீங்கள் எங்களால் மிகவும் மதிக்கப்படும் ஆசிரியர்கள்.',
+        'உங்கள் வாழ்நாள் முழுவதும் மகிழ்ச்சியும் சந்தோஷமும் நிறைந்திருக்கட்டும். நீங்கள் பாதுகாப்பாகவும் ஆரோக்கியமாகவும் வாழ வாழ்த்துகிறோம்.',
+        'இனிவரும் ஒவ்வொரு நாளும் உங்களுக்குச் சோர்வு குறைந்து, சிரிப்பு அதிகரிக்கட்டும். மாணவர்களுக்காக நீங்கள் செலவிட்ட பொறுமையும் அன்பும், உங்கள் வாழ்க்கையிலும் அதே மென்மையான அன்பாகத் திரும்பக் கிடைக்கட்டும்.',
+        'ஒரு நாள் நீங்கள் எங்கள் வகுப்பை நினைத்துப் பார்க்கும்போது, நாங்கள் எவ்வளவு சத்தமாகவும் குறும்பாகவும் இருந்தோம் என்பதை மட்டும் நினைவுகூராமல், ஒன்றாகக் கழித்த அந்த நாட்களையும், உங்கள் வகுப்பறையில் நாங்கள் வளர்ந்ததையும் நினைவுகூர வேண்டும் என்று விரும்புகிறோம்.',
+        'நன்றி, ஆசிரியர்களே.',
+        'இந்த முறை, நாங்கள் உண்மையாகச் சொல்ல விரும்புகிறோம்.',
+        'நாங்கள் உங்களிடம் என்றென்றும் விடைபெறப் போவதில்லை. இடைநிலைப் பள்ளியை விட்டு வெளியேறும் இந்த நேரத்தில், உங்களிடம் ஒரு விஷயத்தை மனப்பூர்வமாகச் சொல்ல விரும்புகிறோம்: உங்கள் மாணவர்களாக இருக்க முடிந்தது எங்கள் இளமைக்காலத்தில் மிகவும் மதித்துப் பாதுகாக்க வேண்டிய ஒரு அனுபவமாகும்.'
+      ]
+    }
+  };
+
+  var currentLang = 'zh';
+  var langBtns = Array.prototype.slice.call(document.querySelectorAll('.lang-btn'));
+
+  function applyLang(code){
+    var key = I18N[code] ? code : 'zh';
+    var dict = I18N[key];
+    currentLang = key;
+
+    document.documentElement.lang = dict.lang;
+    document.title = dict.title;
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function(el){
+      var k = el.getAttribute('data-i18n');
+      if(dict[k] != null) el.textContent = dict[k];
+    });
+
+    // The body is a variable-length list of paragraphs, so it is rebuilt
+    // instead of being swapped node-by-node.
+    bodyEl.textContent = '';
+    (dict.body || []).forEach(function(text){
+      var p = document.createElement('p');
+      p.textContent = text;
+      bodyEl.appendChild(p);
+    });
+
+    langBtns.forEach(function(b){
+      var on = b.getAttribute('data-lang') === key;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+
+    var label = !hasMusic() ? dict.musicNone : (playing ? dict.musicPause : dict.musicPlay);
+    musicBtn.setAttribute('aria-label', label);
+    musicBtn.setAttribute('title', label);
+
+    try{ localStorage.setItem('letterLang', key); }catch(e){}
+
+    // The narration belongs to the previous language: stop it and re-point the button.
+    stopReading();
+    updateReadUI();
+
+    // Translation lengths differ, so re-measure an open letter instead of clipping it.
+    if(letter.classList.contains('is-floating') && !closing){
+      var target = finalRect();
+      letter.style.transition = 'left .6s cubic-bezier(.22,1,.36,1), top .6s cubic-bezier(.22,1,.36,1),' +
+                                ' width .6s cubic-bezier(.22,1,.36,1), height .6s cubic-bezier(.22,1,.36,1)';
+      place(target);
+      placeClose(target);
+      placeHint(target);
+      letter.scrollTop = 0;
+      window.setTimeout(function(){ letter.style.transition = ''; syncHint(); }, 650);
+    }
+  }
+
+  langBtns.forEach(function(b){
+    b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang')); });
+  });
+
+  /* ---------- Voice-over (AI narration, one file per language) ----------
+     The mp3s live in voice/. They are attached lazily, so opening the page never
+     pulls tens of megabytes of audio. Before the first playback the reader sees
+     the AI notice — unless they ticked "don't show this again". */
+  var VOICE = {
+    zh:'voice/zh%20voice.mp3',
+    ms:'voice/bm%20voice.mp3',
+    en:'voice/en%20voice.mp3',
+    ta:'voice/hl%20voice.mp3'   // 作者确认：hl 就是泰米尔文语音（文件名沿用原样）
+  };
+  var NOTICE_KEY = 'letterVoiceNotice';
+  var readBtn = document.getElementById('readBtn');
+  var readLabelEl = readBtn.querySelector('.read-label');
+  var readProgress = document.getElementById('readProgress');
+  var noticeModal = document.getElementById('noticeModal');
+  var noticeSkipBox = document.getElementById('noticeSkip');
+  var noticeOkBtn = document.getElementById('noticeOk');
+  var noticeCancelBtn = document.getElementById('noticeCancel');
+  var readAudio = null;
+  var readState = 'idle';   // idle | playing | paused
+
+  function voiceSrc(){ return VOICE[currentLang] || null; }
+
+  function noticeDismissed(){
+    try{ return localStorage.getItem(NOTICE_KEY) === 'skip'; }catch(e){ return false; }
+  }
+
+  function updateReadUI(){
+    var dict = I18N[currentLang];
+    var available = !!voiceSrc();
+    readBtn.classList.toggle('is-unavailable', !available);
+    readBtn.classList.toggle('is-playing', readState === 'playing');
+    readBtn.setAttribute('aria-pressed', readState === 'playing' ? 'true' : 'false');
+    var label = !available ? dict.readNoAudio
+                           : (readState === 'playing' ? dict.readPause : dict.readLabel);
+    readLabelEl.textContent = label;
+    readBtn.setAttribute('aria-label', label);
+    readBtn.setAttribute('title', label);
+  }
+
+  function ensureAudio(){
+    if(readAudio) return readAudio;
+    readAudio = new Audio();
+    readAudio.preload = 'metadata';
+    readAudio.addEventListener('timeupdate', function(){
+      if(!readAudio.duration) return;
+      readProgress.style.width = (readAudio.currentTime / readAudio.duration * 100).toFixed(2) + '%';
+    });
+    readAudio.addEventListener('ended', function(){
+      readState = 'idle';
+      readProgress.style.width = '0%';
+      updateReadUI();
+    });
+    readAudio.addEventListener('error', function(){
+      readState = 'idle';
+      readProgress.style.width = '0%';
+      updateReadUI();
+    });
+    return readAudio;
+  }
+
+  function loadVoice(){
+    var src = voiceSrc();
+    if(!src) return null;
+    var a = ensureAudio();
+    if(a.getAttribute('src') !== src){
+      a.setAttribute('src', src);
+      a.load();
+      readProgress.style.width = '0%';
+    }
+    return a;
+  }
+
+  function pauseMusicForReading(){
+    if(!playing) return;
+    bgm.pause();
+    playing = false;
+    musicBtn.classList.remove('playing');
+    musicBtn.setAttribute('aria-pressed', 'false');
+    musicBtn.setAttribute('aria-label', I18N[currentLang].musicPlay);
+    musicBtn.setAttribute('title', I18N[currentLang].musicPlay);
+  }
+
+  function playReading(){
+    var a = loadVoice();
+    if(!a) return;
+    pauseMusicForReading();
+    var p = a.play();
+    if(p && p.then){
+      p.then(function(){ readState = 'playing'; updateReadUI(); })
+       .catch(function(){ readState = 'idle'; updateReadUI(); });
+    } else {
+      readState = 'playing';
+      updateReadUI();
+    }
+  }
+
+  function pauseReading(){
+    if(readAudio && readState === 'playing') readAudio.pause();
+    if(readAudio) readState = readAudio.currentTime > 0 ? 'paused' : 'idle';
+    updateReadUI();
+  }
+
+  function stopReading(){
+    if(readAudio){
+      readAudio.pause();
+      readAudio.removeAttribute('src');
+      try{ readAudio.load(); }catch(e){}
+    }
+    readState = 'idle';
+    if(readProgress) readProgress.style.width = '0%';
+  }
+
+  function openNotice(){
+    noticeModal.classList.add('is-open');
+    noticeOkBtn.focus();
+  }
+  function closeNotice(){
+    noticeModal.classList.remove('is-open');
+    readBtn.focus();
+  }
+
+  function toggleReading(){
+    if(!voiceSrc()){ updateReadUI(); return; }
+    if(readState === 'playing'){ pauseReading(); return; }
+    if(readState === 'paused'){ playReading(); return; }   // resume where it stopped
+    if(noticeDismissed()){ playReading(); return; }
+    openNotice();
+  }
+
+  readBtn.addEventListener('click', toggleReading);
+  noticeOkBtn.addEventListener('click', function(){
+    if(noticeSkipBox.checked){ try{ localStorage.setItem(NOTICE_KEY, 'skip'); }catch(e){} }
+    closeNotice();
+    playReading();
+  });
+  noticeCancelBtn.addEventListener('click', closeNotice);
+  noticeModal.addEventListener('click', function(e){ if(e.target === noticeModal) closeNotice(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && noticeModal.classList.contains('is-open')) closeNotice();
+  });
+
+  var savedLang = null;
+  try{ savedLang = localStorage.getItem('letterLang'); }catch(e){}
+  applyLang(savedLang || 'zh');
+})();
+</script>
+</body>
+</html>
