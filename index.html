@@ -25,6 +25,15 @@
   }
 
   *{box-sizing:border-box;}
+  /* 手机上点击时不要出现蓝色的点击高亮 / 长按选中 */
+  *{ -webkit-tap-highlight-color:transparent; }
+  html{ -webkit-tap-highlight-color:transparent; -webkit-text-size-adjust:100%; }
+  button,.lang-btn,.box-item,.read-btn,.cert-btn,.modal-btn,.modal-close,.code-submit{
+    -webkit-tap-highlight-color:transparent;
+    -webkit-user-select:none; -moz-user-select:none; user-select:none;
+    -webkit-touch-callout:none;
+    touch-action:manipulation;
+  }
   html,body{margin:0;padding:0;height:100%;}
   body{
     min-height:100svh;
@@ -257,15 +266,11 @@
 
   .seal{
     position:absolute; left:50%; top:34%;
-    width:52px; height:52px; margin:-26px 0 0 -26px;
-    border-radius:50%;
-    background:radial-gradient(circle at 35% 30%,#e8bd6c,var(--gold) 60%,#a97a2f 100%);
-    box-shadow:0 3px 8px rgba(90,55,20,.4), inset 0 -2px 4px rgba(0,0,0,.2);
-    display:flex; align-items:center; justify-content:center;
+    width:58px; height:58px; margin:-29px 0 0 -29px;
     z-index:5;
+    filter:drop-shadow(0 3px 5px rgba(90,55,20,.35));
     transition:transform .5s ease, opacity .5s ease;
   }
-  .seal svg{ width:26px; height:26px; color:#fff8ea; opacity:.95; }
   .stage.is-opening .seal,
   .stage.is-open .seal{
     transform:scale(.4) rotate(35deg);
@@ -317,6 +322,34 @@
   }
   .letter.is-unfolding::after{ opacity:0; }
   .letter.is-revealed{ overflow-x:hidden; overflow-y:auto; }
+  .letter.is-ghost{ opacity:0; }
+
+  /* Tri-fold stand-in: shown only while the sheet unfolds / folds back.
+     Top panel lies folded in front of the middle, bottom panel behind it. */
+  .fold-sheet{
+    position:fixed; z-index:16; pointer-events:none; visibility:hidden;
+    perspective:1600px; transform-style:preserve-3d;
+  }
+  .fold-sheet.is-on{ visibility:visible; }
+  .fold-p{
+    position:absolute; left:0; right:0; height:33.34%;
+    background:
+      repeating-linear-gradient(180deg,transparent 0,transparent 34px,rgba(207,154,76,.12) 35px),
+      linear-gradient(170deg,#fffaf0,var(--paper) 70%);
+    background-size:100% 300%;
+    box-shadow:0 18px 40px -16px rgba(74,42,58,.35);
+    transition:transform .8s cubic-bezier(.45,.05,.3,1), filter .8s ease;
+  }
+  .fold-top{ top:0; background-position:0 0; border-radius:3px 3px 0 0; transform-origin:50% 100%; }
+  .fold-mid{ top:33.33%; background-position:0 50%; }
+  .fold-bot{ bottom:0; background-position:0 100%; border-radius:0 0 3px 3px; transform-origin:50% 0; }
+  .fold-mid::before, .fold-mid::after{
+    content:""; position:absolute; left:0; right:0; height:8px;
+    background:linear-gradient(180deg,rgba(150,110,70,0),rgba(150,110,70,.12) 50%,rgba(150,110,70,0));
+  }
+  .fold-mid::before{ top:-4px; } .fold-mid::after{ bottom:-4px; }
+  .fold-sheet.top-folded .fold-top{ transform:rotateX(-179deg); filter:brightness(.94); }
+  .fold-sheet.bot-folded .fold-bot{ transform:rotateX(-179deg); filter:brightness(.78); }
 
   .letter-inner{
     width:var(--final-w,340px);
@@ -495,7 +528,7 @@
     position:fixed;
     left:max(14px,env(safe-area-inset-left));
     top:max(14px,env(safe-area-inset-top));
-    z-index:30;
+    z-index:70;                 /* stays reachable while a modal/certificate is open */
     display:flex; align-items:center; gap:4px;
     padding:4px;
     background:rgba(255,250,240,.72);
@@ -523,7 +556,7 @@
   /* ---------- Read-aloud button + progress ---------- */
   .read-btn{
     position:fixed;
-    right:calc(max(18px,env(safe-area-inset-right)) + 58px);
+    right:calc(max(18px,env(safe-area-inset-right)) + 76px);
     bottom:max(18px,env(safe-area-inset-bottom));
     z-index:20;
     display:flex; align-items:center; gap:7px;
@@ -540,6 +573,7 @@
     transition:transform .25s ease, background .25s ease, opacity .25s ease;
   }
   .read-btn:hover{ transform:scale(1.04); }
+  .read-btn[hidden]{ display:none; }
   .read-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
   .read-btn svg{ width:18px; height:18px; flex:none; }
   .read-btn .ri-pause{ display:none; }
@@ -617,9 +651,514 @@
   .modal-btn.primary:hover{ transform:translateY(-1px); }
   .modal-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
 
+  /* ---------- Parcel box + pickup code ---------- */
+  body.is-boxed .stage{ opacity:0; pointer-events:none; }
+  .stage{ transition:opacity .6s ease; }
+
+  .box-stage{
+    position:fixed; inset:0; z-index:14;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:7vh 5vw;
+    perspective:1700px;
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .box-stage.is-gone{ opacity:0; transform:scale(1.06); pointer-events:none; }
+
+  .box-title{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-size:clamp(15px,2.4vw,19px); font-weight:500;
+    letter-spacing:.06em; color:var(--ink); opacity:.88;
+    margin:0 0 22px; text-align:center;
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .box-stage.is-open .box-title{ opacity:0; transform:translateY(-12px); pointer-events:none; }
+  /* ---------- 3D gift box ----------
+     Every face lives in one "floor frame": x → right, y → toward the viewer, z → up.
+     Closed: a three-quarter view. Open: the lid swings back on its rear hinge and the
+     camera rises to a top-down view, looking into the box at the three stacked items. */
+  .box-scene{
+    --w:clamp(210px,56vw,320px);
+    --d:calc(var(--w) * .76);
+    --h:calc(var(--w) * .36);
+    --t:7px;                                  /* wall thickness */
+    --o:4px;                                  /* lid overhang */
+    --s:calc(var(--h) * .28);                 /* lid skirt */
+    position:relative; width:var(--w); height:calc(var(--w) * .8);
+    perspective:1500px; perspective-origin:50% 25%;
+  }
+  .box-stage:not(.is-open) .box-scene{ animation:boxFloat 4.2s ease-in-out infinite; }
+  @keyframes boxFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-7px); } }
+
+  .box-cam{
+    position:absolute; left:50%; top:52%; width:0; height:0;
+    transform-style:preserve-3d;
+    transform:rotateX(-24deg) rotateY(-30deg);
+    transition:transform 1.9s cubic-bezier(.65,0,.25,1) .45s;
+  }
+  /* 开箱：镜头上升到正上方，俯视箱内 */
+  .box-stage.is-open .box-cam{ transform:translateY(9vh) scale(1.3) rotateX(-76deg) rotateY(0deg); }
+
+  .box-frame{
+    position:absolute; left:0; top:0; transform-style:preserve-3d;
+    transform:translateY(calc(var(--h) / 2)) rotateX(90deg);
+  }
+  .f{
+    position:absolute; left:0; top:0;
+    width:var(--fw); height:var(--fh);
+    margin:calc(var(--fh) / -2) 0 0 calc(var(--fw) / -2);
+    backface-visibility:hidden;
+  }
+
+  .box-ground{
+    --fw:calc(var(--w) * 1.35); --fh:calc(var(--d) * 1.35);
+    transform:translate3d(10px,14px,-1px);
+    background:radial-gradient(ellipse at center,rgba(60,25,45,.42),rgba(60,25,45,0) 68%);
+    backface-visibility:visible;
+  }
+
+  /* outer walls */
+  .wall-out{ background:linear-gradient(180deg,#f3dcab 0%,#e2c084 55%,#cfa663 100%); }
+  .w-front-out{ --fw:var(--w); --fh:var(--h); transform:translate3d(0,calc(var(--d) / 2),calc(var(--h) / 2)) rotateX(-90deg); }
+  .w-back-out { --fw:var(--w); --fh:var(--h); transform:translate3d(0,calc(var(--d) / -2),calc(var(--h) / 2)) rotateZ(180deg) rotateX(-90deg); filter:brightness(.8); }
+  .w-left-out { --fw:var(--d); --fh:var(--h); transform:translate3d(calc(var(--w) / -2),0,calc(var(--h) / 2)) rotateZ(90deg) rotateX(-90deg); filter:brightness(.78); }
+  .w-right-out{ --fw:var(--d); --fh:var(--h); transform:translate3d(calc(var(--w) / 2),0,calc(var(--h) / 2)) rotateZ(-90deg) rotateX(-90deg); filter:brightness(.88); }
+
+  /* inner walls (velvet lining, darker toward the floor) */
+  .wall-in{ background:linear-gradient(180deg,#5f4459 0%,#46303f 60%,#2f1d2b 100%); }
+  .w-front-in{ --fw:calc(var(--w) - var(--t) * 2); --fh:var(--h); transform:translate3d(0,calc(var(--d) / 2 - var(--t)),calc(var(--h) / 2)) rotateZ(180deg) rotateX(-90deg); filter:brightness(.8); }
+  .w-back-in { --fw:calc(var(--w) - var(--t) * 2); --fh:var(--h); transform:translate3d(0,calc(var(--d) / -2 + var(--t)),calc(var(--h) / 2)) rotateX(-90deg); }
+  .w-left-in { --fw:calc(var(--d) - var(--t) * 2); --fh:var(--h); transform:translate3d(calc(var(--w) / -2 + var(--t)),0,calc(var(--h) / 2)) rotateZ(-90deg) rotateX(-90deg); filter:brightness(.9); }
+  .w-right-in{ --fw:calc(var(--d) - var(--t) * 2); --fh:var(--h); transform:translate3d(calc(var(--w) / 2 - var(--t)),0,calc(var(--h) / 2)) rotateZ(90deg) rotateX(-90deg); filter:brightness(.72); }
+
+  .box-floor{
+    --fw:calc(var(--w) - var(--t) * 2); --fh:calc(var(--d) - var(--t) * 2);
+    background:radial-gradient(ellipse at 50% 40%,#5c4257,#3a2536 75%);
+    box-shadow:inset 0 0 26px rgba(10,0,10,.55);
+    backface-visibility:visible;
+  }
+
+  /* top rims — the wall thickness you see from above */
+  .rim{ background:linear-gradient(180deg,#f6e3b8,#e2c084); }
+  .rim-front{ --fw:var(--w); --fh:var(--t); transform:translate3d(0,calc(var(--d) / 2 - var(--t) / 2),var(--h)); }
+  .rim-back { --fw:var(--w); --fh:var(--t); transform:translate3d(0,calc(var(--d) / -2 + var(--t) / 2),var(--h)); }
+  .rim-left { --fw:var(--t); --fh:calc(var(--d) - var(--t) * 2); transform:translate3d(calc(var(--w) / -2 + var(--t) / 2),0,var(--h)); }
+  .rim-right{ --fw:var(--t); --fh:calc(var(--d) - var(--t) * 2); transform:translate3d(calc(var(--w) / 2 - var(--t) / 2),0,var(--h)); }
+
+  .box-label{
+    position:absolute; left:7%; bottom:10%;
+    min-width:44%; padding:5px 9px;
+    background:rgba(255,250,240,.95);
+    border:1px solid rgba(207,154,76,.5); border-radius:3px;
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:10px; letter-spacing:.1em; color:var(--ink-soft);
+    box-shadow:0 2px 6px rgba(90,55,20,.14);
+  }
+  .box-label b{ display:block; margin-top:1px; font-size:14px; letter-spacing:.16em; color:var(--ink); font-weight:600; }
+  .box-seal{
+    position:absolute; right:5%; bottom:6%;
+    width:clamp(46px,11vw,64px); height:clamp(46px,11vw,64px);
+    transform:rotate(-8deg) scale(.7); opacity:0;
+    transition:opacity .5s ease .95s, transform .5s cubic-bezier(.34,1.4,.64,1) .95s;
+  }
+  .box-stage.is-open .box-seal{ opacity:.95; transform:rotate(-8deg) scale(1); }
+
+  /* lid: hinged on the rear top edge */
+  .box-lid{
+    position:absolute; left:0; top:0; transform-style:preserve-3d;
+    transform:translate3d(0,calc(var(--d) / -2 - var(--o)),var(--h)) rotateX(0deg);
+    transition:transform 1.5s cubic-bezier(.55,.05,.25,1);
+  }
+  .box-stage.is-open .box-lid{ transform:translate3d(0,calc(var(--d) / -2 - var(--o)),var(--h)) rotateX(108deg); }
+  .box-lid .f{ --lw:calc(var(--w) + var(--o) * 2); --ld:calc(var(--d) + var(--o) * 2); }
+  .lid-top{
+    --fw:var(--lw); --fh:var(--ld);
+    transform:translate3d(0,calc(var(--ld) / 2),2px);
+    background:
+      linear-gradient(90deg,transparent 44%,rgba(255,248,234,.85) 44%,#fff6e6 50%,rgba(255,248,234,.85) 56%,transparent 56%),
+      linear-gradient(180deg,transparent 44%,rgba(255,248,234,.85) 44%,#fff6e6 50%,rgba(255,248,234,.85) 56%,transparent 56%),
+      linear-gradient(160deg,#f8e7bf 0%,#e8c98c 55%,#d6af6c 100%);
+    border-radius:3px;
+  }
+  .lid-bow{
+    --fw:54px; --fh:54px;
+    transform:translate3d(0,calc(var(--ld) / 2),3px);
+    border-radius:50%;
+    background:radial-gradient(circle at 50% 50%,#fff3da 0 22%,transparent 23%),
+               radial-gradient(ellipse 48% 26% at 22% 50%,#fffaf0 0 60%,rgba(207,154,76,.5) 61% 70%,transparent 71%),
+               radial-gradient(ellipse 48% 26% at 78% 50%,#fffaf0 0 60%,rgba(207,154,76,.5) 61% 70%,transparent 71%);
+    filter:drop-shadow(0 2px 2px rgba(90,55,20,.35));
+  }
+  .lid-under{
+    --fw:var(--lw); --fh:var(--ld);
+    transform:translate3d(0,calc(var(--ld) / 2),1px) rotateX(180deg);
+    background:linear-gradient(200deg,#ead2a0,#d8b77a);
+    display:flex; align-items:center; justify-content:center;
+    font-family:"Ma Shan Zheng","Noto Serif SC",cursive; font-size:clamp(13px,3.4vw,19px);
+    letter-spacing:.12em; color:rgba(91,70,54,.7);
+  }
+  .lid-skirt{ background:linear-gradient(180deg,#e8c98c,#cfa663); }
+  .ls-front{ --fw:var(--lw); --fh:var(--s); transform:translate3d(0,var(--ld),calc(2px - var(--s) / 2)) rotateX(-90deg); }
+  .ls-back { --fw:var(--lw); --fh:var(--s); transform:translate3d(0,0,calc(2px - var(--s) / 2)) rotateZ(180deg) rotateX(-90deg); filter:brightness(.8); }
+  .ls-left { --fw:var(--ld); --fh:var(--s); transform:translate3d(calc(var(--lw) / -2),calc(var(--ld) / 2),calc(2px - var(--s) / 2)) rotateZ(90deg) rotateX(-90deg); filter:brightness(.78); }
+  .ls-right{ --fw:var(--ld); --fh:var(--s); transform:translate3d(calc(var(--lw) / 2),calc(var(--ld) / 2),calc(2px - var(--s) / 2)) rotateZ(-90deg) rotateX(-90deg); filter:brightness(.88); }
+  .ls-front::after{
+    content:""; position:absolute; left:44%; right:44%; top:0; bottom:0;
+    background:linear-gradient(90deg,rgba(255,248,234,.85),#fff6e6,rgba(255,248,234,.85));
+  }
+
+  /* ---------- the three items, stacked on the floor ---------- */
+  .box-item{
+    position:absolute; left:0; top:0; padding:0; border:0; background:none; cursor:pointer;
+    width:var(--iw); height:var(--ih);
+    margin:calc(var(--ih) / -2) 0 0 calc(var(--iw) / -2);
+    transform-style:preserve-3d;
+    transform:translate3d(var(--x),var(--y),var(--z)) rotateZ(var(--r));
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    visibility:hidden;
+    transition:transform .45s cubic-bezier(.22,1,.36,1), visibility 0s linear .4s;
+  }
+  .box-stage.is-open .box-item{ visibility:visible; transition:transform .45s cubic-bezier(.22,1,.36,1), visibility 0s linear .5s; }
+  .box-stage.is-open .box-item:hover,
+  .box-stage.is-open .box-item:focus-visible{ transform:translate3d(var(--x),var(--y),calc(var(--z) + 28px)) rotateZ(var(--r)); outline:none; }
+  .box-item:focus-visible .it-top{ outline:2px solid var(--gold); outline-offset:4px; }
+
+  .box-item .f{ left:50%; top:50%; backface-visibility:visible; }
+  .it-top{ --fw:var(--iw); --fh:var(--ih); transform:translateZ(var(--th)); }
+  /* thickness = a few stacked flat layers (parallel planes always depth-sort correctly) */
+  .it-l{ --fw:var(--iw); --fh:var(--ih); background:var(--edge); border-radius:3px; }
+  .it-l0{ transform:translateZ(0px); }
+  .it-l1{ transform:translateZ(calc(var(--th) * .34)); }
+  .it-l2{ transform:translateZ(calc(var(--th) * .67)); }
+  .item-cap{ pointer-events:none; }
+
+  /* 荣誉证书：红色硬壳证书夹（最底层） */
+  .item-honour{ --iw:calc(var(--w) * .62); --ih:calc(var(--w) * .44); --th:10px; --edge:#6a1117;
+    --x:calc(var(--w) * -.06); --y:calc(var(--w) * -.1); --z:0px; --r:-5deg; }
+  .item-honour .it-top{
+    background:linear-gradient(150deg,#a3242c,#7e161d 60%,#64121a);
+    border-radius:3px;
+    box-shadow:inset 0 0 0 5px #8c1b22, inset 0 0 0 6px rgba(241,217,166,.85), inset 0 0 0 9px #8c1b22, inset 0 0 0 10px rgba(241,217,166,.55),
+               5px 9px 14px rgba(15,0,12,.5);
+    display:flex; align-items:center; justify-content:center; align-content:flex-start; gap:5%;
+    padding-top:9%; align-items:flex-start;
+  }
+  .item-honour .it-top::before{
+    content:""; width:11%; aspect-ratio:1; border-radius:50%; margin-top:-1%;
+    background:radial-gradient(circle at 35% 30%,#fbe7b6,#dcae5c 55%,#a87a32);
+    box-shadow:0 0 0 3px rgba(241,217,166,.4);
+  }
+  .item-honour .item-cap{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif; font-weight:700;
+    font-size:clamp(11px,2.6vw,15px); letter-spacing:.3em; color:#f1d9a6;
+  }
+
+  /* 奖状：奶油色纸 + 金边（中间） */
+  .item-cert{ --iw:calc(var(--w) * .6); --ih:calc(var(--w) * .42); --th:3px; --edge:#e6d3ac;
+    --x:calc(var(--w) * .07); --y:calc(var(--w) * .06); --z:10px; --r:6deg; }
+  .item-cert .it-top{
+    background:linear-gradient(170deg,#fffcf3,#f7ecd4);
+    box-shadow:inset 0 0 0 4px #fffaf0, inset 0 0 0 5px rgba(207,154,76,.75), inset 0 0 0 8px #fffaf0, inset 0 0 0 9px rgba(207,154,76,.4),
+               4px 8px 12px rgba(15,0,12,.42);
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:9%; padding-top:10%;
+  }
+  .item-cert .item-cap{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif; font-weight:700;
+    font-size:clamp(12px,2.9vw,17px); letter-spacing:.42em; color:#a8312a;
+  }
+  .item-cert .it-top::after{
+    content:""; width:52%; height:2px; background:repeating-linear-gradient(90deg,rgba(207,154,76,.55) 0 70%,transparent 70% 100%);
+    box-shadow:0 7px 0 rgba(207,154,76,.35), 0 14px 0 rgba(207,154,76,.25);
+  }
+  .item-cert .it-top::before{
+    content:""; position:absolute; right:9%; bottom:12%; width:16%; aspect-ratio:1; border-radius:50%;
+    border:2px solid rgba(191,58,43,.65); transform:rotate(-10deg);
+  }
+
+  /* 感谢信：信封（最上层） */
+  .item-env{ --iw:calc(var(--w) * .5); --ih:calc(var(--w) * .31); --th:5px; --edge:#e3cfa6;
+    --x:calc(var(--w) * -.03); --y:calc(var(--w) * .17); --z:13px; --r:-4deg; }
+  .item-env .it-top{
+    background:linear-gradient(170deg,#fbf4e6,#f0e2c4);
+    border-radius:2px;
+    box-shadow:inset 0 0 0 1px rgba(207,154,76,.45), 4px 8px 12px rgba(15,0,12,.42);
+  }
+  .item-env .it-top::before{
+    content:""; position:absolute; left:0; right:0; top:0; height:56%;
+    background:linear-gradient(165deg,var(--gold-light),#f8ecd3 60%,#efdfbd);
+    clip-path:polygon(0 0,100% 0,50% 100%);
+    filter:drop-shadow(0 1px 0 rgba(150,110,60,.4));
+  }
+  .item-env .it-top::after{
+    content:""; position:absolute; left:50%; top:56%; width:15%; aspect-ratio:1; transform:translate(-50%,-50%);
+    border-radius:50%; background:radial-gradient(circle at 35% 30%,#e8bd6c,var(--gold) 60%,#a97a2f);
+    box-shadow:0 1px 3px rgba(90,55,20,.5);
+  }
+  .item-env .item-cap{
+    position:absolute; left:0; right:0; bottom:9%; text-align:center;
+    font-family:"Ma Shan Zheng","Noto Serif SC",cursive; font-size:clamp(11px,2.6vw,15px);
+    letter-spacing:.2em; color:var(--ink);
+  }
+
+  .code-form{ margin-top:clamp(24px,5vh,40px); text-align:center; transition:opacity .5s ease, transform .5s ease; }
+  .box-stage.is-open .code-form{ opacity:0; transform:translateY(10px); pointer-events:none; }
+  .code-label{
+    display:block; margin-bottom:9px;
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:12px; letter-spacing:.16em; color:var(--ink-soft);
+  }
+  .code-row{ display:flex; gap:9px; justify-content:center; }
+  .code-input{
+    width:clamp(118px,30vw,158px); padding:11px 14px;
+    border-radius:999px; border:1px solid rgba(207,154,76,.5);
+    background:rgba(255,250,240,.92);
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:15px; letter-spacing:.22em; text-align:center; color:var(--ink);
+    outline:none; transition:border-color .25s ease, box-shadow .25s ease;
+  }
+  .code-input::placeholder{ letter-spacing:.06em; color:var(--ink-soft); opacity:.55; }
+  .code-input:focus{ border-color:var(--gold); box-shadow:0 0 0 3px rgba(207,154,76,.2); }
+  .code-input.is-wrong{
+    border-color:rgba(184,69,63,.8);
+    box-shadow:0 0 0 3px rgba(184,69,63,.15);
+    animation:shake .4s ease;
+  }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-6px); }
+    40%{ transform:translateX(5px); }
+    60%{ transform:translateX(-4px); }
+    80%{ transform:translateX(3px); }
+  }
+  .code-submit{
+    padding:11px 22px; border-radius:999px; cursor:pointer;
+    border:1px solid transparent; color:#fff8ea;
+    background:linear-gradient(160deg,var(--gold-light),var(--gold));
+    box-shadow:0 4px 12px rgba(90,55,20,.26);
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:14px; letter-spacing:.08em;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .code-submit:hover{ transform:translateY(-1px); box-shadow:0 6px 16px rgba(90,55,20,.3); }
+  .code-submit:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  .code-msg{
+    min-height:1.4em; margin:10px 0 0;
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:12.5px; letter-spacing:.04em; color:#a8453f;
+  }
+  .box-hint{
+    margin:clamp(14px,3vh,22px) 0 0; text-align:center;
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:12.5px; letter-spacing:.06em; color:var(--ink-soft);
+  }
+  .box-hint-open{ display:none; }
+  .box-stage.is-open .box-hint-closed{ display:none; }
+  .box-stage.is-open .box-hint-open{ display:block; }
+
+  /* ---------- Certificate ---------- */
+  .cert-backdrop{
+    position:fixed; inset:0; z-index:62;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    background:rgba(60,36,48,.48);
+    backdrop-filter:blur(3px);
+    opacity:0; pointer-events:none; visibility:hidden;
+    transition:opacity .3s ease, visibility 0s linear .3s;
+  }
+  .cert-backdrop.is-open{ opacity:1; pointer-events:auto; visibility:visible; transition:opacity .3s ease, visibility 0s; }
+  .cert-sheet{
+    width:min(920px,96vw); max-height:92vh; overflow-y:auto;
+    background:linear-gradient(170deg,#fffdf7,#fbf4e6 70%);
+    border:1px solid rgba(207,154,76,.5);
+    border-radius:10px; padding:clamp(18px,3.4vw,30px) clamp(18px,4vw,40px);
+    box-shadow:0 26px 60px -20px rgba(74,42,58,.55);
+    transform:translateY(14px) scale(.97);
+    transition:transform .35s cubic-bezier(.22,1,.36,1);
+  }
+  .cert-backdrop.is-open .cert-sheet{ transform:none; }
+  .cert-frame{
+    position:relative; padding:clamp(16px,2.8vw,32px) clamp(18px,3.6vw,42px);
+    border:2px solid rgba(207,154,76,.55); border-radius:6px;
+  }
+  .cert-frame::before{
+    content:""; position:absolute; inset:6px; border:1px solid rgba(207,154,76,.32);
+    border-radius:4px; pointer-events:none;
+  }
+  .cert-title{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-size:clamp(21px,4.4vw,29px); font-weight:700; letter-spacing:.3em; text-indent:.3em;
+    text-align:center; color:var(--gold); margin:0 0 4px;
+  }
+  .cert-name{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-size:clamp(19px,3.8vw,26px); font-weight:600; letter-spacing:.04em;
+    text-align:center; color:var(--ink); margin:clamp(6px,1.4vh,14px) 0 4px;
+  }
+  .cert-subject{
+    text-align:center; margin:0 0 clamp(8px,1.8vh,16px);
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:13px; letter-spacing:.14em; color:var(--gold);
+  }
+  .cert-body,.cert-note,.cert-award{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-size:14.5px; line-height:2; color:var(--ink);
+    text-align:center; margin:0 0 .9em;
+  }
+  /* landscape sheet: keep the measure readable instead of stretching full width */
+  .cert-body,.cert-note,.cert-award{ max-width:42em; margin-left:auto; margin-right:auto; }
+  .cert-note{ font-size:13.5px; color:var(--ink-soft); }
+  .cert-award{ margin-bottom:clamp(8px,1.8vh,16px); }
+  .cert-foot{ display:flex; justify-content:space-between; align-items:flex-end; gap:14px; margin-top:clamp(4px,1.2vh,12px); }
+  .cert-issuer{
+    margin:0; font-family:"Ma Shan Zheng","Noto Serif SC","Noto Serif Tamil",cursive;
+    font-size:clamp(15px,2.8vw,19px); color:var(--gold);
+  }
+  .cert-years{
+    margin:6px 0 0; font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:12px; letter-spacing:.16em; color:var(--ink-soft);
+  }
+
+  /* ---------- J3K seals: one shared drawing used by certificate, box and envelope ---------- */
+  .seal-defs{ position:absolute; width:0; height:0; overflow:hidden; }
+  .cert-seal{
+    flex:none; width:clamp(96px,20vw,128px); height:clamp(96px,20vw,128px);
+    transform:rotate(-9deg); opacity:.95;
+    filter:drop-shadow(0 1px 1px rgba(255,255,255,.45));
+  }
+  .cert-actions{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:clamp(16px,3vh,22px); }
+  /* Latin / Tamil certificate titles are long — tighten the tracking */
+  html[lang="ms"] .cert-title,
+  html[lang="en"] .cert-title,
+  html[lang="ta"] .cert-title{ letter-spacing:.1em; text-indent:.1em; font-size:clamp(16px,3.2vw,22px); }
+
+  .cert-btn{
+    position:fixed;
+    right:max(18px,env(safe-area-inset-right));
+    bottom:max(18px,env(safe-area-inset-bottom));
+    z-index:20; width:48px; height:48px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.55);
+    background:rgba(255,255,255,.35);
+    backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    color:var(--ink);
+    box-shadow:0 4px 14px rgba(90,55,45,.18);
+    transition:transform .25s ease, background .25s ease;
+  }
+  .cert-btn[hidden]{ display:none; }
+  .cert-btn:hover{ transform:scale(1.08); }
+  .cert-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  .cert-btn svg{ width:20px; height:20px; }
+
+  /* ---------- 荣誉证书：竖版（A4 式）正式证书 ---------- */
+  .cert-sheet.is-honour{
+    width:min(600px,92vw);
+    min-height:min(840px,88vh);
+    padding:0; overflow:hidden;
+    display:flex; flex-direction:column;
+    background:linear-gradient(180deg,#fffdf8,#fdf8ee);
+    border:1px solid rgba(207,154,76,.45);
+    border-radius:8px;
+    box-shadow:0 26px 60px -20px rgba(74,42,58,.55);
+    position:relative;
+  }
+  .cert-sheet.is-honour::before{          /* 淡淡的放射底纹 */
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:repeating-conic-gradient(from 0deg at 50% 128%,
+      rgba(176,132,74,.045) 0deg 1.1deg, rgba(176,132,74,0) 1.1deg 3.6deg);
+  }
+  .honour-head{ position:relative; flex:none; }
+  .honour-head-bg{ display:block; width:100%; height:clamp(112px,20vw,158px); }
+  .honour-medal{
+    position:absolute; left:50%; top:clamp(4px,1vw,10px); transform:translateX(-50%);
+    width:clamp(92px,21vw,128px); height:auto;
+    filter:drop-shadow(0 6px 10px rgba(90,55,20,.32));
+  }
+  .honour-inner{
+    position:relative; flex:1;
+    padding:0 clamp(22px,6vw,52px) clamp(18px,3vw,30px);
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+  }
+  .honour-title{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-weight:900; font-size:clamp(26px,5.6vw,40px);
+    letter-spacing:.18em; text-indent:.18em;
+    color:#b31f24; margin:clamp(8px,2vh,18px) 0 0;
+  }
+  .honour-title::after{
+    content:""; display:block; width:clamp(130px,36vw,220px); height:3px;
+    margin:10px auto 0; border-radius:2px;
+    background:linear-gradient(90deg,rgba(179,31,36,0),#b31f24,rgba(179,31,36,0));
+  }
+  .honour-name{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-weight:700; font-size:clamp(22px,4.6vw,32px); letter-spacing:.06em;
+    color:#2f2620; margin:clamp(14px,3vh,26px) 0 4px;
+  }
+  .honour-subject{
+    font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:clamp(12px,2.4vw,14px); letter-spacing:.16em; color:#8a7461;
+    margin:0 0 clamp(12px,2.6vh,22px);
+  }
+  .honour-text{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-size:clamp(13.5px,2.7vw,15.5px); line-height:2.05; color:#3b3029;
+    max-width:34em; margin:0 0 clamp(10px,2vh,18px); text-align:justify; text-align-last:center;
+  }
+  .honour-award{
+    font-family:"Noto Serif SC","Noto Serif Tamil",serif;
+    font-size:clamp(13.5px,2.7vw,15.5px); letter-spacing:.06em;
+    color:#3b3029; margin:0 0 auto; text-align:center;
+  }
+  .honour-foot{ align-self:flex-end; text-align:right; margin:clamp(16px,4vh,32px) 0 0; }
+  .honour-issuer{
+    margin:0; font-family:"Ma Shan Zheng","Noto Serif SC","Noto Serif Tamil",cursive;
+    font-size:clamp(15px,3vw,20px); color:#5b4636;
+  }
+  .honour-years{
+    margin:5px 0 0; font-family:"Noto Sans SC","Noto Sans Tamil",sans-serif;
+    font-size:12px; letter-spacing:.18em; color:#8a7461;
+  }
+  .honour-emblems{
+    display:flex; align-items:center; justify-content:center;
+    gap:clamp(18px,6vw,46px); margin-top:clamp(10px,3vh,24px);
+  }
+  .honour-laurel{ width:clamp(66px,15vw,88px); height:auto; }
+  .honour-seal{ width:clamp(72px,16vw,96px); height:auto; transform:rotate(-9deg); opacity:.95; }
+
+  /* ---------- 信纸上的印章（盖在落款旁） ---------- */
+  .letter-seal{
+    display:block; width:clamp(76px,17vw,96px); height:clamp(76px,17vw,96px);
+    margin:10px 4px 0 auto;
+    transform:rotate(-8deg); opacity:.92;
+  }
+
+  /* printing a certificate should print only the certificate */
+  @page{ size:A4 landscape; margin:10mm; }
+  @page honourPage{ size:A4 portrait; margin:10mm; }
+  @media print{
+    body{ background:#fff !important; }
+    body > *:not(.cert-backdrop.is-open){ display:none !important; }
+    .cert-backdrop.is-open{
+      position:static !important; display:block !important; padding:0 !important;
+      opacity:1 !important; visibility:visible !important; background:none !important; backdrop-filter:none !important;
+    }
+    .cert-backdrop.is-open .cert-sheet{
+      width:100% !important; max-height:none !important; overflow:visible !important;
+      border:none !important; border-radius:0 !important; box-shadow:none !important;
+      transform:none !important; background:#fff !important; padding:0 !important;
+    }
+    /* 荣誉证书是竖版：单独指定 A4 纵向 */
+    .cert-backdrop.is-open .cert-sheet.is-honour{
+      page:honourPage; min-height:0 !important; border:none !important;
+    }
+    .cert-sheet.is-honour::before{ display:none !important; }
+    .cert-actions{ display:none !important; }
+  }
+
   /* ---------- Reduced motion ---------- */
   @media (prefers-reduced-motion:reduce){
-    .sunbeam,.particle,.plane,.cap-drift,.cta,.scroll-hint .arrow{ animation:none !important; }
+    .sunbeam,.particle,.plane,.cap-drift,.cta,.scroll-hint .arrow,.code-input.is-wrong{ animation:none !important; }
+    .box-cam,.box-lid,.box-item,.code-form,.box-seal,.cert-sheet{ transition-duration:.3s !important; transition-delay:0s !important; }
+    .box-scene{ animation:none !important; }
     .envelope-wrap{ animation:none !important; transform:none !important; }
     .flap,.letter,.seal,.letter-title,.letter-body p,.letter-sign{ transition-duration:.3s !important; }
   }
@@ -628,12 +1167,14 @@
     .music-toggle{ width:42px; height:42px; }
     .lang-switch{ gap:3px; padding:3px; }
     .lang-btn{ font-size:11.5px; padding:6px 8px; }
-    .read-btn{ height:42px; padding:0 12px; font-size:12.5px; right:calc(max(18px,env(safe-area-inset-right)) + 50px); }
+    .read-btn{ height:42px; padding:0 12px; font-size:12.5px; right:calc(max(18px,env(safe-area-inset-right)) + 68px); }
     .read-btn svg{ width:16px; height:16px; }
+    .cert-btn{ width:42px; height:42px; }
+    .cert-btn svg{ width:18px; height:18px; }
   }
 </style>
 </head>
-<body>
+<body class="is-boxed">
 
   <div class="lang-switch" role="group" aria-label="语言 / Bahasa / Language / மொழி">
     <button class="lang-btn is-active" type="button" data-lang="zh" aria-pressed="true" title="中文">中文</button>
@@ -641,6 +1182,127 @@
     <button class="lang-btn" type="button" data-lang="en" aria-pressed="false" title="English">English</button>
     <button class="lang-btn" type="button" data-lang="ta" aria-pressed="false" title="தமிழ்">தமிழ்</button>
   </div>
+
+  <!-- 印章图形定义：奖状 / 箱子 / 信封三处共用（红色印泥 + 金色火漆） -->
+  <svg class="seal-defs" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="sealInk" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="9" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="sealBlot" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+        <feGaussianBlur stdDeviation="5"/>
+      </filter>
+      <filter id="waxRough" x="-22%" y="-22%" width="144%" height="144%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="4" result="w"/>
+        <feDisplacementMap in="SourceGraphic" in2="w" scale="6.5" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <radialGradient id="sealWash" cx="42%" cy="34%" r="72%">
+        <stop offset="0%" stop-color="#d4574a" stop-opacity=".22"/>
+        <stop offset="58%" stop-color="#bf3a2b" stop-opacity=".07"/>
+        <stop offset="100%" stop-color="#bf3a2b" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="waxFill" cx="36%" cy="28%" r="80%">
+        <stop offset="0%" stop-color="#f6dca6"/>
+        <stop offset="52%" stop-color="#dcae66"/>
+        <stop offset="100%" stop-color="#a5762c"/>
+      </radialGradient>
+      <path id="sealArc" d="M 24.5 60 A 35.5 35.5 0 0 1 95.5 60"/>
+
+      <!-- 红色印泥章：扭索纹玫瑰 + 三层圈线 + 弧形年份 + 细线菱形 -->
+      <symbol id="j3kStamp" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="55.5" fill="url(#sealWash)"/>
+
+        <!-- 扭索纹玫瑰（guilloche）：两圈低透明度椭圆旋转叠加 -->
+        <g fill="none" stroke="#bf3a2b" stroke-width=".5" opacity=".1">
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(0.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(7.5 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(15.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(22.5 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(30.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(37.5 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(45.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(52.5 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(60.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(67.5 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(75.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(82.5 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(90.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(97.5 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(105.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(112.5 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(120.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(127.5 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(135.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(142.5 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(150.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(157.5 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(165.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="41" ry="13.5" transform="rotate(172.5 60 60)"/>
+        </g>
+        <g fill="none" stroke="#bf3a2b" stroke-width=".45" opacity=".09">
+          <ellipse cx="60" cy="60" rx="27" ry="9" transform="rotate(0.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="27" ry="9" transform="rotate(15.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="27" ry="9" transform="rotate(30.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="27" ry="9" transform="rotate(45.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="27" ry="9" transform="rotate(60.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="27" ry="9" transform="rotate(75.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="27" ry="9" transform="rotate(90.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="27" ry="9" transform="rotate(105.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="27" ry="9" transform="rotate(120.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="27" ry="9" transform="rotate(135.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="27" ry="9" transform="rotate(150.0 60 60)"/>
+          <ellipse cx="60" cy="60" rx="27" ry="9" transform="rotate(165.0 60 60)"/>
+        </g>
+
+        <!-- 墨迹不匀：几团模糊的淡红 -->
+        <g filter="url(#sealBlot)" opacity=".28">
+          <circle cx="43" cy="45" r="11" fill="#bf3a2b"/>
+          <circle cx="79" cy="70" r="8" fill="#bf3a2b"/>
+          <circle cx="66" cy="34" r="6" fill="#bf3a2b"/>
+        </g>
+
+        <!-- 中心柔和留白：让 J3K 从纹样里跳出来 -->
+        <g filter="url(#sealBlot)" opacity=".55">
+          <circle cx="60" cy="59.5" r="27" fill="#fffdf7"/>
+        </g>
+
+        <!-- 圈线：外圈 / 细圈 / 极细点圈 / 内细圈 -->
+        <circle cx="60" cy="60" r="55.5" fill="none" stroke="#bf3a2b" stroke-width="3.2"/>
+        <circle cx="60" cy="60" r="51" fill="none" stroke="#bf3a2b" stroke-width="1" opacity=".85"/>
+        <circle cx="60" cy="60" r="49" fill="none" stroke="#bf3a2b" stroke-width="1.1"
+                stroke-dasharray=".5 3.1" opacity=".5"/>
+        <circle cx="60" cy="60" r="45" fill="none" stroke="#bf3a2b" stroke-width=".7" opacity=".5"/>
+        <g filter="url(#sealInk)" opacity=".45">
+          <circle cx="60" cy="60" r="55.5" fill="none" stroke="#bf3a2b" stroke-width="3.2"/>
+          <circle cx="60" cy="60" r="51" fill="none" stroke="#bf3a2b" stroke-width="1"/>
+        </g>
+
+        <!-- 弧形年份 -->
+        <text font-family="Noto Sans SC, Noto Sans Tamil, sans-serif" font-size="10"
+              letter-spacing="2.4" fill="#bf3a2b" opacity=".8">
+          <textPath href="#sealArc" startOffset="50%" text-anchor="middle">2024 — 2026</textPath>
+        </text>
+
+        <!-- 中心字 + 细线菱形 -->
+        <text x="60" y="58.5" dy="0.35em" text-anchor="middle"
+              font-family="Noto Serif SC, Noto Serif Tamil, serif"
+              font-size="30" font-weight="700" letter-spacing="1.6" fill="#bf3a2b">J3K</text>
+        <path d="M45 78.6 H75" stroke="#bf3a2b" stroke-width=".8" opacity=".45"/>
+        <path d="M60 74.7 63.3 78.6 60 82.5 56.7 78.6z" fill="#bf3a2b" opacity=".8"/>
+      </symbol>
+
+      <!-- 金色火漆印 -->
+      <symbol id="j3kWax" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="49" fill="url(#waxFill)" filter="url(#waxRough)"/>
+        <circle cx="60" cy="60" r="37" fill="none" stroke="#8a5f1e" stroke-width="1.4" opacity=".38"/>
+        <ellipse cx="43" cy="38" rx="17" ry="11" fill="#fff6de" opacity=".3"/>
+        <text x="60" y="60" dy="0.35em" text-anchor="middle"
+              font-family="Noto Serif SC, Noto Serif Tamil, serif"
+              font-size="30" font-weight="700" letter-spacing="1" fill="#fff8ea" opacity=".96">J3K</text>
+      </symbol>
+    </defs>
+  </svg>
 
   <div class="sunbeam" aria-hidden="true"></div>
   <div class="particles" id="particles" aria-hidden="true"></div>
@@ -658,16 +1320,75 @@
   <div class="cap-drift c1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="var(--silhouette)" stroke-width="1.4"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/><path d="M22 8v6"/></svg></div>
   <div class="cap-drift c2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="var(--silhouette)" stroke-width="1.4"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/><path d="M22 8v6"/></svg></div>
 
-  <button class="music-toggle" id="musicToggle" aria-label="播放背景音乐" aria-pressed="false">
-    <svg viewBox="0 0 24 24" fill="none" id="musicIcon">
-      <path d="M9 18V6l10-2v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="7" cy="18" r="2.3" fill="currentColor"/>
-      <circle cx="17" cy="16" r="2.3" fill="currentColor"/>
-    </svg>
-  </button>
-  <audio id="bgm" loop preload="none">
-    <!-- 请在此处替换为你自己的背景音乐文件路径，例如： <source src="music.mp3" type="audio/mpeg"> -->
-  </audio>
+  <!-- 取件码 → 开箱 → 箱内两样：奖状 + 感谢信 -->
+  <section class="box-stage" id="boxStage">
+    <p class="box-title" data-i18n="boxTitle">致老师的专属快件</p>
+
+    <div class="box-scene">
+      <div class="box-cam">
+        <div class="box-frame">
+          <div class="f box-ground" aria-hidden="true"></div>
+          <div class="f box-floor" aria-hidden="true"></div>
+          <div class="f wall-in w-back-in" aria-hidden="true"></div>
+          <div class="f wall-in w-front-in" aria-hidden="true"></div>
+          <div class="f wall-in w-left-in" aria-hidden="true"></div>
+          <div class="f wall-in w-right-in" aria-hidden="true"></div>
+          <div class="f wall-out w-back-out" aria-hidden="true"></div>
+          <div class="f wall-out w-left-out" aria-hidden="true"></div>
+          <div class="f wall-out w-right-out" aria-hidden="true"></div>
+          <div class="f wall-out w-front-out">
+            <div class="box-label">
+              <span id="boxLabelHead">取件码</span>
+              <b id="boxCode">— — — —</b>
+            </div>
+            <svg class="box-seal" viewBox="0 0 120 120" role="img" aria-label="J3K"><use href="#j3kStamp"/></svg>
+          </div>
+          <div class="f rim rim-front" aria-hidden="true"></div>
+          <div class="f rim rim-back" aria-hidden="true"></div>
+          <div class="f rim rim-left" aria-hidden="true"></div>
+          <div class="f rim rim-right" aria-hidden="true"></div>
+
+          <!-- 箱内三样东西叠放：荣誉证书（底）→ 奖状 → 感谢信（顶） -->
+          <button class="box-item item-honour" id="honourItem" type="button">
+            <span class="f it-l it-l0" aria-hidden="true"></span><span class="f it-l it-l1" aria-hidden="true"></span><span class="f it-l it-l2" aria-hidden="true"></span>
+            <span class="f it-top"><span class="item-cap" data-i18n="itemHonour">荣誉证书</span></span>
+          </button>
+          <button class="box-item item-cert" id="certItem" type="button">
+            <span class="f it-l it-l0" aria-hidden="true"></span><span class="f it-l it-l1" aria-hidden="true"></span><span class="f it-l it-l2" aria-hidden="true"></span>
+            <span class="f it-top"><span class="item-cap" data-i18n="itemCert">奖状</span></span>
+          </button>
+          <button class="box-item item-env" id="envItem" type="button">
+            <span class="f it-l it-l0" aria-hidden="true"></span><span class="f it-l it-l1" aria-hidden="true"></span><span class="f it-l it-l2" aria-hidden="true"></span>
+            <span class="f it-top"><span class="item-cap" data-i18n="itemLetter">感谢信</span></span>
+          </button>
+
+          <div class="box-lid" aria-hidden="true">
+            <div class="f lid-skirt ls-back"></div>
+            <div class="f lid-skirt ls-left"></div>
+            <div class="f lid-skirt ls-right"></div>
+            <div class="f lid-skirt ls-front"></div>
+            <div class="f lid-under">J3K · 2024 — 2026</div>
+            <div class="f lid-top"></div>
+            <div class="f lid-bow"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form class="code-form" id="codeForm" autocomplete="off" novalidate>
+      <label class="code-label" for="codeInput" data-i18n="codeLabel">取件码</label>
+      <div class="code-row">
+        <input class="code-input" id="codeInput" type="text" maxlength="10"
+               data-i18n-placeholder="codePlaceholder" placeholder="例如 1001"
+               aria-describedby="codeMsg">
+        <button class="code-submit" type="submit" data-i18n="codeSubmit">开箱</button>
+      </div>
+      <p class="code-msg" id="codeMsg" role="status" aria-live="polite"></p>
+    </form>
+
+    <p class="box-hint box-hint-closed" data-i18n="boxHint">取件码在信息上</p>
+    <p class="box-hint box-hint-open" data-i18n="boxOpened">点一下，打开你的奖状、荣誉证书或感谢信</p>
+  </section>
 
   <main class="stage" id="stage">
     <p class="headline" data-i18n="headline">献给陪伴我们走过三年青春的人</p>
@@ -682,17 +1403,13 @@
               <p class="letter-sub" data-i18n="letterSub">谢谢您们，陪我们走过 2024—2026</p>
               <div class="letter-body" id="letterBody"><!-- 段落由 applyLang() 按语言注入 --></div>
               <p class="letter-sign" data-i18n="sign">2024—2026年，您们的学生，敬上。</p>
+              <svg class="letter-seal" viewBox="0 0 120 120" role="img" aria-label="J3K"><use href="#j3kStamp"/></svg>
             </div>
           </div>
         </div>
         <div class="pocket-front"></div>
         <div class="flap">
-          <div class="seal">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M12 3 3 7.5l9 4.5 9-4.5L12 3z"/>
-              <path d="M7 9.8V15c0 1.4 2.2 2.6 5 2.6s5-1.2 5-2.6V9.8"/>
-            </svg>
-          </div>
+          <svg class="seal" viewBox="0 0 120 120" role="img" aria-label="J3K"><use href="#j3kWax"/></svg>
         </div>
       </div>
     </div>
@@ -702,17 +1419,165 @@
 
   <button class="close-btn" id="closeBtn" type="button" data-i18n="close">关闭该信封</button>
 
+  <div class="fold-sheet top-folded bot-folded" id="foldSheet" aria-hidden="true">
+    <div class="fold-p fold-bot"></div>
+    <div class="fold-p fold-mid"></div>
+    <div class="fold-p fold-top"></div>
+  </div>
   <div class="scroll-hint" id="scrollHint" aria-hidden="true">
     <span data-i18n="scrollHint">向下滑动，读完这封信</span>
     <span class="arrow">↓</span>
   </div>
 
-  <button class="read-btn" id="readBtn" type="button" aria-pressed="false" aria-label="朗读这封信" title="朗读这封信">
+  <button class="cert-btn" id="certBtn" type="button" hidden aria-label="奖状" title="奖状">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="9" r="5"/><path d="M8.6 13.4 7 22l5-2.6L17 22l-1.4-8.6"/>
+    </svg>
+  </button>
+
+  <button class="read-btn" id="readBtn" type="button" hidden aria-pressed="false" aria-label="朗读这封信" title="朗读这封信">
     <svg class="ri-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6L19 12 8 5.2z"/></svg>
     <svg class="ri-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.5 5h3.2v14H7.5zM13.3 5h3.2v14h-3.2z"/></svg>
     <span class="read-label" data-i18n="readLabel">朗读这封信</span>
     <span class="read-progress" id="readProgress" aria-hidden="true"></span>
   </button>
+
+  <!-- 奖状（每位老师一张，内容由取件码决定） -->
+  <div class="cert-backdrop" id="certBackdrop">
+    <div class="cert-sheet" role="dialog" aria-modal="true" aria-labelledby="certTitle">
+      <div class="cert-frame">
+        <h2 class="cert-title" id="certTitle" data-i18n="certTitle">奖状</h2>
+        <p class="cert-name" id="certName">—</p>
+        <p class="cert-subject" id="certSubject"></p>
+        <p class="cert-body" id="certBody"></p>
+        <p class="cert-note" id="certNote" hidden></p>
+        <p class="cert-award" data-i18n="certAward">特发此状，以资鼓励。</p>
+        <div class="cert-foot">
+          <div>
+            <p class="cert-issuer" data-i18n="certIssuer">2026 届 J3K全体学生 敬上</p>
+            <p class="cert-years" data-i18n="certYears">2024 — 2026</p>
+          </div>
+          <svg class="cert-seal" viewBox="0 0 120 120" role="img" aria-label="J3K"><use href="#j3kStamp"/></svg>
+        </div>
+      </div>
+      <div class="cert-actions">
+        <button class="modal-btn ghost" id="certClose" type="button" data-i18n="certClose">收起奖状</button>
+        <button class="modal-btn primary" id="certPrint" type="button" data-i18n="certPrint">打印 / 保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 荣誉证书（竖版正式证书，每位老师一张，与奖状同一份取件码） -->
+  <div class="cert-backdrop" id="honourBackdrop">
+    <div class="cert-sheet is-honour" role="dialog" aria-modal="true" aria-labelledby="honourTitle">
+
+      <div class="honour-head">
+        <svg class="honour-head-bg" viewBox="0 0 600 210" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="hRed" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#7c151a"/><stop offset="55%" stop-color="#9d2027"/><stop offset="100%" stop-color="#8a1a20"/>
+            </linearGradient>
+            <linearGradient id="hGold" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f9e6b4"/><stop offset="45%" stop-color="#d9ac5a"/><stop offset="100%" stop-color="#b1843a"/>
+            </linearGradient>
+          </defs>
+          <path d="M0 0 H600 V62 C 470 148, 400 180, 300 180 C 200 180, 130 148, 0 62 Z" fill="url(#hRed)"/>
+          <path d="M0 58 C 130 144, 200 176, 300 176 C 400 176, 470 144, 600 58"
+                fill="none" stroke="url(#hGold)" stroke-width="13" stroke-linecap="round"/>
+        </svg>
+
+        <svg class="honour-medal" viewBox="0 0 160 200" aria-hidden="true">
+          <!-- 缎带 -->
+          <path d="M64 92 L44 172 L59 162 L69 180 L84 100 Z" fill="#c08f37"/>
+          <path d="M96 92 L116 172 L101 162 L91 180 L76 100 Z" fill="#e2b869"/>
+          <!-- 奖章 -->
+          <circle cx="80" cy="64" r="36" fill="url(#hGold)" stroke="#a97a2f" stroke-width="1"/>
+          <g fill="#f6e3ae">
+            <circle cx="80.0" cy="24.0" r="4.2"/><circle cx="90.4" cy="25.4" r="4.2"/>
+            <circle cx="100.0" cy="29.4" r="4.2"/><circle cx="108.3" cy="35.7" r="4.2"/>
+            <circle cx="114.6" cy="44.0" r="4.2"/><circle cx="118.6" cy="53.6" r="4.2"/>
+            <circle cx="120.0" cy="64.0" r="4.2"/><circle cx="118.6" cy="74.4" r="4.2"/>
+            <circle cx="114.6" cy="84.0" r="4.2"/><circle cx="108.3" cy="92.3" r="4.2"/>
+            <circle cx="100.0" cy="98.6" r="4.2"/><circle cx="90.4" cy="102.6" r="4.2"/>
+            <circle cx="80.0" cy="104.0" r="4.2"/><circle cx="69.6" cy="102.6" r="4.2"/>
+            <circle cx="60.0" cy="98.6" r="4.2"/><circle cx="51.7" cy="92.3" r="4.2"/>
+            <circle cx="45.4" cy="84.0" r="4.2"/><circle cx="41.4" cy="74.4" r="4.2"/>
+            <circle cx="40.0" cy="64.0" r="4.2"/><circle cx="41.4" cy="53.6" r="4.2"/>
+            <circle cx="45.4" cy="44.0" r="4.2"/><circle cx="51.7" cy="35.7" r="4.2"/>
+            <circle cx="60.0" cy="29.4" r="4.2"/><circle cx="69.6" cy="25.4" r="4.2"/>
+          </g>
+          <circle cx="80" cy="64" r="27" fill="#f8e9bd" stroke="#c99a3f" stroke-width="1"/>
+          <g stroke="#c99a3f" stroke-width="1" opacity=".9">
+            <line x1="90.0" y1="64.0" x2="106.0" y2="64.0"/><line x1="89.8" y1="66.0" x2="105.5" y2="69.1"/>
+            <line x1="89.2" y1="67.8" x2="104.0" y2="73.9"/><line x1="88.3" y1="69.6" x2="101.6" y2="78.4"/>
+            <line x1="87.1" y1="71.1" x2="98.4" y2="82.4"/><line x1="85.6" y1="72.3" x2="94.4" y2="85.6"/>
+            <line x1="83.8" y1="73.2" x2="89.9" y2="88.0"/><line x1="82.0" y1="73.8" x2="85.1" y2="89.5"/>
+            <line x1="80.0" y1="74.0" x2="80.0" y2="90.0"/><line x1="78.0" y1="73.8" x2="74.9" y2="89.5"/>
+            <line x1="76.2" y1="73.2" x2="70.1" y2="88.0"/><line x1="74.4" y1="72.3" x2="65.6" y2="85.6"/>
+            <line x1="72.9" y1="71.1" x2="61.6" y2="82.4"/><line x1="71.7" y1="69.6" x2="58.4" y2="78.4"/>
+            <line x1="70.8" y1="67.8" x2="56.0" y2="73.9"/><line x1="70.2" y1="66.0" x2="54.5" y2="69.1"/>
+            <line x1="70.0" y1="64.0" x2="54.0" y2="64.0"/><line x1="70.2" y1="62.0" x2="54.5" y2="58.9"/>
+            <line x1="70.8" y1="60.2" x2="56.0" y2="54.1"/><line x1="71.7" y1="58.4" x2="58.4" y2="49.6"/>
+            <line x1="72.9" y1="56.9" x2="61.6" y2="45.6"/><line x1="74.4" y1="55.7" x2="65.6" y2="42.4"/>
+            <line x1="76.2" y1="54.8" x2="70.1" y2="40.0"/><line x1="78.0" y1="54.2" x2="74.9" y2="38.5"/>
+            <line x1="80.0" y1="54.0" x2="80.0" y2="38.0"/><line x1="82.0" y1="54.2" x2="85.1" y2="38.5"/>
+            <line x1="83.8" y1="54.8" x2="89.9" y2="40.0"/><line x1="85.6" y1="55.7" x2="94.4" y2="42.4"/>
+            <line x1="87.1" y1="56.9" x2="98.4" y2="45.6"/><line x1="88.3" y1="58.4" x2="101.6" y2="49.6"/>
+            <line x1="89.2" y1="60.2" x2="104.0" y2="54.1"/><line x1="89.8" y1="62.0" x2="105.5" y2="58.9"/>
+          </g>
+          <circle cx="80" cy="64" r="9.5" fill="#e8c274" stroke="#b8893a" stroke-width="1.2"/>
+        </svg>
+      </div>
+
+      <div class="honour-inner">
+        <h2 class="honour-title" id="honourTitle" data-i18n="honourTitle">荣誉证书</h2>
+        <p class="honour-name" id="honourName">—</p>
+        <p class="honour-subject" id="honourSubject"></p>
+        <p class="honour-text" id="honourBody"></p>
+        <p class="honour-award" data-i18n="honourAward">特发此证，以资鼓励。</p>
+        <div class="honour-foot">
+          <p class="honour-issuer" data-i18n="certIssuer">2026 届 J3K全体学生 敬上</p>
+          <p class="honour-years" data-i18n="certYears">2024 — 2026</p>
+        </div>
+        <div class="honour-emblems">
+          <svg class="honour-laurel" viewBox="0 0 120 120" aria-hidden="true">
+            <g fill="#33291f">
+              <ellipse cx="65.2" cy="93.5" rx="7.6" ry="3.3" transform="rotate(170 65.2 93.5)"/>
+              <ellipse cx="73.9" cy="90.6" rx="7.6" ry="3.3" transform="rotate(152 73.9 90.6)"/>
+              <ellipse cx="81.2" cy="85.2" rx="7.6" ry="3.3" transform="rotate(135 81.2 85.2)"/>
+              <ellipse cx="86.6" cy="77.9" rx="7.6" ry="3.3" transform="rotate(118 86.6 77.9)"/>
+              <ellipse cx="89.5" cy="69.2" rx="7.6" ry="3.3" transform="rotate(100 89.5 69.2)"/>
+              <ellipse cx="89.7" cy="60.1" rx="7.6" ry="3.3" transform="rotate(82 89.7 60.1)"/>
+              <ellipse cx="87.2" cy="51.3" rx="7.6" ry="3.3" transform="rotate(65 87.2 51.3)"/>
+              <ellipse cx="82.1" cy="43.7" rx="7.6" ry="3.3" transform="rotate(48 82.1 43.7)"/>
+              <ellipse cx="75.0" cy="38.0" rx="7.6" ry="3.3" transform="rotate(30 75.0 38.0)"/>
+              <ellipse cx="54.8" cy="93.5" rx="7.6" ry="3.3" transform="rotate(-170 54.8 93.5)"/>
+              <ellipse cx="46.1" cy="90.6" rx="7.6" ry="3.3" transform="rotate(-152 46.1 90.6)"/>
+              <ellipse cx="38.8" cy="85.2" rx="7.6" ry="3.3" transform="rotate(-135 38.8 85.2)"/>
+              <ellipse cx="33.4" cy="77.9" rx="7.6" ry="3.3" transform="rotate(-118 33.4 77.9)"/>
+              <ellipse cx="30.5" cy="69.2" rx="7.6" ry="3.3" transform="rotate(-100 30.5 69.2)"/>
+              <ellipse cx="30.3" cy="60.1" rx="7.6" ry="3.3" transform="rotate(-82 30.3 60.1)"/>
+              <ellipse cx="32.8" cy="51.3" rx="7.6" ry="3.3" transform="rotate(-65 32.8 51.3)"/>
+              <ellipse cx="37.9" cy="43.7" rx="7.6" ry="3.3" transform="rotate(-48 37.9 43.7)"/>
+              <ellipse cx="45.0" cy="38.0" rx="7.6" ry="3.3" transform="rotate(-30 45.0 38.0)"/>
+            </g>
+            <g fill="none" stroke="#33291f" stroke-width="1.7" stroke-linecap="round" opacity=".75">
+              <polyline points="65.2 93.5 71.1 91.9 76.5 89.1 81.2 85.2 85.1 80.5 87.9 75.1 89.5 69.2 90.0 63.1 89.2 57.1 87.2 51.3 84.1 46.1 79.9 41.6 75.0 38.0"/>
+              <polyline points="54.8 93.5 48.9 91.9 43.5 89.1 38.8 85.2 34.9 80.5 32.1 75.1 30.5 69.2 30.0 63.1 30.8 57.1 32.8 51.3 35.9 46.1 40.1 41.6 45.0 38.0"/>
+            </g>
+            <path d="M60 51 63.2 59.6 72.4 60 65.2 65.7 67.6 74.5 60 69.5 52.4 74.5 54.8 65.7 47.6 60 56.8 59.6 Z"
+                  fill="#33291f"/>
+          </svg>
+          <svg class="honour-seal" viewBox="0 0 120 120" role="img" aria-label="J3K"><use href="#j3kStamp"/></svg>
+        </div>
+      </div>
+
+      <div class="cert-actions">
+        <button class="modal-btn ghost" id="honourClose" type="button" data-i18n="honourClose">收起证书</button>
+        <button class="modal-btn primary" id="honourPrint" type="button" data-i18n="certPrint">打印 / 保存</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Shown before the AI voice-over starts for the first time -->
   <div class="modal-backdrop" id="noticeModal">
@@ -752,9 +1617,9 @@
     // Latin / Tamil translations are longer than the Chinese original, so they
     // get a wider sheet and a taller ceiling; Chinese keeps the original sizes.
     var wide = currentLang !== 'zh';
-    var w = Math.min(wide ? 470 : 380, Math.round(vw * 0.88));
+    var w = Math.min(wide ? 580 : 500, Math.round(vw * 0.92));
     inner.style.setProperty('--final-w', w + 'px');
-    var h = Math.min(inner.scrollHeight, Math.round(vh * (wide ? 0.88 : 0.82)));
+    var h = Math.min(inner.scrollHeight, Math.round(vh * (wide ? 0.9 : 0.86)));
     return { left:(vw - w) / 2, top:(vh - h) / 2, width:w, height:h };
   }
 
@@ -792,8 +1657,30 @@
     return { left:s.left + s.width * 0.08, top:s.bottom - h - h * 0.78, width:w, height:h };
   }
 
-  // Once fully out of the envelope, lift the letter into a fixed layer
-  // at its current on-screen rect, then unfold it to reading size.
+  var fold = document.getElementById('foldSheet');
+
+  // The big sheet is folded in three inside the envelope; folded, it is the
+  // size of its middle panel.
+  function foldedRect(R){
+    var h = R.height / 3;
+    return { left:R.left, top:R.top + h, width:R.width, height:h };
+  }
+  function placeFold(R){
+    fold.style.left = R.left + 'px';
+    fold.style.top = R.top + 'px';
+    fold.style.width = R.width + 'px';
+    fold.style.height = R.height + 'px';
+  }
+  function jumpTo(r){
+    letter.style.transition = 'none';
+    place(r);
+    letter.getBoundingClientRect();
+    letter.style.transition = '';
+  }
+
+  // Once fully out of the envelope: bring the folded letter to the middle of
+  // the screen, swap in the three-panel stand-in, unfold it panel by panel,
+  // then hand over to the real (scrollable) sheet and fade the words in.
   function liftAndUnfold(){
     var r = letter.getBoundingClientRect();
     letter.style.transition = 'none';
@@ -802,23 +1689,39 @@
     place(r);
     letter.getBoundingClientRect();
     letter.style.transition = '';
-    letter.classList.add('is-unfolding');
     var target = finalRect();
-    place(target);
+    place(foldedRect(target));
+    placeFold(target);
     placeClose(target);
     placeHint(target);
-    window.setTimeout(function(){ letter.classList.add('is-revealed'); }, wait(900));
-    window.setTimeout(syncHint, wait(1600));
-    window.setTimeout(function(){ closeBtn.classList.add('is-visible'); }, wait(3200));
+
+    window.setTimeout(function(){
+      fold.classList.add('is-on');
+      letter.classList.add('is-ghost');
+    }, wait(1000));
+    window.setTimeout(function(){ fold.classList.remove('top-folded'); }, wait(1100));
+    window.setTimeout(function(){ fold.classList.remove('bot-folded'); }, wait(1750));
+    window.setTimeout(function(){
+      jumpTo(target);
+      letter.classList.add('is-unfolding');
+      letter.classList.remove('is-ghost');
+      fold.classList.remove('is-on');
+    }, wait(2600));
+    window.setTimeout(function(){ letter.classList.add('is-revealed'); }, wait(2700));
+    window.setTimeout(syncHint, wait(3400));
+    window.setTimeout(function(){ closeBtn.classList.add('is-visible'); }, wait(4600));
   }
 
-  btn.addEventListener('click', function(){
+  // Opening the letter is reachable from the CTA and from the envelope inside the box.
+  function openLetter(){
     if(opened) return;
     opened = true;
     stage.classList.add('is-opening');
     window.setTimeout(function(){ stage.classList.add('is-rising'); }, wait(550));
     window.setTimeout(liftAndUnfold, wait(2000));
-  });
+  }
+
+  btn.addEventListener('click', openLetter);
 
   // Reverse of opening: text out -> fold back -> slide into pocket -> flap closes.
   closeBtn.addEventListener('click', function(){
@@ -830,10 +1733,24 @@
     letter.classList.remove('is-revealed');
     letter.scrollTop = 0;
 
+    // fold back into three: bottom panel tucks behind, then the top folds down over it
     window.setTimeout(function(){
-      letter.classList.remove('is-unfolding');
-      place(pulledOutRect());
+      var R = letter.getBoundingClientRect();
+      R = { left:R.left, top:R.top, width:R.width, height:R.height };
+      placeFold(R);
+      fold.classList.add('is-on');
+      letter.classList.add('is-ghost');
+      fold.classList.add('bot-folded');
+      letter._foldedAt = foldedRect(R);
     }, wait(500));
+    window.setTimeout(function(){ fold.classList.add('top-folded'); }, wait(1150));
+    window.setTimeout(function(){
+      jumpTo(letter._foldedAt);
+      letter.classList.remove('is-unfolding');
+      letter.classList.remove('is-ghost');
+      fold.classList.remove('is-on');
+    }, wait(1950));
+    window.setTimeout(function(){ place(pulledOutRect()); }, wait(2000));
 
     window.setTimeout(function(){
       letter.style.transition = 'none';
@@ -844,36 +1761,39 @@
       letter.getBoundingClientRect();
       letter.style.transition = '';
       stage.classList.remove('is-rising');
-    }, wait(1550));
+    }, wait(3050));
 
     window.setTimeout(function(){
       stage.classList.add('is-closing');
       stage.classList.remove('is-opening');
-    }, wait(3000));
+    }, wait(4500));
 
     // Sealed again: fly away to the bottom-left, then return from the top-right 5s later.
     window.setTimeout(function(){
       envWrap.classList.remove('is-flying-in');
       envWrap.classList.add('is-flying-out');
-    }, wait(4100));
+    }, wait(5600));
 
     window.setTimeout(function(){
       // Envelope is off-screen now, so restoring the headline's height can't cause a visible jump.
       stage.classList.add('is-away');
       stage.classList.remove('is-closing');
-    }, wait(5300));
+    }, wait(6800));
 
     window.setTimeout(function(){
       envWrap.classList.remove('is-flying-out');
       envWrap.classList.add('is-flying-in');
-    }, wait(5300 + 5000));
+    }, wait(6800 + 5000));
 
     window.setTimeout(function(){
       stage.classList.remove('is-away');
       closing = false;
       opened = false;
-      btn.focus({ preventScroll:true });
-    }, wait(5300 + 5000 + 1500));
+      // 回到包裹：箱子（仍是打开状态）与箱里的奖状、感谢信都还在
+      document.body.classList.add('is-boxed');
+      boxStage.classList.remove('is-gone');
+      certItem.focus({ preventScroll:true });
+    }, wait(6800 + 5000 + 1500));
   });
 
   window.addEventListener('resize', function(){
@@ -881,6 +1801,7 @@
     var target = finalRect();
     letter.style.transition = 'none';
     place(target);
+    placeFold(target);
     placeClose(target);
     placeHint(target);
     letter.getBoundingClientRect();
@@ -917,33 +1838,7 @@
     }
   }
 
-  // Background music toggle
-  var musicBtn = document.getElementById('musicToggle');
-  var bgm = document.getElementById('bgm');
-  var playing = false;
-
-  function hasMusic(){ return !!(bgm.querySelector('source') || bgm.currentSrc); }
-
-  musicBtn.addEventListener('click', function(){
-    var dict = I18N[currentLang];
-    if(!hasMusic()){
-      musicBtn.setAttribute('aria-label', dict.musicNone);
-      musicBtn.setAttribute('title', dict.musicNone);
-      return;
-    }
-    if(playing){
-      bgm.pause();
-      playing = false;
-    } else {
-      pauseReading();               // never let two tracks play at once
-      bgm.play().catch(function(){});
-      playing = true;
-    }
-    musicBtn.classList.toggle('playing', playing);
-    musicBtn.setAttribute('aria-pressed', playing ? 'true' : 'false');
-    musicBtn.setAttribute('aria-label', playing ? dict.musicPause : dict.musicPlay);
-    musicBtn.setAttribute('title', playing ? dict.musicPause : dict.musicPlay);
-  });
+  // 背景音乐按钮已按作者要求移除（原 musicToggle / #bgm 一并删除）
 
   /* ---------- Language switching: 中文 / Bahasa Melayu / English / தமிழ் ----------
      Every translatable node carries data-i18n="<key>"; applyLang() swaps the text,
@@ -965,6 +1860,23 @@
       noticeBody:'本音频由人工智能（AI）生成，配音内容、发音或停顿可能与原文略有差异。如有任何出入，请以原始文字内容为准。感谢您的理解与配合。',
       noticeSkip:'不再显示此提醒',
       noticeCancel:'取消', noticeOk:'我明白了，开始播放',
+      boxTitle:'致老师的专属快件',
+      boxHint:'取件码在信息上',
+      boxOpened:'点一下，打开你的奖状、荣誉证书或感谢信',
+      itemCert:'奖状', itemLetter:'感谢信',
+      codeLabel:'取件码', codePlaceholder:'例如 1001', codeSubmit:'开箱',
+      codeEmpty:'请先输入取件码', codeError:'取件码不正确，请再核对一次',
+      boxStamp:'已签收',
+      certTitle:'奖状',
+      certBody:'三年里，我们从您口中的“小天使”，慢慢变成了让您又气又笑的“魔丸”：上课偷吃、下课把您的桌子围成“联合国会议厅”，还替班上挣了个“冷笑话开源地”的名号。谢谢您，即使这样，也没有放开我们的手。',
+      certAward:'特发此状，以资鼓励。',
+      certIssuer:'2026 届 J3K全体学生 敬上', certYears:'2024 — 2026', certSeal:'师恩难忘',
+      certClose:'收起奖状', certPrint:'打印 / 保存',
+      itemHonour:'荣誉证书',
+      honourTitle:'荣誉证书',
+      honourBody:'您教给我们的不只是课本上的知识：被气得当场发火之后，还是回到前方把课讲完；在我们最吵的那一年，依然愿意走进这间课室。您说过的那句“我们是一个班的”，我们记到现在。',
+      honourAward:'特颁此证，以表敬意。',
+      honourClose:'收起证书',
       musicPlay:'播放背景音乐', musicPause:'暂停背景音乐', musicNone:'未配置背景音乐',
       body:[
         '亲爱的老师们：',
@@ -990,16 +1902,16 @@
         '还有一个星期五，至今想起来，似乎都能感受到当时的疯狂。',
         '因为隔天就是星期六，终于可以休息了，大家一到放学前就兴奋得不得了。教室里大喊大叫，有人甚至把东西丢来丢去，整个班级乱成一团。那一刻，大家仿佛已经迫不及待地想冲出校园，迎接属于自己的休息时间。现在想想，我们对放假的期待真的可以有这么夸张，而老师们在这样的日子里，还得努力维持课堂秩序，实在辛苦了。',
         '说到这里，我们也不得不特别感谢数学老师。',
-        '数学老师，谢谢您一直以来对我们的耐心与包容。我们知道，我们并不是每次都让您省心。有时候，即使您已经被我们气到了，您还是会继续站在讲台上，认真地教课、解释题目，希望我们能够听懂、学会。',
+        '数学老师，谢谢您一直以来对我们的耐心与包容。我们知道，我们并不是每次都让您省心。有时候，即使您已经被我们气到了，您还是会继续站在前方，认真地教课、解释题目，希望我们能够听懂、学会。',
         '可是，有一件事，直到现在回想起来，我们还是会觉得有些难过。',
         '那一次，一位女生和数学老师发生了冲突。老师说一句，她便顶一句，双方的话语一句接着一句，气氛也越来越紧张。或许当时的我们并没有真正意识到事情的严重性，也可能只是站在旁边看着，却没有想到，这场争执会让老师难过到这样的程度。',
         '最后，老师真的忍不住哭了。',
         '当老师生气地关上门离开时，原本吵吵闹闹的教室，突然变得寂静无声。前一刻还热热闹闹的我们，仿佛一下子失去了声音。那一瞬间，大家才慢慢意识到，事情已经不再只是平常的拌嘴，也不再只是一次普通的课堂冲突。',
-        '原来，那个平时一直站在讲台上教我们数学、耐心地为我们解释题目的老师，也会因为我们的言语和行为而感到委屈，也会有承受不住的时候。',
+        '原来，那个平时一直站在前方教我们数学、耐心地为我们解释题目的老师，也会因为我们的言语和行为而感到委屈，也会有承受不住的时候。',
         '当时，有两位男生和三位女生先意识到老师是真的难过了。后来，也有同学主动走到老师身边，对老师说了一声“对不起”。',
         '也许那句道歉并不能让所有难过立刻消失，但至少，我们希望让老师知道，我们并不是不在乎您的感受。也许当时的我们还不够成熟，不懂得如何好好表达自己的情绪，也不懂得一句顶嘴、一句不经思考的话，可能会让别人难过。',
         '数学老师，对不起。',
-        '对不起我们曾经有那么多不懂事的时候，对不起我们有时只顾着争辩，却忘了好好听您说话。您每天站在讲台上，努力把知识教给我们，希望我们能够学会、能够进步，可是有时候，我们却没有给您应有的尊重。',
+        '对不起我们曾经有那么多不懂事的时候，对不起我们有时只顾着争辩，却忘了好好听您说话。您每天站在前方，努力把知识教给我们，希望我们能够学会、能够进步，可是有时候，我们却没有给您应有的尊重。',
         '谢谢您，即使曾经被我们气到难过，还是一次又一次地耐心教导我们。谢谢您没有因为那一次的冲突，就放弃继续教我们。我们知道，您不只是希望我们学会数学题，也希望我们学会尊重别人、承担责任，以及在发生冲突时，懂得好好沟通。',
         '或许当时的我们没有把这些话说出口，但现在，我们想认真地向您说一声谢谢，也想说一声对不起。',
         '希望以后当您想起我们这个班时，除了那些让您头疼的日子，也能记得我们曾经意识到自己的不懂事，曾经试着向您道歉，也曾经在成长的过程中，慢慢学会理解您的辛苦与付出。',
@@ -1012,8 +1924,8 @@
         '谢谢老师在我们调皮的时候提醒我们，在我们需要被管教的时候认真对待我们，也谢谢您愿意让我们在课堂上玩游戏，让学习不只是课本、作业和考试。那些充满欢笑的课堂，让我们在忙碌的学习生活中，也拥有了一些轻松而快乐的时刻。',
         '或许多年以后，我们不一定还记得每一道做过的题目，但我们很可能还会记得那些让全班笑起来的课堂，也会记得老师那句“我们是一个班的”。',
         '也谢谢马来文老师一直以来认真地教导我们。谢谢您愿意花时间解释、指导我们，让我们在学习的过程中一点一点进步。您的认真与用心，我们都看在眼里。即使有时候我们未必能立刻做到最好，也谢谢您没有因此失去耐心，而是继续带着我们往前走。',
-        '还有华文老师，谢谢您陪我们度过了那么多课堂时光。我们总是有办法让您笑起来，有时候或许连我们自己都不知道，究竟是哪一句话、哪个反应，又把您逗笑了。现在想想，能够在课堂上和老师拥有这样的互动，也是很难得的事情。',
-        '谢谢您让华文课不只是学习文字与知识的地方，也留下了许多轻松、温暖的回忆。也许我们曾经在课堂上说过一些让您忍不住笑出来的话，也许我们曾经让原本普通的一堂课变得特别热闹，但这些看似平凡的小事，如今回想起来，却成了我们心里珍贵的片段。',
+        '还有华文老师们，谢谢您们陪我们度过了那么多课堂时光。我们总是有办法让您们笑起来，有时候或许连我们自己都不知道，究竟是哪一句话、哪个反应，又把您们逗笑了。现在想想，能够在课堂上和老师拥有这样的互动，也是很难得的事情。',
+        '谢谢您们让华文课不只是学习文字与知识的地方，也留下了许多轻松、温暖的回忆。也许我们曾经在课堂上说过一些让您们忍不住笑出来的话，也许我们曾经让原本普通的一堂课变得特别热闹，但这些看似平凡的小事，如今回想起来，却成了我们心里珍贵的片段。',
         '我们也想特别对初一到初三教过我们的英文老师们说一声谢谢。',
         '虽然在这三年里，我们不断更换英文老师，但每一位曾经教过我们的英文老师，都值得我们感谢。谢谢您们曾经教导过我们，也谢谢您们在这段时间里的付出。',
         '尤其是到了初三，英文课的课堂秩序变得非常混乱。有时候，甚至有些同学不听老师所说的话，还会在课堂上当众大吵大闹。现在回想起来，我们知道自己有时候确实做得不够好，也可能曾经让英文老师感到无奈和头疼。',
@@ -1031,7 +1943,7 @@
         '短到我们还没来得及把每一天都记清楚，就已经走到了初中生活的尾声。曾经每天见面的老师，曾经习以为常的教室，曾经觉得永远不会结束的上课与下课，如今都开始有了不一样的意义。',
         '想到这里，真的会有一点舍不得。',
         '舍不得那些熟悉的声音，舍不得那些吵闹的日常，也舍不得那些曾经被我们视为理所当然的陪伴。',
-        '原来，青春并不只是那些轰轰烈烈的大事。更多时候，它是一群人一起度过的平凡日子，是老师在讲台上教书的身影，是课室里此起彼落的笑声，也是那些当时没有特别在意、如今却想好好珍惜的瞬间。',
+        '原来，青春并不只是那些轰轰烈烈的大事。更多时候，它是一群人一起度过的平凡日子，是老师在前方教书的身影，是课室里此起彼落的笑声，也是那些当时没有特别在意、如今却想好好珍惜的瞬间。',
         '其实，我们知道，升上高一以后，我们还是有机会在学校里见到您们。',
         '我们可能还是会在走廊上遇见您们，经过您们的课室时向您们问好，偶尔停下来和您们说几句话。也许下一次见面时，我们依然会笑着和您们打招呼，甚至还会像以前一样开玩笑。',
         '所以，这并不是一封永别的信。',
@@ -1044,7 +1956,7 @@
         '会不会想起那个被其他班称为“冷笑话开源地”的班级？',
         '会不会想起下课时挤满老师桌子旁边的学生，仿佛每天都在召开一场重要的“联合国会议”？',
         '会不会想起那个因为终于可以休息，而在星期五放学前疯狂大喊大叫的班级？',
-        '又或者，会不会想起某一堂课，自己明明已经被我们气得不轻，却还是忍住情绪，继续站在讲台上，把该教的内容认真教完？',
+        '又或者，会不会想起某一堂课，自己明明已经被我们气得不轻，却还是忍住情绪，继续站在前方，把该教的内容认真教完？',
         '老师们，也许您们教过很多届学生，见过许多不同的班级。对您们来说，我们可能只是教学生涯中的其中一届；三年以后，还会有新的学生走进教室，新的故事继续发生。',
         '可是，对我们来说，您们却是我们初中三年里，真实存在过、陪伴过我们的人。',
         '您们看着我们从初一慢慢长大，经历初二的变化，再走到初三。您们见过我们最有礼貌的样子，也见过我们最调皮、最不让人省心的样子。您们可能曾经对我们失望，也曾经因为我们的进步而欣慰。',
@@ -1064,7 +1976,7 @@
         '所以，下次再遇见的时候，我们可能不会说太多感人的话，可能还是会像平常一样笑着向您们问好。',
         '可是，如果有一天，您们突然想起我们，想起我们曾经坐过的座位，想起那间吵吵闹闹的课室，想起那些曾经让您们又生气又无奈的日子，希望您们也能记得，在那些吵闹的日子背后，有一群学生，其实一直都很感谢您们。',
         '我们会继续长大，继续走向自己未来的生活。',
-        '而您们也会继续教导新的学生，继续站在讲台上，继续成为许多学生成长路上的老师。',
+        '而您们也会继续教导新的学生，继续站在前方，继续成为许多学生成长路上的老师。',
         '只是希望，在您们教过的那么多届学生之中，我们也能成为偶尔会让您们想起、想起时会忍不住笑一下的那一届。',
         '谢谢您们，陪我们走过2024年至2026年。',
         '这三年，我们一起经历过的事情，可能不是什么惊天动地的大事，却是只属于我们这个班、只属于您们与我们的回忆。',
@@ -1094,6 +2006,23 @@
       noticeBody:'Audio ini dijana oleh kecerdasan buatan (AI). Kandungan bacaan, sebutan atau jeda mungkin berbeza sedikit daripada teks asal. Jika terdapat sebarang perbezaan, sila rujuk teks asal. Terima kasih atas kefahaman anda.',
       noticeSkip:'Jangan tunjukkan peringatan ini lagi',
       noticeCancel:'Batal', noticeOk:'Faham, mainkan',
+      boxTitle:'Bungkusan khas untuk cikgu',
+      boxHint:'Kod pengambilan ada dalam mesej',
+      boxOpened:'Ketik untuk membuka sijil, sijil kehormatan atau surat anda',
+      itemCert:'Sijil', itemLetter:'Surat penghargaan',
+      codeLabel:'Kod pengambilan', codePlaceholder:'cth. 1001', codeSubmit:'Buka kotak',
+      codeEmpty:'Sila masukkan kod pengambilan', codeError:'Kod tidak sepadan. Sila semak dan cuba lagi.',
+      boxStamp:'TELAH DIAMBIL',
+      certTitle:'SIJIL PENGHARGAAN',
+      certBody:'Dalam tiga tahun ini, kami berubah daripada “malaikat kecil” menjadi “syaitan kecil” yang membuat cikgu ketawa dan mengeluh: makan dalam kelas, mengerumuni meja cikgu seperti “mesyuarat PBB” waktu rehat, dan mendapat gelaran “pusat pembekal jenaka hambar”. Terima kasih kerana tidak pernah melepaskan tangan kami.',
+      certAward:'Diberikan sebagai tanda penghargaan yang ikhlas.',
+      certIssuer:'Daripada semua anak murid J3K, Kelas 2026', certYears:'2024 — 2026', certSeal:'TERIMA KASIH',
+      certClose:'Tutup sijil', certPrint:'Cetak / Simpan',
+      itemHonour:'Sijil Kehormatan',
+      honourTitle:'SIJIL KEHORMATAN',
+      honourBody:'Cikgu mengajar kami lebih daripada buku teks: selepas dimarahkan oleh kami, cikgu tetap kembali ke hadapan dan menghabiskan pengajaran; pada tahun kami paling bising, cikgu tetap masuk ke kelas kami. Ayat cikgu, “Kita satu kelas”, masih kami ingat sampai sekarang.',
+      honourAward:'Diberikan sebagai tanda penghormatan yang tinggi.',
+      honourClose:'Tutup sijil',
       musicPlay:'Mainkan muzik latar', musicPause:'Hentikan muzik latar', musicNone:'Muzik latar belum disediakan',
       body:[
         'Guru-guru yang kami kasihi,',
@@ -1141,8 +2070,8 @@
         'Terima kasih kerana menegur kami apabila kami terlalu nakal, mengambil serius perkara yang memerlukan kami didisiplinkan, dan juga membenarkan kami bermain permainan di dalam kelas. Dengan itu, pembelajaran bukan sekadar buku teks, kerja rumah dan peperiksaan. Kelas-kelas yang dipenuhi gelak tawa itu memberikan kami saat-saat yang santai dan menggembirakan di tengah-tengah kehidupan pembelajaran yang sibuk.',
         'Mungkin bertahun-tahun kemudian, kami tidak lagi mengingati setiap soalan yang pernah kami jawab, tetapi kami mungkin masih mengingati kelas-kelas yang pernah membuatkan seluruh kelas ketawa. Kami juga akan mengingati ayat cikgu, “Kita satu kelas.”',
         'Kami juga ingin mengucapkan terima kasih kepada guru Bahasa Melayu yang sentiasa mengajar kami dengan bersungguh-sungguh. Terima kasih kerana sudi meluangkan masa untuk menerangkan dan membimbing kami agar kami dapat membuat kemajuan sedikit demi sedikit sepanjang proses pembelajaran. Kesungguhan dan usaha cikgu sentiasa kami perhatikan. Walaupun kadangkala kami tidak dapat melakukan yang terbaik dengan serta-merta, terima kasih kerana tidak hilang kesabaran terhadap kami, sebaliknya terus membimbing kami untuk melangkah ke hadapan.',
-        'Kepada guru Bahasa Cina pula, terima kasih kerana menemani kami melalui begitu banyak waktu pembelajaran. Kami sentiasa mempunyai cara untuk membuatkan cikgu ketawa. Kadangkala, kami sendiri pun tidak tahu ayat atau reaksi yang mana satu telah membuatkan cikgu ketawa. Apabila difikirkan sekarang, dapat berinteraksi dengan guru seperti ini di dalam kelas sebenarnya merupakan satu perkara yang sangat berharga.',
-        'Terima kasih kerana menjadikan kelas Bahasa Cina bukan sekadar tempat untuk mempelajari tulisan dan ilmu pengetahuan, tetapi juga tempat yang meninggalkan banyak kenangan yang santai dan penuh kehangatan. Mungkin pernah ada kata-kata kami yang membuatkan cikgu tidak dapat menahan ketawa, atau mungkin kami pernah menjadikan kelas yang biasa itu lebih meriah. Namun, perkara-perkara kecil yang kelihatan biasa ini kini menjadi kenangan berharga dalam hati kami.',
+        'Kepada guru-guru Bahasa Cina pula, terima kasih kerana menemani kami melalui begitu banyak waktu pembelajaran. Kami sentiasa mempunyai cara untuk membuatkan cikgu-cikgu ketawa. Kadangkala, kami sendiri pun tidak tahu ayat atau reaksi yang mana satu telah membuatkan cikgu-cikgu ketawa. Apabila difikirkan sekarang, dapat berinteraksi dengan guru seperti ini di dalam kelas sebenarnya merupakan satu perkara yang sangat berharga.',
+        'Terima kasih kerana menjadikan kelas Bahasa Cina bukan sekadar tempat untuk mempelajari tulisan dan ilmu pengetahuan, tetapi juga tempat yang meninggalkan banyak kenangan yang santai dan penuh kehangatan. Mungkin pernah ada kata-kata kami yang membuatkan cikgu-cikgu tidak dapat menahan ketawa, atau mungkin kami pernah menjadikan kelas yang biasa itu lebih meriah. Namun, perkara-perkara kecil yang kelihatan biasa ini kini menjadi kenangan berharga dalam hati kami.',
         'Kami juga ingin mengucapkan terima kasih secara khusus kepada semua guru Bahasa Inggeris yang pernah mengajar kami dari Tingkatan 1 hingga Tingkatan 3.',
         'Walaupun sepanjang tiga tahun ini guru Bahasa Inggeris kami sering bertukar ganti, kami tetap ingin mengucapkan terima kasih kepada setiap guru Bahasa Inggeris yang pernah mengajar kami. Terima kasih kerana pernah mendidik kami dan terima kasih juga atas segala usaha serta pengorbanan cikgu sepanjang tempoh tersebut.',
         'Terutamanya ketika Tingkatan 3, suasana kelas Bahasa Inggeris sangat tidak teratur. Ada kalanya, sesetengah pelajar langsung tidak mendengar kata-kata guru, malah membuat bising dan bertengkar dengan suara yang kuat di dalam kelas di hadapan semua orang. Apabila mengenangnya kembali, kami sedar bahawa kadangkala tingkah laku kami memang tidak sepatutnya begitu, dan mungkin kami pernah membuatkan guru Bahasa Inggeris berasa kecewa serta pening kepala.',
@@ -1223,6 +2152,23 @@
       noticeBody:'This audio was generated by artificial intelligence (AI). The narration, pronunciation or pauses may differ slightly from the original text. If there is any discrepancy, please refer to the original written text. Thank you for your understanding.',
       noticeSkip:'Don’t show this reminder again',
       noticeCancel:'Cancel', noticeOk:'Got it, play',
+      boxTitle:'A parcel for our teacher',
+      boxHint:'The pickup code is in your message',
+      boxOpened:'Tap to open your certificate, certificate of honour or letter',
+      itemCert:'Certificate', itemLetter:'Thank-you letter',
+      codeLabel:'Pickup code', codePlaceholder:'e.g. 1001', codeSubmit:'Open the box',
+      codeEmpty:'Please enter the pickup code', codeError:'That code doesn’t match. Please check and try again.',
+      boxStamp:'COLLECTED',
+      certTitle:'CERTIFICATE OF APPRECIATION',
+      certBody:'Over three years we grew from the “little angels” you first met into the “little devils” who kept you laughing and sighing: eating during lessons, turning your desk into a “United Nations conference hall” at recess, and earning our class the name “open-source hub for lame jokes”. Thank you for never letting go of our hands.',
+      certAward:'Presented in sincere recognition and appreciation.',
+      certIssuer:'From all the students of J3K, Class of 2026', certYears:'2024 — 2026', certSeal:'THANK YOU',
+      certClose:'Close certificate', certPrint:'Print / Save',
+      itemHonour:'Certificate of Honour',
+      honourTitle:'CERTIFICATE OF HONOUR',
+      honourBody:'You taught us more than what was in the textbook: after being angered in class you still came back to the front and finished the lesson; in our noisiest year you still walked into this classroom. “We are one class” — we remember it to this day.',
+      honourAward:'Presented with the highest respect and gratitude.',
+      honourClose:'Close certificate',
       musicPlay:'Play background music', musicPause:'Pause background music', musicNone:'No background music configured',
       body:[
         'Dear Teachers,',
@@ -1270,7 +2216,7 @@
         'Thank you for reminding us when we became too mischievous, taking matters seriously when we needed discipline, and allowing us to play games in class. Because of that, learning was not limited to textbooks, homework and examinations. Those laughter-filled lessons gave us some relaxing and happy moments amid our busy school lives.',
         'Perhaps many years from now, we will not remember every question we once answered, but we will probably remember the lessons that made the whole class laugh. We will also remember the teacher’s words: “We are one class.”',
         'We would also like to thank our Bahasa Melayu teacher for always teaching us seriously and wholeheartedly. Thank you for taking the time to explain things and guide us so that we could improve little by little throughout our learning journey. We noticed your dedication and effort. Even when we could not immediately do our best, thank you for not losing patience with us and for continuing to guide us forward.',
-        'To our Chinese Language teacher, thank you for sharing so many classroom moments with us. We always seemed to find a way to make you laugh. Sometimes, even we ourselves did not know which sentence or reaction had made you laugh. Looking back now, being able to share this kind of interaction with a teacher in the classroom is truly something special.',
+        'To our Chinese Language teachers, thank you for sharing so many classroom moments with us. We always seemed to find a way to make you laugh. Sometimes, even we ourselves did not know which sentence or reaction had made you laugh. Looking back now, being able to share this kind of interaction with our teachers in the classroom is truly something special.',
         'Thank you for making Chinese Language lessons more than just a place to learn writing and knowledge. You also left us with many warm and light-hearted memories. Perhaps we once said something in class that made you burst out laughing, or perhaps we made an ordinary lesson much livelier. These seemingly ordinary little moments have now become precious memories in our hearts.',
         'We would also like to express our special thanks to all the English teachers who taught us from Form 1 to Form 3.',
         'Although our English teachers changed several times throughout these three years, we still want to thank every English teacher who has ever taught us. Thank you for teaching us and for all the effort you put into guiding us during that time.',
@@ -1352,6 +2298,23 @@
       noticeBody:'இந்த ஒலி செயற்கை நுண்ணறிவு (AI) மூலம் உருவாக்கப்பட்டது. வாசிப்பு, உச்சரிப்பு அல்லது இடைவெளிகள் அசல் உரையிலிருந்து சற்று வேறுபடலாம். ஏதேனும் வேறுபாடு இருந்தால், அசல் எழுத்து உரையையே பார்க்கவும். உங்கள் புரிதலுக்கு நன்றி.',
       noticeSkip:'இந்த நினைவூட்டலை மீண்டும் காட்ட வேண்டாம்',
       noticeCancel:'ரத்து', noticeOk:'புரிந்தது, இயக்கு',
+      boxTitle:'எங்கள் ஆசிரியருக்கான சிறப்புப் பொதி',
+      boxHint:'பெறும் குறியீடு உங்கள் செய்தியில் உள்ளது',
+      boxOpened:'உங்கள் சான்றிதழ், கௌரவச் சான்றிதழ் அல்லது கடிதத்தைத் திறக்கத் தட்டவும்',
+      itemCert:'சான்றிதழ்', itemLetter:'நன்றிக் கடிதம்',
+      codeLabel:'பெறும் குறியீடு', codePlaceholder:'எ.கா. 1001', codeSubmit:'பெட்டியைத் திற',
+      codeEmpty:'பெறும் குறியீட்டை உள்ளிடவும்', codeError:'குறியீடு பொருந்தவில்லை. சரிபார்த்து மீண்டும் முயலவும்.',
+      boxStamp:'பெறப்பட்டது',
+      certTitle:'பாராட்டுச் சான்றிதழ்',
+      certBody:'மூன்று ஆண்டுகளில், நீங்கள் முதலில் பார்த்த “சின்னத் தேவதைகள்” நாங்கள், உங்களைச் சிரிக்கவும் பெருமூச்சு விடவும் வைத்த “குறும்புப் பிசாசுகளாக” மாறினோம்: வகுப்பில் சாப்பிடுவது, இடைவேளையில் உங்கள் மேசையை “ஐக்கிய நாடுகள் சபைக் கூட்டமாக” மாற்றுவது, “மொக்கை நகைச்சுவைகளின் திறந்த மூல மையம்” என்ற பெயரைப் பெறுவது. இவை அனைத்திலும் எங்கள் கையை விடவில்லை — நன்றி.',
+      certAward:'மனமார்ந்த பாராட்டுடன் வழங்கப்படுகிறது.',
+      certIssuer:'J3K அனைத்து மாணவர்களும், 2026 தொகுதி', certYears:'2024 — 2026', certSeal:'நன்றி',
+      certClose:'சான்றிதழை மூடு', certPrint:'அச்சிடு / சேமி',
+      itemHonour:'கௌரவச் சான்றிதழ்',
+      honourTitle:'கௌரவச் சான்றிதழ்',
+      honourBody:'பாடப்புத்தகத்தை மட்டுமல்ல, அதற்கு அப்பாலும் நீங்கள் கற்பித்தீர்கள்: எங்களால் கோபமடைந்த பிறகும் முன்னே திரும்பி வந்து பாடத்தை முடித்தீர்கள்; எங்கள் மிக சத்தமான ஆண்டிலும் இந்த வகுப்பறைக்குள் வந்தீர்கள். “நாம் ஒரே வகுப்பைச் சேர்ந்தவர்கள்” — அதை இன்றுவரை நினைவில் வைத்திருக்கிறோம்.',
+      honourAward:'மிகுந்த மரியாதையுடனும் நன்றியுடனும் வழங்கப்படுகிறது.',
+      honourClose:'சான்றிதழை மூடு',
       musicPlay:'பின்னணி இசையை இயக்கு', musicPause:'பின்னணி இசையை நிறுத்து', musicNone:'பின்னணி இசை அமைக்கப்படவில்லை',
       body:[
         'அன்பிற்குரிய ஆசிரியர்களே,',
@@ -1377,16 +2340,16 @@
         'ஒரு வெள்ளிக்கிழமையும் இருக்கிறது. இன்றுவரை அதை நினைத்துப் பார்த்தால், அன்றைய பைத்தியக்காரத்தனமான உற்சாகம் இன்னும் உணரப்படுவது போல இருக்கிறது.',
         'அடுத்த நாள் சனிக்கிழமை என்பதால், இறுதியாக ஓய்வெடுக்க முடியும் என்ற மகிழ்ச்சியில் அனைவரும் பள்ளி முடியும் நேரத்திற்கு முன்பே அளவுக்கு அதிகமாக உற்சாகமடைந்திருந்தோம். வகுப்பறையில் உரக்கக் கத்தினோம்; சிலர் பொருட்களை இங்கும் அங்கும் தூக்கி எறிந்தார்கள். முழு வகுப்பும் குழப்பமாக மாறிவிட்டது. அந்த நேரத்தில், அனைவரும் பள்ளியைவிட்டு வெளியே ஓடி, தங்களுக்கான ஓய்வு நேரத்தை வரவேற்கத் தயாராக இருப்பதைப் போல இருந்தோம். இப்போது நினைத்துப் பார்க்கும்போது, விடுமுறைக்காக நாங்கள் இவ்வளவு அளவுக்கு அதிகமாக உற்சாகமடைய முடிந்ததே என்று தோன்றுகிறது. இப்படிப்பட்ட நாட்களிலும் ஆசிரியர்கள் வகுப்பறையின் ஒழுங்கைப் பராமரிக்க முயற்சி செய்ய வேண்டியிருந்தது. உண்மையிலேயே உங்களுக்கு மிகவும் சிரமமாக இருந்திருக்கும்.',
         'இங்கே வந்தபோது, கணித ஆசிரியருக்கு நாங்கள் குறிப்பாக நன்றி சொல்ல வேண்டும்.',
-        'கணித ஆசிரியரே, இத்தனை காலமாக எங்களிடம் பொறுமையுடனும் சகிப்புத்தன்மையுடனும் இருந்ததற்கு நன்றி. ஒவ்வொரு முறையும் நாங்கள் உங்களுக்கு நிம்மதியை அளிக்கும் மாணவர்களாக இருக்கவில்லை என்பதை நாங்கள் அறிவோம். சில நேரங்களில் எங்களால் நீங்கள் ஏற்கெனவே கோபமடைந்திருந்தாலும், தொடர்ந்து மேடையில் நின்று பாடம் நடத்துவீர்கள். கணக்குகளைத் தீவிரமாக விளக்குவீர்கள். நாங்கள் புரிந்துகொண்டு கற்றுக்கொள்ள வேண்டும் என்பதற்காக முயற்சி செய்வீர்கள்.',
+        'கணித ஆசிரியரே, இத்தனை காலமாக எங்களிடம் பொறுமையுடனும் சகிப்புத்தன்மையுடனும் இருந்ததற்கு நன்றி. ஒவ்வொரு முறையும் நாங்கள் உங்களுக்கு நிம்மதியை அளிக்கும் மாணவர்களாக இருக்கவில்லை என்பதை நாங்கள் அறிவோம். சில நேரங்களில் எங்களால் நீங்கள் ஏற்கெனவே கோபமடைந்திருந்தாலும், தொடர்ந்து முன்னே நின்று பாடம் நடத்துவீர்கள். கணக்குகளைத் தீவிரமாக விளக்குவீர்கள். நாங்கள் புரிந்துகொண்டு கற்றுக்கொள்ள வேண்டும் என்பதற்காக முயற்சி செய்வீர்கள்.',
         'ஆனால், ஒரு சம்பவம் இருக்கிறது. அதை இன்றுவரை நினைத்துப் பார்க்கும்போது எங்கள் மனதில் சிறிது வருத்தம் ஏற்படுகிறது.',
         'அந்த முறை, ஒரு பெண் மாணவிக்கும் கணித ஆசிரியருக்கும் இடையே மோதல் ஏற்பட்டது. ஆசிரியர் ஒரு வாக்கியம் சொன்னால், அந்த மாணவி அதற்குப் பதிலாக இன்னொரு வாக்கியத்தைச் சொன்னார். இருவரின் வார்த்தைகளும் ஒன்றன்பின் ஒன்றாகத் தொடர்ந்தன. சூழ்நிலையும் படிப்படியாக மேலும் பதற்றமாக மாறியது. அப்போது அந்தச் சம்பவம் எவ்வளவு தீவிரமானது என்பதை நாங்கள் உண்மையாகப் புரிந்துகொள்ளாமல் இருந்திருக்கலாம். அல்லது அருகில் நின்று பார்த்துக்கொண்டிருந்தாலும், அந்த வாக்குவாதம் ஆசிரியரை இவ்வளவு வருத்தப்படுத்தும் என்று நினைக்காமல் இருந்திருக்கலாம்.',
         'இறுதியில், ஆசிரியரால் உண்மையிலேயே கண்ணீரைக் கட்டுப்படுத்த முடியவில்லை.',
         'ஆசிரியர் கோபத்துடன் கதவை மூடிவிட்டு வெளியேறியபோது, சத்தமாகக் கூச்சலிட்டுக்கொண்டிருந்த வகுப்பறை திடீரென்று அமைதியாகிவிட்டது. ஒரு கணத்திற்கு முன்பு வரை கலகலப்பாக இருந்த நாங்கள், ஒரே நேரத்தில் எங்கள் குரலை இழந்துவிட்டதைப் போல இருந்தது. அந்தக் கணத்தில்தான், இது இனிமேலும் சாதாரணமான வாய்த்தகராறு அல்ல, வழக்கமான வகுப்பறை மோதல் மட்டுமல்ல என்பதை அனைவரும் மெதுவாக உணரத் தொடங்கினோம்.',
-        'எப்போதும் மேடையில் நின்று எங்களுக்குக் கணிதம் கற்பித்து, பொறுமையாகக் கணக்குகளை விளக்கும் அந்த ஆசிரியருக்கும் எங்களுடைய வார்த்தைகளாலும் நடத்தையாலும் மனவேதனை ஏற்படலாம்; அவராலும் ஒரு கட்டத்தில் தாங்கிக்கொள்ள முடியாமல் போகலாம் என்பது அப்போதுதான் எங்களுக்குப் புரிந்தது.',
+        'எப்போதும் முன்னே நின்று எங்களுக்குக் கணிதம் கற்பித்து, பொறுமையாகக் கணக்குகளை விளக்கும் அந்த ஆசிரியருக்கும் எங்களுடைய வார்த்தைகளாலும் நடத்தையாலும் மனவேதனை ஏற்படலாம்; அவராலும் ஒரு கட்டத்தில் தாங்கிக்கொள்ள முடியாமல் போகலாம் என்பது அப்போதுதான் எங்களுக்குப் புரிந்தது.',
         'அந்த நேரத்தில், இரண்டு ஆண் மாணவர்களும் மூன்று பெண் மாணவிகளும் ஆசிரியர் உண்மையாகவே வருத்தமடைந்துவிட்டார் என்பதை முதலில் உணர்ந்துகொண்டார்கள். பின்னர், ஒரு மாணவர் தானாகவே ஆசிரியரிடம் சென்று, “மன்னிக்கவும்” என்று கூறினார்.',
         'அந்த மன்னிப்புக் கோரல் உடனடியாக எல்லா வருத்தங்களையும் மறையச் செய்யாமல் இருந்திருக்கலாம். இருந்தாலும், ஆசிரியரின் உணர்வுகளை நாங்கள் அலட்சியப்படுத்தவில்லை என்பதை உங்களுக்குத் தெரியப்படுத்தவே நாங்கள் விரும்பினோம். அப்போது நாங்கள் இன்னும் போதுமான அளவு பக்குவமடையாமல் இருந்திருக்கலாம். எங்களுடைய உணர்வுகளை எப்படிச் சரியாக வெளிப்படுத்துவது என்பது தெரியாமல் இருந்திருக்கலாம். ஒருவருக்குப் பதிலுக்குப் பதில் பேசுவதும், சிந்திக்காமல் சொல்லும் ஒரு வார்த்தையும் மற்றவரை வருத்தப்படுத்தக்கூடும் என்பதையும் புரிந்துகொள்ளாமல் இருந்திருக்கலாம்.',
         'கணித ஆசிரியரே, எங்களை மன்னித்துவிடுங்கள்.',
-        'நாங்கள் புரிந்துகொள்ளாமல் நடந்துகொண்ட பல தருணங்களுக்காக மன்னிக்கவும். சில நேரங்களில் வாதிடுவதில் மட்டுமே கவனம் செலுத்தி, நீங்கள் சொல்வதைச் சரியாகக் கேட்க மறந்ததற்காக மன்னிக்கவும். ஒவ்வொரு நாளும் நீங்கள் மேடையில் நின்று, நாங்கள் கற்றுக்கொள்ளவும் முன்னேறவும் வேண்டும் என்ற எண்ணத்துடன் அறிவைப் பகிர்ந்துகொண்டீர்கள். ஆனால் சில நேரங்களில், நாங்கள் உங்களுக்குக் கொடுக்க வேண்டிய மரியாதையை வழங்கவில்லை.',
+        'நாங்கள் புரிந்துகொள்ளாமல் நடந்துகொண்ட பல தருணங்களுக்காக மன்னிக்கவும். சில நேரங்களில் வாதிடுவதில் மட்டுமே கவனம் செலுத்தி, நீங்கள் சொல்வதைச் சரியாகக் கேட்க மறந்ததற்காக மன்னிக்கவும். ஒவ்வொரு நாளும் நீங்கள் முன்னே நின்று, நாங்கள் கற்றுக்கொள்ளவும் முன்னேறவும் வேண்டும் என்ற எண்ணத்துடன் அறிவைப் பகிர்ந்துகொண்டீர்கள். ஆனால் சில நேரங்களில், நாங்கள் உங்களுக்குக் கொடுக்க வேண்டிய மரியாதையை வழங்கவில்லை.',
         'எங்களால் நீங்கள் வருத்தமடைந்தபோதும், மீண்டும் மீண்டும் பொறுமையுடன் எங்களுக்குக் கற்பித்ததற்கு நன்றி. அந்த ஒரு மோதலுக்குப் பிறகும் தொடர்ந்து எங்களுக்குக் கற்பிப்பதை நிறுத்தாமல் இருந்ததற்கு நன்றி. நாங்கள் கணிதக் கணக்குகளைக் கற்றுக்கொள்ள வேண்டும் என்பதற்காக மட்டுமல்ல; மற்றவர்களை மதிக்கவும், பொறுப்பை ஏற்கவும், மோதல்கள் ஏற்படும்போது நன்றாகப் பேசித் தீர்த்துக்கொள்ளவும் வேண்டும் என்பதற்காகவும் நீங்கள் விரும்பினீர்கள் என்பதை நாங்கள் அறிவோம்.',
         'ஒருவேளை அப்போது இந்த வார்த்தைகளை உங்களிடம் சொல்லாமல் இருந்திருக்கலாம். ஆனால் இப்போது, மனப்பூர்வமாக உங்களுக்கு நன்றி சொல்லவும், மன்னிப்புக் கேட்கவும் விரும்புகிறோம்.',
         'எதிர்காலத்தில் நீங்கள் எங்கள் வகுப்பை நினைத்துப் பார்க்கும்போது, உங்களுக்குத் தலைவலியை ஏற்படுத்திய நாட்களை மட்டும் நினைவுகூராமல், எங்கள் அறியாமையை நாங்கள் உணர்ந்துகொண்டதையும், உங்களிடம் மன்னிப்புக் கேட்டதையும், வளர்ச்சிப் பயணத்தில் உங்கள் சிரமங்களையும் அர்ப்பணிப்பையும் மெதுவாகப் புரிந்துகொள்ளத் தொடங்கியதையும் நினைவில் வைத்திருப்பீர்கள் என்று நம்புகிறோம்.',
@@ -1399,7 +2362,7 @@
         'நாங்கள் குறும்பு செய்யும்போது எங்களை நினைவூட்டியதற்கும், எங்களைக் கட்டுப்படுத்த வேண்டிய நேரங்களில் எங்களைத் தீவிரமாக வழிநடத்தியதற்கும் நன்றி. வகுப்பறையில் விளையாட எங்களுக்கு அனுமதி அளித்ததற்கும் நன்றி. இதனால் கற்றல் என்பது பாடப்புத்தகங்கள், வீட்டுப்பாடங்கள், தேர்வுகள் ஆகியவற்றை மட்டும் கொண்டதாக இருக்கவில்லை. சிரிப்பும் மகிழ்ச்சியும் நிறைந்த வகுப்புகள், பரபரப்பான படிப்பு வாழ்க்கைக்கு நடுவில் சில இலகுவான, மகிழ்ச்சியான தருணங்களையும் எங்களுக்கு வழங்கின.',
         'பல ஆண்டுகளுக்குப் பிறகு, நாங்கள் செய்த ஒவ்வொரு கணக்கையும் நினைவில் வைத்திருக்காமல் இருக்கலாம். ஆனால், முழு வகுப்பையும் சிரிக்க வைத்த அந்தப் பாடங்களையும், ஆசிரியர் சொன்ன “நாம் ஒரே வகுப்பைச் சேர்ந்தவர்கள்” என்ற வார்த்தைகளையும் நினைவில் வைத்திருக்கக்கூடும்.',
         'மலாய் மொழி ஆசிரியருக்கும் எங்களுடைய நன்றியைத் தெரிவித்துக்கொள்கிறோம். எங்களுக்குத் தொடர்ந்து அக்கறையுடன் கற்பித்ததற்கு நன்றி. விஷயங்களை விளக்குவதற்கும், எங்களுக்கு வழிகாட்டுவதற்கும் நேரம் ஒதுக்கியதற்கு நன்றி. இதன் மூலம் நாங்கள் படிப்படியாக முன்னேற முடிந்தது. உங்களுடைய தீவிரமான முயற்சியையும் அக்கறையையும் நாங்கள் கவனித்திருக்கிறோம். சில நேரங்களில் எங்களால் உடனடியாகச் சிறப்பாகச் செய்ய முடியாமல் இருந்தாலும், அதனால் நீங்கள் பொறுமையை இழக்காமல் தொடர்ந்து எங்களை முன்னோக்கி வழிநடத்தியதற்கு நன்றி.',
-        'சீன மொழி ஆசிரியருக்கும் நன்றி. எங்களுடன் பல வகுப்புத் தருணங்களைப் பகிர்ந்துகொண்டதற்கு நன்றி. எப்படியாவது உங்களைச் சிரிக்க வைக்க நாங்கள் ஒரு வழியைக் கண்டுபிடித்துவிடுவோம். சில நேரங்களில் எந்த வார்த்தையோ, எந்தச் செயலோ உங்களை மீண்டும் சிரிக்க வைத்தது என்பதுகூட எங்களுக்கே தெரியாமல் இருக்கலாம். இப்போது நினைத்துப் பார்க்கும்போது, வகுப்பறையில் ஆசிரியருடன் இப்படிப்பட்ட மகிழ்ச்சியான தொடர்புகளைப் பகிர்ந்துகொள்ள முடிந்தது உண்மையிலேயே அரிய விஷயம்.',
+        'சீன மொழி ஆசிரியர்களுக்கும் நன்றி. எங்களுடன் பல வகுப்புத் தருணங்களைப் பகிர்ந்துகொண்டதற்கு நன்றி. எப்படியாவது உங்களைச் சிரிக்க வைக்க நாங்கள் ஒரு வழியைக் கண்டுபிடித்துவிடுவோம். சில நேரங்களில் எந்த வார்த்தையோ, எந்தச் செயலோ உங்களை மீண்டும் சிரிக்க வைத்தது என்பதுகூட எங்களுக்கே தெரியாமல் இருக்கலாம். இப்போது நினைத்துப் பார்க்கும்போது, வகுப்பறையில் ஆசிரியர்களுடன் இப்படிப்பட்ட மகிழ்ச்சியான தொடர்புகளைப் பகிர்ந்துகொள்ள முடிந்தது உண்மையிலேயே அரிய விஷயம்.',
         'சீன மொழிப் பாடம் என்பது எழுத்துகளையும் அறிவையும் கற்றுக்கொள்ளும் இடமாக மட்டுமே இல்லாமல், பல இலகுவான, அன்பான நினைவுகளையும் விட்டுச் சென்றதற்கு நன்றி. வகுப்பின்போது நாங்கள் சொன்ன ஏதாவது ஒரு வார்த்தை உங்களைச் சிரிக்க வைத்திருக்கலாம்; நாங்கள் செய்த ஏதாவது ஒரு எதிர்வினை சாதாரணமான பாடத்தை இன்னும் கலகலப்பாக மாற்றியிருக்கலாம். இவை அனைத்தும் சாதாரணமான சிறிய விஷயங்களாகத் தோன்றினாலும், இன்று நினைத்துப் பார்க்கும்போது எங்கள் மனதில் மதிப்புமிக்க நினைவுகளாக இருக்கின்றன.',
         'படிவம் 1 முதல் படிவம் 3 வரை எங்களுக்குக் கற்பித்த ஆங்கில ஆசிரியர்களுக்கும் நாங்கள் சிறப்பாக நன்றி சொல்ல விரும்புகிறோம்.',
         'இந்த மூன்று ஆண்டுகளில் எங்களுடைய ஆங்கில ஆசிரியர்கள் மாறிக்கொண்டே இருந்தாலும், எங்களுக்குக் கற்பித்த ஒவ்வொரு ஆங்கில ஆசிரியரும் எங்களுடைய நன்றிக்குரியவர்களே. எங்களுக்குக் கற்பித்ததற்கும், இந்தக் காலத்தில் எங்களுக்காக எடுத்த முயற்சிகளுக்கும் நன்றி.',
@@ -1418,7 +2381,7 @@
         'ஒவ்வொரு நாளையும் தெளிவாக நினைவில் வைத்துக்கொள்வதற்குள், எங்கள் இடைநிலைப் பள்ளி வாழ்க்கையின் இறுதிக்கட்டத்தை வந்தடைந்துவிட்டோம். ஒவ்வொரு நாளும் சந்தித்த ஆசிரியர்கள், பழக்கமான வகுப்பறை, ஒருபோதும் முடிவடையாது என்று நினைத்த பாட நேரங்களும் இடைவேளைகளும்—இவை அனைத்தும் இப்போது வேறொரு அர்த்தத்தைப் பெறத் தொடங்கியுள்ளன.',
         'இதை நினைக்கும்போது, உண்மையிலேயே சிறிது பிரிய மனமில்லை.',
         'பழக்கமான குரல்களைப் பிரிய மனமில்லை; சத்தமும் கூச்சலும் நிறைந்த அன்றாட வாழ்க்கையைப் பிரிய மனமில்லை; முன்பு இயல்பான ஒன்றாகக் கருதிய உங்கள் உடனிருப்பையும் பிரிய மனமில்லை.',
-        'இளமை என்பது பெரிய, பரபரப்பான சம்பவங்களால் மட்டுமே உருவாகுவதில்லை என்பதை இப்போது உணர்கிறோம். பெரும்பாலும், ஒரு குழுவினர் ஒன்றாகக் கழிக்கும் சாதாரணமான நாட்கள்தான் அது. மேடையில் நின்று பாடம் நடத்தும் ஆசிரியரின் உருவம், வகுப்பறையில் தொடர்ந்து ஒலிக்கும் சிரிப்புகள், அப்போது பெரிதாகக் கவனிக்காதிருந்தாலும் இன்று நன்றாகப் பாதுகாத்துக்கொள்ள விரும்பும் அந்தத் தருணங்கள்—இவையே இளமைக்காலத்தின் உண்மையான நினைவுகள்.',
+        'இளமை என்பது பெரிய, பரபரப்பான சம்பவங்களால் மட்டுமே உருவாகுவதில்லை என்பதை இப்போது உணர்கிறோம். பெரும்பாலும், ஒரு குழுவினர் ஒன்றாகக் கழிக்கும் சாதாரணமான நாட்கள்தான் அது. முன்னே நின்று பாடம் நடத்தும் ஆசிரியரின் உருவம், வகுப்பறையில் தொடர்ந்து ஒலிக்கும் சிரிப்புகள், அப்போது பெரிதாகக் கவனிக்காதிருந்தாலும் இன்று நன்றாகப் பாதுகாத்துக்கொள்ள விரும்பும் அந்தத் தருணங்கள்—இவையே இளமைக்காலத்தின் உண்மையான நினைவுகள்.',
         'உண்மையில், நாங்கள் படிவம் 4-க்குச் சென்ற பிறகும் பள்ளியில் உங்களைச் சந்திக்கும் வாய்ப்பு இருக்கும் என்பதை அறிவோம்.',
         'பள்ளியின் நடைபாதையில் உங்களைச் சந்திக்கலாம்; உங்கள் வகுப்பறையைக் கடந்து செல்லும்போது உங்களுக்கு வணக்கம் சொல்லலாம்; சில நேரங்களில் நின்று உங்களுடன் சில வார்த்தைகளும் பேசலாம். அடுத்த முறை சந்திக்கும்போதும், நாங்கள் வழக்கம்போலச் சிரித்துக்கொண்டு உங்களுக்கு வணக்கம் சொல்லலாம்; முன்பு போலவே உங்களுடன் நகைச்சுவையாகவும் பேசலாம்.',
         'எனவே, இது என்றென்றும் விடைபெறும் கடிதம் அல்ல.',
@@ -1431,7 +2394,7 @@
         'மற்ற வகுப்புகளால் “மொக்கை நகைச்சுவைகளின் திறந்த மூல மையம்” என்று அழைக்கப்பட்ட அந்த வகுப்பை நினைவுகூர்வீர்களா?',
         'இடைவேளையின்போது ஆசிரியரின் மேசையைச் சுற்றிக் கூட்டமாக அமர்ந்து, ஒவ்வொரு நாளும் முக்கியமான “ஐக்கிய நாடுகள் சபைக் கூட்டம்” நடத்துவதைப் போல இருந்த மாணவர்களை நினைவுகூர்வீர்களா?',
         'இறுதியாக ஓய்வெடுக்கப் போகிறோம் என்ற மகிழ்ச்சியில் வெள்ளிக்கிழமை பள்ளி முடிவதற்கு முன்பே பைத்தியக்காரத்தனமாகக் கூச்சலிட்ட அந்த வகுப்பை நினைவுகூர்வீர்களா?',
-        'அல்லது, ஒரு பாடத்தின்போது எங்களால் ஏற்கெனவே மிகவும் கோபமடைந்திருந்தாலும், உங்கள் உணர்ச்சிகளைக் கட்டுப்படுத்திக்கொண்டு, மேடையில் தொடர்ந்து நின்று கற்பிக்க வேண்டிய பாடத்தை அக்கறையுடன் முடித்த அந்தத் தருணத்தை நினைவுகூர்வீர்களா?',
+        'அல்லது, ஒரு பாடத்தின்போது எங்களால் ஏற்கெனவே மிகவும் கோபமடைந்திருந்தாலும், உங்கள் உணர்ச்சிகளைக் கட்டுப்படுத்திக்கொண்டு, முன்னே தொடர்ந்து நின்று கற்பிக்க வேண்டிய பாடத்தை அக்கறையுடன் முடித்த அந்தத் தருணத்தை நினைவுகூர்வீர்களா?',
         'ஆசிரியர்களே, நீங்கள் பல தலைமுறை மாணவர்களுக்குக் கற்பித்திருக்கலாம்; பலவிதமான வகுப்புகளைச் சந்தித்திருக்கலாம். உங்களைப் பொறுத்தவரை, நாங்கள் உங்கள் ஆசிரியர் பணிக்காலத்தில் கற்பித்த பல வகுப்புகளில் ஒன்றாக மட்டுமே இருக்கலாம். மூன்று ஆண்டுகளுக்குப் பிறகு, புதிய மாணவர்கள் வகுப்பறைக்குள் வருவார்கள்; புதிய கதைகளும் தொடர்ந்து உருவாகும்.',
         'ஆனால், எங்களைப் பொறுத்தவரை, எங்கள் இடைநிலைப் பள்ளியின் மூன்று ஆண்டுகளில் உண்மையாக இருந்தும், எங்களுடன் பயணித்தும், எங்களுக்குத் துணையாக இருந்தவர்கள்தான் நீங்கள்.',
         'நாங்கள் படிவம் 1-இல் இருந்தபோது நீங்கள் எங்களைப் பார்த்தீர்கள்; படிவம் 2-இல் ஏற்பட்ட மாற்றங்களையும் பார்த்தீர்கள்; பின்னர் படிவம் 3 வரை வளர்ந்ததையும் பார்த்தீர்கள். எங்களுடைய மிகவும் மரியாதையான தோற்றத்தையும் நீங்கள் பார்த்திருக்கிறீர்கள்; அதேபோல், எங்களுடைய மிகவும் குறும்பான, உங்களுக்குச் சற்றும் ஓய்வளிக்காத தோற்றத்தையும் பார்த்திருக்கிறீர்கள். சில நேரங்களில் நீங்கள் எங்களால் ஏமாற்றமடைந்திருக்கலாம்; எங்களுடைய முன்னேற்றத்தால் மகிழ்ச்சியும் அடைந்திருக்கலாம்.',
@@ -1451,7 +2414,7 @@
         'எனவே, அடுத்த முறை சந்திக்கும்போது, நாங்கள் உணர்ச்சிபூர்வமான பல வார்த்தைகளைச் சொல்லாமல் இருக்கலாம். வழக்கம்போலச் சிரித்துக்கொண்டு உங்களுக்கு வணக்கம் மட்டுமே சொல்லலாம்.',
         'ஆனால், ஒரு நாள் நீங்கள் திடீரென்று எங்களை நினைத்துப் பார்த்தால், நாங்கள் முன்பு அமர்ந்திருந்த இருக்கைகளையும், சத்தமும் கூச்சலும் நிறைந்த அந்த வகுப்பறையையும், உங்களை ஒருபுறம் கோபப்படுத்தி மறுபுறம் உதவியற்றவர்களாக உணர வைத்த நாட்களையும் நினைத்துப் பார்த்தால், அந்தச் சத்தமான நாட்களின் பின்னால் ஒரு மாணவர் குழு இருந்தது என்பதை நினைவில் கொள்ளுங்கள். அந்த மாணவர்கள் உங்களுக்கு எப்போதும் நன்றியுள்ளவர்களாகவே இருந்தார்கள்.',
         'நாங்கள் தொடர்ந்து வளர்வோம்; எங்களுடைய எதிர்கால வாழ்க்கையை நோக்கித் தொடர்ந்து பயணிப்போம்.',
-        'நீங்களும் தொடர்ந்து புதிய மாணவர்களுக்குக் கற்பிப்பீர்கள்; மேடையில் நின்று பாடம் நடத்துவீர்கள்; பல மாணவர்களின் வளர்ச்சிப் பயணத்தில் ஆசிரியர்களாகத் தொடர்ந்து இருப்பீர்கள்.',
+        'நீங்களும் தொடர்ந்து புதிய மாணவர்களுக்குக் கற்பிப்பீர்கள்; முன்னே நின்று பாடம் நடத்துவீர்கள்; பல மாணவர்களின் வளர்ச்சிப் பயணத்தில் ஆசிரியர்களாகத் தொடர்ந்து இருப்பீர்கள்.',
         'ஆனால், நீங்கள் கற்பித்த எண்ணற்ற மாணவர் குழுக்களில், எப்போதாவது உங்களுக்கு நினைவுக்கு வந்து, நினைத்தவுடன் உங்களைச் சிரிக்க வைக்கும் ஒரு வகுப்பாக நாங்களும் இருக்க வேண்டும் என்பதே எங்களுடைய விருப்பம்.',
         '2024 முதல் 2026 வரை எங்களுடன் பயணித்ததற்கு நன்றி.',
         'இந்த மூன்று ஆண்டுகளில் நாங்கள் ஒன்றாக அனுபவித்த விஷயங்கள் உலகையே வியக்க வைக்கும் பெரிய சம்பவங்களாக இல்லாமல் இருக்கலாம். ஆனால், அவை எங்கள் வகுப்புக்கும் உங்களுக்கும் மட்டுமே சொந்தமான நினைவுகள்.',
@@ -1484,6 +2447,11 @@
       if(dict[k] != null) el.textContent = dict[k];
     });
 
+    Array.prototype.forEach.call(document.querySelectorAll('[data-i18n-placeholder]'), function(el){
+      var k = el.getAttribute('data-i18n-placeholder');
+      if(dict[k] != null) el.setAttribute('placeholder', dict[k]);
+    });
+
     // The body is a variable-length list of paragraphs, so it is rebuilt
     // instead of being swapped node-by-node.
     bodyEl.textContent = '';
@@ -1499,15 +2467,16 @@
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
 
-    var label = !hasMusic() ? dict.musicNone : (playing ? dict.musicPause : dict.musicPlay);
-    musicBtn.setAttribute('aria-label', label);
-    musicBtn.setAttribute('title', label);
-
     try{ localStorage.setItem('letterLang', key); }catch(e){}
 
     // The narration belongs to the previous language: stop it and re-point the button.
     stopReading();
     updateReadUI();
+
+    // Certificate and pickup-code messages follow the UI language too.
+    if(teacher) fillCert();
+    codeMsg.textContent = codeErr ? dict[codeErr === 'empty' ? 'codeEmpty' : 'codeError'] : '';
+    boxLabelHead.textContent = boxStage.classList.contains('is-open') ? dict.boxStamp : dict.codeLabel;
 
     // Translation lengths differ, so re-measure an open letter instead of clipping it.
     if(letter.classList.contains('is-floating') && !closing){
@@ -1599,20 +2568,9 @@
     return a;
   }
 
-  function pauseMusicForReading(){
-    if(!playing) return;
-    bgm.pause();
-    playing = false;
-    musicBtn.classList.remove('playing');
-    musicBtn.setAttribute('aria-pressed', 'false');
-    musicBtn.setAttribute('aria-label', I18N[currentLang].musicPlay);
-    musicBtn.setAttribute('title', I18N[currentLang].musicPlay);
-  }
-
   function playReading(){
     var a = loadVoice();
     if(!a) return;
-    pauseMusicForReading();
     var p = a.play();
     if(p && p.then){
       p.then(function(){ readState = 'playing'; updateReadUI(); })
@@ -1667,6 +2625,397 @@
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape' && noticeModal.classList.contains('is-open')) closeNotice();
   });
+
+  /* ---------- Pickup code → box → certificate ----------
+     Every teacher gets a code; the code decides whose certificate appears.
+     The envelope inside the box keeps the original letter flow untouched. */
+  var TEACHERS = {
+    /* 取件码 → 老师（随机乱数；查询时忽略大小写与空格/连字符）。
+       每位老师的 cert / honour 都是独立文案，取自感谢信里写到的真实回忆。
+       subject / cert / honour 均为四语对象；latin 可选（缺省时四语都用 zh）。 */
+    '1362': { zh:'詹晋沣',
+      subject:{zh:'班导师 · 科学 · 物理', ms:'Guru Kelas · Sains · Fizik', en:'Class Teacher · Science · Physics', ta:'வகுப்பு ஆசிரியர் · அறிவியல் · இயற்பியல்'},
+      cert:{zh:'每当我们闹得太过分，您总会说一句：「我们是一个班的。」谢谢您在我们最不让人省心的时候，还是把我们当成自己的班；也谢谢您愿意让我们在课堂上玩游戏，让学习不只是课本、作业和考试。',
+        ms:'Setiap kali kami terlalu nakal, cikgu akan berkata: “Kita satu kelas.” Terima kasih kerana masih menganggap kami kelas cikgu walaupun kami paling menyusahkan, dan kerana membenarkan kami bermain permainan di dalam kelas — belajar bukan hanya buku teks, kerja rumah dan peperiksaan.',
+        en:'Whenever we went too far, you would say, “We are one class.” Thank you for still calling us your own class when we were at our most troublesome, and for letting us play games in class — so that learning was not only textbooks, homework and exams.',
+        ta:'நாங்கள் அளவுக்கு அதிகமாகக் குறும்பு செய்யும்போது, “நாம் ஒரே வகுப்பைச் சேர்ந்தவர்கள்” என்று சொல்வீர்கள். நாங்கள் மிகவும் தொல்லை கொடுத்தபோதும் எங்களை உங்கள் வகுப்பாகவே கருதியதற்கும், வகுப்பில் விளையாட அனுமதித்ததற்கும் நன்றி — கல்வி பாடப்புத்தகம், வீட்டுப்பாடம், தேர்வு மட்டுமல்ல என்பதை உணர்த்தியதற்கும்.'},
+      honour:{zh:'您既是我们的科学老师，也是陪我们走过整整三年的班导。您见过我们最有礼貌的样子，也见过我们最吵、最不让人省心的样子。谢谢您一直没有放开我们。',
+        ms:'Cikgu ialah guru Sains kami, dan juga guru kelas yang menemani kami sepanjang tiga tahun. Cikgu pernah melihat kami paling sopan, dan juga paling bising serta menyusahkan. Terima kasih kerana tidak pernah melepaskan kami.',
+        en:'You were our Science teacher and the class teacher who stayed with us for all three years. You have seen us at our most polite and at our noisiest and most troublesome. Thank you for never letting go of us.',
+        ta:'நீங்கள் எங்கள் அறிவியல் ஆசிரியர் மட்டுமல்ல, மூன்று ஆண்டுகளும் எங்களுடன் இருந்த வகுப்பு ஆசிரியரும். நாங்கள் மிகவும் பணிவாக இருந்ததையும், மிகவும் சத்தமாகவும் தொல்லையாகவும் இருந்ததையும் நீங்கள் பார்த்திருக்கிறீர்கள். எங்களை விடவில்லை — நன்றி.'} },
+    '1512': { zh:'林淑娟',
+      subject:{zh:'数学', ms:'Matematik', en:'Mathematics', ta:'கணிதம்'},
+      cert:{zh:'那一次，我们真的伤了您的心。谢谢您哭过之后，还是回到前方，把每一道题讲到我们听懂。那两位男生、三位女生的道歉也许不够，但请您相信：我们一直都记得您的委屈。',
+        ms:'Kali itu kami benar-benar melukai hati cikgu. Terima kasih kerana selepas menangis, cikgu tetap kembali ke hadapan dan menerangkan setiap soalan sehingga kami faham. Permohonan maaf dua pelajar lelaki dan tiga pelajar perempuan itu mungkin tidak cukup, tetapi percayalah: kami tidak pernah lupa kekecewaan cikgu.',
+        en:'That time, we really hurt you. Thank you for coming back to the front after crying and explaining every question until we understood. The apology from those two boys and three girls may not have been enough, but please believe us: we have never forgotten how you felt.',
+        ta:'அன்று நாங்கள் உண்மையிலேயே உங்கள் மனதைக் காயப்படுத்தினோம். அழுத பிறகும் முன்னே திரும்பி வந்து, ஒவ்வொரு கணக்கையும் எங்களுக்குப் புரியும் வரை விளக்கியதற்கு நன்றி. அந்த இரண்டு மாணவர்களும் மூன்று மாணவிகளும் கேட்ட மன்னிப்பு போதாது என்றாலும், நம்புங்கள்: உங்கள் மனவேதனையை நாங்கள் மறக்கவில்லை.'},
+      honour:{zh:'谢谢您没有因为那一次的冲突就放弃我们。您教我们的不只是数学题，还有怎么尊重别人、怎么为自己的话负责。对不起，也谢谢您。',
+        ms:'Terima kasih kerana tidak melepaskan kami selepas perselisihan itu. Cikgu bukan sekadar mengajar kami matematik, tetapi juga cara menghormati orang lain dan bertanggungjawab atas kata-kata sendiri. Maafkan kami, dan terima kasih.',
+        en:'Thank you for not giving up on us after that argument. You taught us more than mathematics — you taught us to respect others and to be responsible for our own words. We are sorry, and we thank you.',
+        ta:'அந்த மோதலுக்குப் பிறகும் எங்களை விட்டுவிடவில்லை — நன்றி. கணிதம் மட்டுமல்ல, மற்றவர்களை மதிப்பது, நம் வார்த்தைகளுக்குப் பொறுப்பேற்பது ஆகியவற்றையும் கற்பித்தீர்கள். மன்னிக்கவும், நன்றி.'} },
+    '1960': { zh:'林素铭',
+      subject:{zh:'历史', ms:'Sejarah', en:'History', ta:'வரலாறு'},
+      cert:{zh:'初二那堂历史课，我们真的把您气到了。谢谢您在那之后，还是一次又一次地包容我们、耐心地教我们历史 —— 那些朝代和年份，现在想起来，还是您的声音。',
+        ms:'Pada kelas Sejarah Tingkatan 2 itu, kami benar-benar membuatkan cikgu marah. Terima kasih kerana selepas itu masih bertolak ansur dan terus mengajar kami Sejarah dengan sabar — dinasti dan tahun-tahun itu, hingga kini terdengar seperti suara cikgu.',
+        en:'In that Form 2 History lesson we really did make you angry. Thank you for still putting up with us afterwards and teaching us History patiently — even now, those dynasties and dates still sound like your voice.',
+        ta:'இரண்டாம் ஆண்டு வரலாற்றுப் பாடத்தில் நாங்கள் உண்மையிலேயே உங்களைக் கோபப்படுத்தினோம். அதன் பிறகும் எங்களைப் பொறுத்துக்கொண்டு பொறுமையாக வரலாறு கற்பித்ததற்கு நன்றி — அந்த ஆட்சியாளர்களும் ஆண்டுகளும் இன்றும் உங்கள் குரலாகவே கேட்கின்றன.'},
+      honour:{zh:'谢谢您没有因为我们的调皮就轻易放弃我们，也谢谢您生气了之后，依然愿意继续教我们。您教过的历史我们会记得，您对我们的耐心，我们更记得。',
+        ms:'Terima kasih kerana tidak mudah berputus asa dengan kenakalan kami, dan kerana masih sudi terus mengajar kami selepas marah. Sejarah yang cikgu ajarkan kami ingat; kesabaran cikgu lebih lagi kami ingat.',
+        en:'Thank you for not giving up on us because of our mischief, and for still being willing to teach us after you were angry. We remember the History you taught us; we remember your patience even more.',
+        ta:'எங்கள் குறும்புக்காக எங்களை எளிதில் கைவிடவில்லை — நன்றி. கோபப்பட்ட பிறகும் தொடர்ந்து கற்பிக்க விருப்பம் காட்டியதற்கும் நன்றி. நீங்கள் கற்பித்த வரலாறு நினைவில் இருக்கிறது; உங்கள் பொறுமை இன்னும் அதிகம் நினைவில் இருக்கிறது.'} },
+    '2014': { zh:'许雍敏',
+      subject:{zh:'美术', ms:'Seni Visual', en:'Art', ta:'கலை'},
+      cert:{zh:'谢谢您教我们用颜色和线条，把说不出口的话画出来。在那么多吵闹的课之间，您的美术课是三年里最安静、也最舒服的时光。',
+        ms:'Terima kasih kerana mengajar kami melukis perkara yang tidak terucap dengan warna dan garisan. Di antara kelas-kelas yang bising itu, kelas Seni cikgu ialah waktu paling tenang dan paling selesa dalam tiga tahun ini.',
+        en:'Thank you for teaching us to draw the things we could not say, with colours and lines. Among all those noisy lessons, your Art class was the calmest and most comfortable time of our three years.',
+        ta:'சொல்ல முடியாத விஷயங்களை நிறங்களாலும் கோடுகளாலும் வரையக் கற்றுக்கொடுத்ததற்கு நன்றி. அந்தச் சத்தமான பாடங்களுக்கு நடுவே, உங்கள் கலைப் பாடம் மூன்று ஆண்டுகளின் மிக அமைதியான, மிக இதமான நேரம்.'},
+      honour:{zh:'谢谢您包容我们那些画得歪歪扭扭的作品，也谢谢您从来没有用「画得好不好」来评价我们。您让我们知道，认真做完一件事本身就很值得。',
+        ms:'Terima kasih kerana menerima hasil kerja kami yang tidak kemas, dan kerana tidak pernah menilai kami dengan “cantik atau tidak”. Cikgu membuatkan kami tahu bahawa menyiapkan sesuatu dengan bersungguh-sungguh itu sendiri sudah cukup berharga.',
+        en:'Thank you for accepting our crooked little drawings, and for never judging us by whether they looked good. You taught us that finishing something with care is already worthwhile.',
+        ta:'எங்கள் கோணலான ஓவியங்களை ஏற்றுக்கொண்டதற்கும், “அழகாக இருக்கிறதா” என்று மட்டும் எங்களை மதிப்பிடாததற்கும் நன்றி. ஒன்றை அக்கறையுடன் முடிப்பதே போதுமானது என்பதை உணர்த்தினீர்கள்.'} },
+    '2087': { zh:'蔡礼懃',
+      subject:{zh:'Robotic', ms:'Robotik', en:'Robotics', ta:'ரோபோட்டிக்ஸ்'},
+      cert:{zh:'谢谢您陪我们在零件、线路和程序里一次次犯错、又一次次重来。您让我们第一次觉得：原来失败也可以再来一次。',
+        ms:'Terima kasih kerana menemani kami membuat kesilapan dan mengulanginya semula dalam komponen, litar dan program. Cikgu membuatkan kami sedar: kegagalan boleh dicuba lagi.',
+        en:'Thank you for staying with us through every mistake and every restart among the parts, wires and code. You were the first to show us that failure can simply be tried again.',
+        ta:'பாகங்கள், இணைப்புகள், நிரல் — எல்லாவற்றிலும் தவறு செய்து, மீண்டும் மீண்டும் தொடங்கியபோது எங்களுடன் இருந்ததற்கு நன்றி. தோல்வியையும் மீண்டும் முயற்சிக்கலாம் என்பதை முதலில் உணர்த்தியவர் நீங்கள்.'},
+      honour:{zh:'谢谢您把那些看起来很难的东西，拆成一步一步教给我们。您教我们的，不只是机器人怎么动，还有遇到问题不要马上放弃。',
+        ms:'Terima kasih kerana memecahkan perkara yang kelihatan sukar itu kepada langkah-langkah kecil untuk kami. Cikgu bukan sekadar mengajar robot bergerak, tetapi juga supaya tidak cepat berputus asa.',
+        en:'Thank you for breaking down the things that looked impossible into steps we could follow. You taught us not only how to make a robot move, but how not to give up too soon.',
+        ta:'கடினமாகத் தோன்றியவற்றை படிப்படியாகப் பிரித்துக் கற்பித்ததற்கு நன்றி. ரோபோ எப்படி நகர்கிறது என்பது மட்டுமல்ல, பிரச்சினையில் உடனே விட்டுவிடக் கூடாது என்பதையும் கற்பித்தீர்கள்.'} },
+    '2480': { zh:'黄慧婷',
+      subject:{zh:'华文', ms:'Bahasa Cina', en:'Chinese Language', ta:'சீன மொழி'},
+      cert:{zh:'华文课上，您总是被我们逗笑 —— 有时候连我们自己都不知道，究竟是哪一句话、哪个反应让您笑了。谢谢您把这些平凡的小事，变成了我们最珍惜的课堂时光。',
+        ms:'Dalam kelas Bahasa Cina, cikgu selalu ketawa kerana kami — kadangkala kami sendiri pun tidak tahu ayat atau reaksi mana yang membuatkan cikgu ketawa. Terima kasih kerana menjadikan perkara kecil itu saat paling kami hargai di dalam kelas.',
+        en:'In Chinese class you always ended up laughing at us — sometimes even we did not know which sentence or reaction had made you laugh. Thank you for turning those ordinary little moments into the classroom time we treasure most.',
+        ta:'சீன மொழி வகுப்பில் எங்களால் நீங்கள் எப்போதும் சிரித்தீர்கள் — எந்த வார்த்தையோ எந்தச் செயலோ உங்களைச் சிரிக்க வைத்தது என்பது எங்களுக்கே சில நேரம் தெரியாது. அந்தச் சாதாரணச் சிறிய விஷயங்களை எங்கள் மிக விலைமதிப்பற்ற வகுப்பு நேரமாக மாற்றியதற்கு நன்றி.'},
+      honour:{zh:'谢谢您让华文课不只是学文字和知识的地方。您陪我们读过那么多文章，也陪我们笑过那么多次 —— 那些轻松温暖的回忆，我们会一直留着。',
+        ms:'Terima kasih kerana menjadikan kelas Bahasa Cina lebih daripada tempat mempelajari tulisan dan ilmu. Cikgu membaca begitu banyak teks bersama kami dan ketawa bersama kami berkali-kali — kenangan ringan dan hangat itu akan kami simpan.',
+        en:'Thank you for making Chinese class more than a place to learn words and knowledge. You read so many texts with us and laughed with us so many times — we will keep those light, warm memories.',
+        ta:'சீன மொழி வகுப்பை வெறும் எழுத்தும் அறிவும் கற்கும் இடமாக மட்டும் வைக்காததற்கு நன்றி. எங்களுடன் பல பாடங்களைப் படித்தீர்கள், பலமுறை சிரித்தீர்கள் — அந்த இலகுவான, அன்பான நினைவுகளை என்றும் வைத்திருப்போம்.'} },
+    '3268': { zh:'孙庆龄',
+      subject:{zh:'辅导', ms:'Bimbingan & Kaunseling', en:'Counselling', ta:'ஆலோசனை'},
+      cert:{zh:'谢谢您在我们心里最乱的时候，愿意坐下来听我们说话。您没有急着给我们答案，只是让我们知道：这里有人在。',
+        ms:'Terima kasih kerana sudi duduk dan mendengar kami ketika hati kami paling keliru. Cikgu tidak tergesa-gesa memberi jawapan, hanya memastikan kami tahu: ada orang di sini.',
+        en:'Thank you for sitting down and listening when our hearts were at their messiest. You did not rush to give us answers — you just let us know that someone was there.',
+        ta:'எங்கள் மனம் மிகவும் குழப்பமாக இருந்த நேரத்தில் அமர்ந்து எங்களைக் கேட்டதற்கு நன்றி. உடனே பதில் சொல்ல அவசரப்படவில்லை — யாரோ இங்கே இருக்கிறார் என்பதை மட்டும் உணர்த்தினீர்கள்.'},
+      honour:{zh:'谢谢您把我们的烦恼当成重要的事。那些您陪我们坐过的谈话，也许您已经忘了，但我们记得。',
+        ms:'Terima kasih kerana menganggap masalah kami sebagai perkara penting. Perbualan yang cikgu luangkan bersama kami mungkin sudah cikgu lupakan, tetapi kami masih ingat.',
+        en:'Thank you for treating our worries as something that mattered. You may have forgotten those long talks you sat through with us; we have not.',
+        ta:'எங்கள் கவலைகளை முக்கியமானவையாகக் கருதியதற்கு நன்றி. நீங்கள் எங்களுடன் அமர்ந்து பேசிய அந்த நேரங்களை நீங்கள் மறந்திருக்கலாம்; நாங்கள் மறக்கவில்லை.'} },
+    '3750': { zh:'崔家琪',
+      subject:{zh:'科学 · 生物', ms:'Sains · Biologi', en:'Science · Biology', ta:'அறிவியல் · உயிரியல்'},
+      cert:{zh:'谢谢您把看不见的东西 —— 细胞、血管、生态系统 —— 讲到我们眼前。您让我们发现，原来科学也可以这么有趣。',
+        ms:'Terima kasih kerana menerangkan perkara yang tidak kelihatan — sel, salur darah, ekosistem — sehingga kami dapat membayangkannya. Cikgu membuatkan kami sedar sains juga boleh menyeronokkan.',
+        en:'Thank you for bringing the invisible things — cells, blood vessels, ecosystems — right in front of us. You showed us that science can be this interesting.',
+        ta:'கண்ணுக்குத் தெரியாதவற்றை — உயிரணு, இரத்த நாளங்கள், சூழலியல் — எங்கள் கண் முன்னே கொண்டு வந்ததற்கு நன்றி. அறிவியலும் இவ்வளவு சுவாரஸ்யமாக இருக்கலாம் என்பதைக் காட்டினீர்கள்.'},
+      honour:{zh:'谢谢您耐心地回答我们那些奇怪的问题，也谢谢您没有因为我们听不懂就跳过去。您让我们知道，问问题不是一件丢脸的事。',
+        ms:'Terima kasih kerana menjawab soalan pelik kami dengan sabar, dan kerana tidak melangkaunya hanya kerana kami tidak faham. Cikgu membuatkan kami tahu bertanya bukan perkara yang memalukan.',
+        en:'Thank you for patiently answering our strange questions, and for never skipping them just because we did not understand. You taught us that asking is nothing to be ashamed of.',
+        ta:'எங்கள் விநோதமான கேள்விகளுக்குப் பொறுமையாகப் பதிலளித்ததற்கும், புரியவில்லை என்று விட்டுவிடாததற்கும் நன்றி. கேட்பது அவமானம் அல்ல என்பதைக் கற்பித்தீர்கள்.'} },
+    '3918': { zh:'尤雪慧',
+      subject:{zh:'信息与资讯', ms:'Teknologi Maklumat', en:'Information Technology', ta:'தகவல் தொழில்நுட்பம்'},
+      cert:{zh:'谢谢您教我们在键盘上找到方法。您教的东西，我们现在每天都在用 —— 包括做这份礼物。',
+        ms:'Terima kasih kerana mengajar kami mencari jalan di papan kekunci. Apa yang cikgu ajarkan kami gunakan setiap hari — termasuk menyiapkan hadiah ini.',
+        en:'Thank you for teaching us how to find our way around a keyboard. What you taught us is something we use every day — including to make this gift.',
+        ta:'விசைப்பலகையில் வழி கண்டுபிடிக்கக் கற்பித்ததற்கு நன்றி. நீங்கள் கற்பித்தவற்றை இன்று தினமும் பயன்படுத்துகிறோம் — இந்தப் பரிசை உருவாக்குவதிலும்.'},
+      honour:{zh:'谢谢您耐心地看我们一次又一次地失误，也谢谢您在我们手忙脚乱的时候，还是会走过来教我们一次。',
+        ms:'Terima kasih kerana bersabar melihat kesilapan kami berulang kali, dan kerana masih datang mengajar kami sekali lagi ketika kami kelam-kabut.',
+        en:'Thank you for patiently watching us make the same mistake again and again, and for still walking over to teach us one more time when we were flustered.',
+        ta:'எங்கள் தவறுகளை மீண்டும் மீண்டும் பொறுமையாகப் பார்த்ததற்கும், நாங்கள் திணறியபோது வந்து மீண்டும் ஒருமுறை கற்பித்ததற்கும் நன்றி.'} },
+    '4182': { zh:'洪星宇',
+      subject:{zh:'华文', ms:'Bahasa Cina', en:'Chinese Language', ta:'சீன மொழி'},
+      cert:{zh:'谢谢您陪我们度过那么多堂华文课。我们总是有办法让您笑起来，而您笑起来的样子，是我们最记得的画面。',
+        ms:'Terima kasih kerana menemani kami melalui begitu banyak kelas Bahasa Cina. Kami sentiasa ada cara membuatkan cikgu ketawa, dan senyuman cikgu itu yang paling kami ingat.',
+        en:'Thank you for sharing so many Chinese lessons with us. We always found a way to make you laugh, and your laugh is the picture we remember best.',
+        ta:'இத்தனை சீன மொழி வகுப்புகளை எங்களுடன் பகிர்ந்ததற்கு நன்றி. உங்களைச் சிரிக்க வைக்க எங்களுக்கு எப்போதும் ஒரு வழி இருக்கும்; உங்கள் சிரிப்புதான் எங்களுக்கு மிகவும் நினைவில் இருக்கும் காட்சி.'},
+      honour:{zh:'谢谢您让原本普通的一堂课变得特别热闹。您没有因此少教我们一点，反而陪我们把那些看似平凡的小事，变成了心里珍贵的片段。',
+        ms:'Terima kasih kerana membiarkan kelas yang biasa itu menjadi meriah. Cikgu tidak mengurangkan pengajaran kerananya, malah menemani kami menjadikan perkara kecil itu kenangan berharga.',
+        en:'Thank you for letting an ordinary lesson become so lively. You never taught us any less because of it — instead you turned those ordinary little moments into precious memories.',
+        ta:'சாதாரணமான ஒரு பாடத்தை மிகக் கலகலப்பாக மாற அனுமதித்ததற்கு நன்றி. அதனால் எங்களுக்குக் கற்பிப்பதைக் குறைக்கவில்லை; மாறாக, சாதாரணமான சிறிய விஷயங்களை விலைமதிப்பற்ற நினைவுகளாக மாற்றினீர்கள்.'} },
+    '4616': { zh:'符丽娜',
+      subject:{zh:'华文', ms:'Bahasa Cina', en:'Chinese Language', ta:'சீன மொழி'},
+      cert:{zh:'谢谢您教我们认字、读文章，也教我们怎么把心里的话写清楚。现在我们写这封信，用的就是您教的东西。',
+        ms:'Terima kasih kerana mengajar kami mengenal huruf, membaca teks, dan menulis perasaan kami dengan jelas. Surat ini kami tulis dengan apa yang cikgu ajarkan.',
+        en:'Thank you for teaching us characters, for reading texts with us, and for showing us how to put what we feel into clear words. This letter is written with what you taught us.',
+        ta:'எழுத்துகளை அறியவும், பாடங்களைப் படிக்கவும், மனதில் உள்ளதைத் தெளிவாக எழுதவும் கற்பித்ததற்கு நன்றி. இந்தக் கடிதத்தை நாங்கள் எழுதுவது உங்கள் கற்பித்தலால் தான்.'},
+      honour:{zh:'谢谢您一次又一次地批改我们的作业、包容我们的粗心。您教的东西我们也许不是每一样都记得，但您对我们的耐心，我们记得。',
+        ms:'Terima kasih kerana memeriksa kerja kami berulang kali dan menerima kecuaian kami. Mungkin kami tidak ingat setiap perkara yang cikgu ajarkan, tetapi kesabaran cikgu kami ingat.',
+        en:'Thank you for marking our work again and again and for putting up with our carelessness. We may not remember everything you taught, but we remember your patience.',
+        ta:'எங்கள் பணிகளை மீண்டும் மீண்டும் திருத்தியதற்கும், எங்கள் கவனக்குறைவைப் பொறுத்ததற்கும் நன்றி. நீங்கள் கற்பித்த எல்லாவற்றையும் நினைவில் வைத்திருக்காமல் இருக்கலாம்; ஆனால் உங்கள் பொறுமையை மறக்கவில்லை.'} },
+    '7057': { zh:'罗贤惟',
+      subject:{zh:'体育', ms:'Pendidikan Jasmani', en:'Physical Education', ta:'உடற்கல்வி'},
+      cert:{zh:'谢谢您陪我们在太阳底下跑、在球场上喊。那三年里最痛快的时候，都是在您的课上。',
+        ms:'Terima kasih kerana berlari bersama kami di bawah matahari dan bersorak di padang. Saat paling menyeronokkan dalam tiga tahun itu semuanya dalam kelas cikgu.',
+        en:'Thank you for running under the sun with us and shouting on the court with us. The best, most freeing moments of those three years were all in your lessons.',
+        ta:'வெயிலில் எங்களுடன் ஓடியதற்கும், மைதானத்தில் கூச்சலிட்டதற்கும் நன்றி. அந்த மூன்று ஆண்டுகளின் மிக மகிழ்ச்சியான நேரங்கள் உங்கள் பாடங்களில்தான்.'},
+      honour:{zh:'谢谢您包容我们不爱热身、又想偷懒的样子，也谢谢您每次都把我们赶回球场。现在想想，那些流汗的日子，真的很值得。',
+        ms:'Terima kasih kerana menerima sikap kami yang malas memanaskan badan dan cuba mengelak, dan kerana setiap kali menghalau kami kembali ke padang. Kini kami sedar hari-hari berpeluh itu sungguh berharga.',
+        en:'Thank you for tolerating the way we dodged warm-ups and tried to slack off, and for chasing us back onto the court every time. Looking back, those sweaty days were worth it.',
+        ta:'வார்ம்-அப் செய்யத் தயங்கியதையும் சோம்பல் காட்டியதையும் பொறுத்துக்கொண்டதற்கும், ஒவ்வொரு முறையும் எங்களை மைதானத்திற்குத் திருப்பி அனுப்பியதற்கும் நன்றி. இப்போது நினைக்கும்போது, வியர்வை சிந்திய அந்த நாட்கள் மிக மதிப்புமிக்கவை.'} },
+    '7569': { zh:'叶优蒂',
+      subject:{zh:'体育', ms:'Pendidikan Jasmani', en:'Physical Education', ta:'உடற்கல்வி'},
+      cert:{zh:'谢谢您让我们知道，输赢之外还有别的 —— 比如一起跑完的那一段路，和跑完之后一起喘气的那群人。',
+        ms:'Terima kasih kerana membuatkan kami tahu ada perkara lain selain menang dan kalah — seperti jarak yang kami lalui bersama, dan mereka yang tercungap-cungap bersama kami selepas itu.',
+        en:'Thank you for showing us there is more than winning and losing — like the stretch we ran together, and the people we gasped for air with afterwards.',
+        ta:'வெற்றி-தோல்விக்கு அப்பாலும் ஏதோ இருக்கிறது என்பதை உணர்த்தியதற்கு நன்றி — ஒன்றாக ஓடிய அந்தத் தூரம், ஓடி முடித்து ஒன்றாக மூச்சிரைத்த அந்த நண்பர்கள்.'},
+      honour:{zh:'谢谢您从来没有因为谁跑得慢就不看他。您让我们知道，体育课上最重要的不是第一名，而是愿意一起跑下去。',
+        ms:'Terima kasih kerana tidak pernah mengabaikan sesiapa yang berlari perlahan. Cikgu membuatkan kami tahu yang paling penting dalam kelas PJ bukan tempat pertama, tetapi kesediaan berlari bersama.',
+        en:'Thank you for never overlooking whoever ran the slowest. You taught us that the most important thing in PE is not first place, but being willing to keep running together.',
+        ta:'யார் மெதுவாக ஓடினாலும் அவர்களைப் புறக்கணிக்காததற்கு நன்றி. உடற்கல்வியில் முக்கியமானது முதல் இடம் அல்ல, ஒன்றாக ஓடத் தயாராக இருப்பதே என்பதைக் கற்பித்தீர்கள்.'} },
+    '7583': { zh:'李伟仁',
+      subject:{zh:'科学 · 化学', ms:'Sains · Kimia', en:'Science · Chemistry', ta:'அறிவியல் · வேதியியல்'},
+      cert:{zh:'谢谢您把那些在实验里冒烟、变色、发出声音的东西，变成了我们最期待的一堂课。您让我们第一次觉得，上课也可以像看表演一样好看。',
+        ms:'Terima kasih kerana menjadikan eksperimen yang berasap, berubah warna dan berbunyi itu kelas yang paling kami tunggu. Cikgu membuatkan kami rasa belajar boleh secantik sebuah persembahan.',
+        en:'Thank you for turning smoky, colour-changing, noisy experiments into the lesson we looked forward to most. You made a class feel as good as watching a show.',
+        ta:'புகை வந்து, நிறம் மாறி, சத்தம் எழுப்பிய சோதனைகளை எங்கள் மிக எதிர்பார்த்த பாடமாக மாற்றியதற்கு நன்றி. பாடம் ஒரு நிகழ்ச்சி போலவே சுவாரஸ்யமாக இருக்கலாம் என்பதை உணர்த்தினீர்கள்.'},
+      honour:{zh:'谢谢您在我们差点把实验做坏的时候，还是耐着性子教我们重做一次。您教我们的，是小心，也是不怕重来。',
+        ms:'Terima kasih kerana bersabar mengajar kami mengulang eksperimen yang hampir kami rosakkan. Cikgu mengajar kami berhati-hati, dan juga tidak takut mencuba semula.',
+        en:'Thank you for patiently teaching us to redo the experiment we nearly ruined. You taught us to be careful — and not to be afraid of starting over.',
+        ta:'கெடுத்துவிட இருந்த சோதனையை மீண்டும் செய்யப் பொறுமையாகக் கற்பித்ததற்கு நன்றி. கவனமாக இருக்கவும், மீண்டும் தொடங்கத் தயங்காமல் இருக்கவும் கற்பித்தீர்கள்.'} },
+    '7672': { zh:'Nabilah',
+      subject:{zh:'马来文 · J3B', ms:'Bahasa Melayu · J3B', en:'Malay Language · J3B', ta:'மலாய் மொழி · J3B'},
+      cert:{zh:'谢谢您从一开始就愿意放慢速度，陪我们一个字一个字地学马来文；也谢谢您没有因为我们说得不好，就少给我们机会。',
+        ms:'Terima kasih kerana sudi memperlahankan langkah dari awal dan belajar Bahasa Melayu perkataan demi perkataan bersama kami; dan kerana tidak mengurangkan peluang kami hanya sebab kami tidak petah bertutur.',
+        en:'Thank you for slowing down from the very beginning and learning Malay with us word by word — and for never giving us fewer chances just because we spoke poorly.',
+        ta:'ஆரம்பத்திலிருந்தே மெதுவாக, ஒவ்வொரு சொல்லாக மலாய் மொழியை எங்களுடன் கற்றுக்கொடுத்ததற்கு நன்றி; நாங்கள் சரியாகப் பேசவில்லை என்பதற்காக வாய்ப்புகளைக் குறைக்காததற்கும் நன்றி.'},
+      honour:{zh:'谢谢您在我们词不达意的时候，还是听得懂我们想说什么。您教的语言，我们现在还在用。',
+        ms:'Terima kasih kerana masih memahami maksud kami walaupun kami tidak dapat menyusun ayat dengan baik. Bahasa yang cikgu ajarkan masih kami gunakan sekarang.',
+        en:'Thank you for still understanding what we meant when we could not find the words. The language you taught us is one we still use now.',
+        ta:'வார்த்தைகள் கிடைக்காதபோதும் எங்கள் கருத்தைப் புரிந்துகொண்டதற்கு நன்றி. நீங்கள் கற்பித்த மொழியை இன்றும் பயன்படுத்துகிறோம்.'} },
+    '8094': { zh:'Rizan',
+      subject:{zh:'马来文 · J3A', ms:'Bahasa Melayu · J3A', en:'Malay Language · J3A', ta:'மலாய் மொழி · J3A'},
+      cert:{zh:'谢谢您每一次都认真地解释，也谢谢您在我们答错的时候，不是摇头，而是再讲一遍。',
+        ms:'Terima kasih kerana menerangkan dengan bersungguh-sungguh setiap kali, dan kerana ketika kami salah menjawab, cikgu tidak menggeleng kepala tetapi menerangkannya sekali lagi.',
+        en:'Thank you for explaining things seriously every single time, and for — when we got the answer wrong — not shaking your head but going through it again.',
+        ta:'ஒவ்வொரு முறையும் சிரத்தையாக விளக்கியதற்கு நன்றி; நாங்கள் தவறாகப் பதிலளித்தபோது தலையசைத்து விடாமல் மீண்டும் விளக்கியதற்கும் நன்றி.'},
+      honour:{zh:'谢谢您愿意花时间在我们身上。马来文对我们来说并不容易，但因为有您，我们至少不再害怕开口。',
+        ms:'Terima kasih kerana sudi meluangkan masa untuk kami. Bahasa Melayu bukan mudah bagi kami, tetapi kerana cikgu, kami tidak lagi takut untuk mencuba.',
+        en:'Thank you for spending your time on us. Malay was never easy for us, but because of you we are no longer afraid to open our mouths.',
+        ta:'எங்களுக்காக நேரம் செலவளித்ததற்கு நன்றி. மலாய் மொழி எங்களுக்கு எளிதல்ல; ஆனால் உங்களால் இப்போது பேசப் பயமில்லை.'} },
+    '8422': { zh:'Shula',
+      subject:{zh:'马来文 · J3C', ms:'Bahasa Melayu · J3C', en:'Malay Language · J3C', ta:'மலாய் மொழி · J3C'},
+      cert:{zh:'谢谢您那么用心地教我们。您陪我们一点一点进步，即使我们进步得很慢，您也没有失去耐心。',
+        ms:'Terima kasih kerana mengajar kami dengan begitu bersungguh-sungguh. Cikgu menemani kami maju sedikit demi sedikit, dan tidak hilang sabar walaupun kami lambat.',
+        en:'Thank you for teaching us with such care. You walked with us as we improved bit by bit, and never lost patience even when we were slow.',
+        ta:'அவ்வளவு அக்கறையுடன் கற்பித்ததற்கு நன்றி. நாங்கள் மெதுவாக முன்னேறியபோதும் பொறுமையை இழக்கவில்லை.'},
+      honour:{zh:'谢谢您带着我们往前走，而不是只站在前方等我们追上。您教我们的马来文，我们会继续用下去。',
+        ms:'Terima kasih kerana membawa kami ke hadapan, bukan sekadar menunggu kami menyusul. Bahasa Melayu yang cikgu ajarkan akan terus kami gunakan.',
+        en:'Thank you for walking forward with us instead of only waiting for us to catch up. The Malay you taught us is something we will keep using.',
+        ta:'நாங்கள் வந்து சேரும் வரை காத்திராமல், எங்களை அழைத்துச் சென்றதற்கு நன்றி. நீங்கள் கற்பித்த மலாய் மொழியை தொடர்ந்து பயன்படுத்துவோம்.'} },
+    '8444': { zh:'Vatsala',
+      subject:{zh:'英文 · J3B（J3 WISDOM）', ms:'Bahasa Inggeris · J3B (J3 WISDOM)', en:'English Language · J3B (J3 WISDOM)', ta:'ஆங்கில மொழி · J3B (J3 WISDOM)'},
+      cert:{zh:'谢谢您曾经走进我们的课堂。也许我们不是您最省心的一班，但您教过的，我们会记得。',
+        ms:'Terima kasih kerana pernah masuk ke kelas kami. Mungkin kami bukan kelas yang paling mudah, tetapi apa yang cikgu ajarkan akan kami ingat.',
+        en:'Thank you for walking into our classroom. We may not have been the easiest class, but what you taught us we will remember.',
+        ta:'எங்கள் வகுப்பறைக்குள் வந்ததற்கு நன்றி. நாங்கள் எளிதான வகுப்பாக இல்லாமல் இருந்திருக்கலாம்; ஆனால் நீங்கள் கற்பித்ததை நினைவில் வைத்திருப்போம்.'},
+      honour:{zh:'谢谢您在初三那一年，还是愿意继续走进我们那间很吵的课室。您的耐心，我们知道。',
+        ms:'Terima kasih kerana pada tahun terakhir itu masih sudi masuk ke kelas kami yang bising. Kesabaran cikgu, kami tahu.',
+        en:'Thank you for still walking into our very noisy classroom in that final year. We know how much patience it took.',
+        ta:'இறுதி ஆண்டிலும் எங்கள் சத்தமான வகுப்பறைக்குள் தொடர்ந்து வந்ததற்கு நன்றி. அதற்கு எவ்வளவு பொறுமை தேவை என்பது எங்களுக்குத் தெரியும்.'} },
+    '9681': { zh:'Pavithra',
+      subject:{zh:'英文 · J3C（J3 Success）', ms:'Bahasa Inggeris · J3C (J3 Success)', en:'English Language · J3C (J3 Success)', ta:'ஆங்கில மொழி · J3C (J3 Success)'},
+      cert:{zh:'谢谢您用您的方式教我们英文。您让我们知道，说错也没关系，重要的是敢开口。',
+        ms:'Terima kasih kerana mengajar kami Bahasa Inggeris dengan cara cikgu. Cikgu membuatkan kami tahu salah itu tidak mengapa, yang penting berani bercakap.',
+        en:'Thank you for teaching us English in your own way. You let us know that getting it wrong is fine — what matters is daring to speak.',
+        ta:'உங்கள் பாணியில் ஆங்கிலம் கற்பித்ததற்கு நன்றி. தவறாகப் பேசினாலும் பரவாயில்லை, பேசத் துணிவதே முக்கியம் என்பதை உணர்த்தினீர்கள்.'},
+      honour:{zh:'谢谢您没有因为我们不敢说英文就放弃我们。您陪我们练过的那些句子，我们现在还用得着。',
+        ms:'Terima kasih kerana tidak berputus asa walaupun kami takut bertutur. Ayat-ayat yang kami latih bersama cikgu masih kami gunakan sekarang.',
+        en:'Thank you for not giving up on us just because we were afraid to speak. The sentences we practised with you are still useful to us now.',
+        ta:'ஆங்கிலம் பேசப் பயந்தபோதும் எங்களை விட்டுவிடவில்லை — நன்றி. உங்களுடன் பயிற்சி செய்த அந்த வாக்கியங்களை இன்றும் பயன்படுத்துகிறோம்.'} },
+    '9710': { zh:'Lim Wen Xin',
+      subject:{zh:'英文 · J3B（J3 WISDOM）', ms:'Bahasa Inggeris · J3B (J3 WISDOM)', en:'English Language · J3B (J3 WISDOM)', ta:'ஆங்கில மொழி · J3B (J3 WISDOM)'},
+      cert:{zh:'谢谢您在我们最吵的那一年，还是愿意走进这间课室。您教的英文，我们会带着走。',
+        ms:'Terima kasih kerana pada tahun kami paling bising, cikgu masih sudi masuk ke kelas ini. Bahasa Inggeris yang cikgu ajarkan akan kami bawa bersama.',
+        en:'Thank you for still walking into this classroom in our noisiest year. The English you taught us is something we will carry with us.',
+        ta:'நாங்கள் மிக சத்தமாக இருந்த ஆண்டிலும் இந்த வகுப்பறைக்குள் வர விருப்பம் காட்டியதற்கு நன்றி. நீங்கள் கற்பித்த ஆங்கிலத்தை எங்களுடன் எடுத்துச் செல்வோம்.'},
+      honour:{zh:'谢谢您包容初三那一年混乱的课堂，也谢谢您没有把我们的吵闹当成对我们的失望。您教过我们，我们就会记得。',
+        ms:'Terima kasih kerana menerima keadaan kelas yang kelam-kabut pada tahun terakhir, dan kerana tidak menganggap kebisingan kami sebagai kekecewaan terhadap kami. Cikgu pernah mengajar kami, dan itu akan kami ingat.',
+        en:'Thank you for putting up with how chaotic that final year was, and for never treating our noise as disappointment in us. You taught us, and we will remember that.',
+        ta:'இறுதி ஆண்டின் குழப்பமான வகுப்பைப் பொறுத்துக்கொண்டதற்கும், எங்கள் சத்தத்தை எங்கள் மீதான ஏமாற்றமாகக் கருதாததற்கும் நன்றி. நீங்கள் எங்களுக்குக் கற்பித்தீர்கள் — அதை நினைவில் வைத்திருப்போம்.'} },
+    '9831': { zh:'Shanthini',
+      subject:{zh:'英文 · J3B（J3 WISDOM）', ms:'Bahasa Inggeris · J3B (J3 WISDOM)', en:'English Language · J3B (J3 WISDOM)', ta:'ஆங்கில மொழி · J3B (J3 WISDOM)'},
+      cert:{zh:'谢谢您每一次都认真地准备、认真地教。这三年里英文老师换了好几位，您这一位，我们一样记得。',
+        ms:'Terima kasih kerana bersedia dan mengajar dengan bersungguh-sungguh setiap kali. Dalam tiga tahun ini guru Bahasa Inggeris kami bertukar beberapa kali — cikgu tetap kami ingat.',
+        en:'Thank you for preparing and teaching with such care every time. Our English teachers changed several times in three years — you are remembered just the same.',
+        ta:'ஒவ்வொரு முறையும் சிரத்தையுடன் தயாரித்து கற்பித்ததற்கு நன்றி. மூன்று ஆண்டுகளில் ஆங்கில ஆசிரியர்கள் பலர் மாறினார்கள் — நீங்களும் அதேபோல் நினைவில் இருப்பீர்கள்.'},
+      honour:{zh:'谢谢您在这三年里陪过我们一段。无论时间长短，您教过我们的事实，不会因为时间过去而改变。',
+        ms:'Terima kasih kerana menemani kami untuk satu tempoh dalam tiga tahun ini. Sama ada panjang atau pendek, hakikat bahawa cikgu pernah mengajar kami tidak akan berubah.',
+        en:'Thank you for the time you spent with us during these three years. Long or short, the fact that you taught us will not change with time.',
+        ta:'இந்த மூன்று ஆண்டுகளில் ஒரு காலத்தில் எங்களுடன் இருந்ததற்கு நன்றி. காலம் நீளமோ குறுகியதோ — நீங்கள் எங்களுக்குக் கற்பித்தது காலத்தால் மாறாது.'} },
+    '9921': { zh:'张雪彦',
+      subject:{zh:'美术', ms:'Seni Visual', en:'Art', ta:'கலை'},
+      cert:{zh:'谢谢您让我们在课本之外，还有一块可以随便画、随便想的地方。那是三年里最没有压力的一堂课。',
+        ms:'Terima kasih kerana memberi kami ruang untuk melukis dan berangan-angan sesuka hati di luar buku teks. Itulah kelas yang paling tidak menekan dalam tiga tahun ini.',
+        en:'Thank you for giving us a space outside the textbooks where we could draw and imagine freely. That was the least stressful lesson of our three years.',
+        ta:'பாடப்புத்தகங்களுக்கு அப்பால், விரும்பியபடி வரையவும் கற்பனை செய்யவும் ஒரு இடத்தைத் தந்ததற்கு நன்றி. அதுவே மூன்று ஆண்டுகளின் மிக அழுத்தமில்லாத பாடம்.'},
+      honour:{zh:'谢谢您把我们那些「不像画」的画，也当成作品来看。您让我们知道，表达不一定要好看。',
+        ms:'Terima kasih kerana menganggap lukisan kami yang “tidak nampak seperti lukisan” sebagai hasil karya. Cikgu membuatkan kami tahu luahan tidak semestinya kelihatan cantik.',
+        en:'Thank you for treating our drawings that “did not look like drawings” as real work. You taught us that expressing yourself does not have to be pretty.',
+        ta:'“ஓவியம் போல இல்லை” என்ற எங்கள் படங்களையும் படைப்பாகக் கருதியதற்கு நன்றி. வெளிப்படுத்துவது அழகாக இருக்க வேண்டும் என்பதில்லை என்பதை உணர்த்தினீர்கள்.'} },
+    '9967': { zh:'吴敏灵',
+      subject:{zh:'地理', ms:'Geografi', en:'Geography', ta:'புவியியல்'},
+      cert:{zh:'谢谢您把地图上的名字，讲成了一个个真的地方。您现在说的每一条河、每一座山，我们都还能想起来。',
+        ms:'Terima kasih kerana menjadikan nama-nama di atas peta itu tempat yang benar-benar wujud. Setiap sungai dan gunung yang cikgu sebutkan masih kami bayangkan.',
+        en:'Thank you for turning the names on the map into real places. Every river and every mountain you spoke of, we can still picture.',
+        ta:'வரைபடத்தில் இருந்த பெயர்களை உண்மையான இடங்களாக மாற்றியதற்கு நன்றி. நீங்கள் சொன்ன ஒவ்வொரு ஆறும் மலையும் இன்றும் நினைவில் வருகிறது.'},
+      honour:{zh:'谢谢您耐心地陪我们在经纬线里绕来绕去。您教我们看懂的不只是地图，还有我们住的这个地方。',
+        ms:'Terima kasih kerana bersabar memandu kami melalui garis lintang dan bujur. Cikgu bukan sekadar mengajar kami membaca peta, tetapi juga mengenali tempat kami tinggal.',
+        en:'Thank you for patiently guiding us through latitudes and longitudes. You taught us to read not only maps, but the place we live in.',
+        ta:'அட்சரேகை, தீர்க்கரேகை இடையே பொறுமையாக வழிநடத்தியதற்கு நன்றி. வரைபடத்தை மட்டுமல்ல, நாங்கள் வாழும் இடத்தையும் புரிந்துகொள்ளக் கற்பித்தீர்கள்.'} },
+  };
+
+  var CERT_NAME = {
+    zh:{pre:'', post:' 老师'},
+    ms:{pre:'Cikgu ', post:''},
+    en:{pre:'Teacher ', post:''},
+    ta:{pre:'ஆசிரியர் ', post:''}
+  };
+  var CODE_KEY = 'letterCode';
+  var boxStage = document.getElementById('boxStage');
+  var codeForm = document.getElementById('codeForm');
+  var codeInput = document.getElementById('codeInput');
+  var codeMsg = document.getElementById('codeMsg');
+  var boxCodeEl = document.getElementById('boxCode');
+  var boxLabelHead = document.getElementById('boxLabelHead');
+  var envItem = document.getElementById('envItem');
+  var certItem = document.getElementById('certItem');
+  var certBtn = document.getElementById('certBtn');
+  var certBackdrop = document.getElementById('certBackdrop');
+  var certNameEl = document.getElementById('certName');
+  var certSubjectEl = document.getElementById('certSubject');
+  var certNoteEl = document.getElementById('certNote');
+  var certBodyEl = document.getElementById('certBody');
+  var honourBodyEl = document.getElementById('honourBody');
+  var honourItem = document.getElementById('honourItem');
+  var honourBackdrop = document.getElementById('honourBackdrop');
+  var honourNameEl = document.getElementById('honourName');
+  var honourSubjectEl = document.getElementById('honourSubject');
+  var teacher = null;
+  var codeErr = null;
+
+  function normCode(v){ return String(v == null ? '' : v).trim().toUpperCase(); }
+
+  function findTeacher(code){
+    var c = normCode(code);
+    if(!c) return null;
+    if(TEACHERS[c]) return TEACHERS[c];
+    var flat = c.replace(/[\s-]/g, '');
+    for(var k in TEACHERS){
+      if(k.replace(/[\s-]/g, '') === flat) return TEACHERS[k];
+    }
+    return null;
+  }
+
+  function fillCert(){
+    if(!teacher) return;
+    var dict = I18N[currentLang];
+    var fmt = CERT_NAME[currentLang] || CERT_NAME.zh;
+    var name = currentLang === 'zh' ? teacher.zh : (teacher.latin || teacher.zh);
+    certNameEl.textContent = fmt.pre + name + fmt.post;
+    var subj = teacher.subject ? (teacher.subject[currentLang] || teacher.subject.zh) : '';
+    certSubjectEl.textContent = subj || '';
+    certSubjectEl.hidden = !subj;
+    // 每位老师一套独立正文（四语）；缺省时回落到通用文案
+    function pickText(obj){ return obj ? (obj[currentLang] || obj.zh || '') : ''; }
+    var certText = pickText(teacher.cert) || dict.certBody;
+    var honourText = pickText(teacher.honour) || dict.honourBody;
+    certBodyEl.textContent = certText;
+    honourBodyEl.textContent = honourText;
+    // 可选的专属一句话（目前名册未使用，留作以后加）
+    var note = pickText(teacher.note);
+    certNoteEl.textContent = note;
+    certNoteEl.hidden = !note;
+    // 荣誉证书用同一位老师的姓名与科目
+    honourNameEl.textContent = certNameEl.textContent;
+    honourSubjectEl.textContent = subj || '';
+    honourSubjectEl.hidden = !subj;
+  }
+
+  function openCert(){
+    if(!teacher) return;
+    fillCert();
+    certBackdrop.classList.add('is-open');
+    document.getElementById('certClose').focus();
+  }
+  function closeCert(){ certBackdrop.classList.remove('is-open'); }
+
+  function openHonour(){
+    if(!teacher) return;
+    fillCert();
+    honourBackdrop.classList.add('is-open');
+    document.getElementById('honourClose').focus();
+  }
+  function closeHonour(){ honourBackdrop.classList.remove('is-open'); }
+
+  function openBox(){
+    boxStage.classList.add('is-open');
+    boxCodeEl.textContent = normCode(codeInput.value) || '— — — —';
+    boxLabelHead.textContent = I18N[currentLang].boxStamp;
+    certBtn.hidden = false;
+    readBtn.hidden = false;          // 语音只在开箱后才出现
+    updateReadUI();
+  }
+
+  function rejectCode(kind){
+    codeErr = kind;
+    codeMsg.textContent = I18N[currentLang][kind === 'empty' ? 'codeEmpty' : 'codeError'];
+    codeInput.classList.remove('is-wrong');
+    void codeInput.offsetWidth;               // restart the shake animation
+    codeInput.classList.add('is-wrong');
+    window.setTimeout(function(){ codeInput.classList.remove('is-wrong'); }, 600);
+  }
+
+  function submitCode(e){
+    if(e) e.preventDefault();
+    var raw = codeInput.value;
+    if(!normCode(raw)){ rejectCode('empty'); return; }
+    var found = findTeacher(raw);
+    if(!found){ rejectCode('wrong'); return; }
+    teacher = found;
+    codeErr = null;
+    codeMsg.textContent = '';
+    codeInput.value = normCode(raw);
+    try{ localStorage.setItem(CODE_KEY, normCode(raw)); }catch(err){}
+    openBox();
+  }
+
+  function leaveBoxForLetter(){
+    boxStage.classList.add('is-gone');
+    document.body.classList.remove('is-boxed');
+    window.setTimeout(openLetter, 220);
+  }
+
+  codeForm.addEventListener('submit', submitCode);
+  envItem.addEventListener('click', leaveBoxForLetter);
+  certItem.addEventListener('click', openCert);
+  certBtn.addEventListener('click', openCert);
+  honourItem.addEventListener('click', openHonour);
+  document.getElementById('certClose').addEventListener('click', closeCert);
+  document.getElementById('certPrint').addEventListener('click', function(){ window.print(); });
+  document.getElementById('honourClose').addEventListener('click', closeHonour);
+  document.getElementById('honourPrint').addEventListener('click', function(){ window.print(); });
+  certBackdrop.addEventListener('click', function(e){ if(e.target === certBackdrop) closeCert(); });
+  honourBackdrop.addEventListener('click', function(e){ if(e.target === honourBackdrop) closeHonour(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Escape') return;
+    if(certBackdrop.classList.contains('is-open')) closeCert();
+    if(honourBackdrop.classList.contains('is-open')) closeHonour();
+  });
+
+  // A personal link (?code=1001) opens the box by itself; a remembered code is only pre-filled.
+  var urlCode = null, savedCode = null;
+  try{
+    var m = /[?&#]code=([^&]+)/i.exec(window.location.search + window.location.hash);
+    if(m) urlCode = decodeURIComponent(m[1]);
+  }catch(e){}
+  try{ savedCode = localStorage.getItem(CODE_KEY); }catch(e){}
+  if(urlCode != null) codeInput.value = normCode(urlCode);
+  else if(savedCode) codeInput.value = normCode(savedCode);
+  if(urlCode && findTeacher(urlCode)){
+    teacher = findTeacher(urlCode);
+    window.setTimeout(openBox, 700);
+  }
 
   var savedLang = null;
   try{ savedLang = localStorage.getItem('letterLang'); }catch(e){}
